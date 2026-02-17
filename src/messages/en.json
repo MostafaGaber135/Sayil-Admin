@@ -1,0 +1,61 @@
+{
+  "app": {
+    "name": "Sayil",
+    "tagline": "Admin Dashboard"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "listings": "Listings",
+    "users": "Users",
+    "rolesPermissions": "Roles & Permissions",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "title": "Admin",
+    "subtitle": "Manage platform",
+    "language": "Language",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "menu": "Menu"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "desc": "Overview and quick insights."
+    },
+    "listings": {
+      "title": "Listings",
+      "desc": "Manage listings."
+    },
+    "listingDetails": {
+      "title": "Listing details",
+      "desc": "Details page placeholder."
+    },
+    "users": {
+      "title": "Users",
+      "desc": "Manage users."
+    },
+    "roles": {
+      "title": "Roles & permissions",
+      "desc": "Manage roles and permissions."
+    },
+    "settings": {
+      "title": "Settings",
+      "desc": "Manage system settings."
+    },
+    "login": {
+      "title": "Login",
+      "desc": "Sign in to continue."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "desc": "The page you’re looking for doesn’t exist."
+    }
+  },
+  "common": {
+    "goHome": "Go home",
+    "comingSoon": "Coming soon"
+  }
+}
