@@ -40,8 +40,7 @@ export default function AppTopbar() {
     <Button variant="ghost" size="icon" className="relative cursor-pointer" aria-label={t("topbar.notifications")}>
       <Bell className="h-5 w-5" />
       <span
-        className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full text-[11px] font-semibold text-white"
-        style={{ backgroundColor: "#ef4444" }}
+        className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full text-[11px] font-semibold bg-destructive text-destructive-foreground"
       >
         2
       </span>
@@ -61,8 +60,7 @@ export default function AppTopbar() {
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
               <span className="hidden sm:inline text-sm font-medium">وكيل</span>
               <span
-                className="grid h-9 w-9 place-items-center rounded-full text-white"
-                style={{ backgroundColor: "#3c71ff" }}
+                className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"
               >
                 <User className="h-5 w-5" />
               </span>
@@ -70,8 +68,7 @@ export default function AppTopbar() {
           ) : (
             <>
               <span
-                className="grid h-9 w-9 place-items-center rounded-full text-white"
-                style={{ backgroundColor: "#3c71ff" }}
+                className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"
               >
                 <User className="h-5 w-5" />
               </span>

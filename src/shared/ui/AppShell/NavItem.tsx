@@ -49,8 +49,8 @@ export default function NavItem({
         "group w-full flex items-center gap-3 rounded-xl px-8 py-3 text-sm font-medium transition-colors",
         isRTL ? "justify-end" : "",
         isActive
-          ? "bg-[#3c71ff] text-white"
-          : "text-muted-foreground hover:bg-[#f3f4f6] hover:text-foreground"
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-nav-hover hover:text-foreground"
       )}
     >
       {isRTL ? (
@@ -64,8 +64,8 @@ export default function NavItem({
               className={cn(
                 "h-5 w-5 shrink-0 transition-colors",
                 isActive
-                  ? "text-white"
-                  : "text-muted-foreground group-hover:text-[#81a2fc]"
+                  ? "text-primary-foreground"
+                  : "text-muted-foreground group-hover:text-nav-icon-hover"
               )}
             />
           ) : null}
@@ -77,8 +77,8 @@ export default function NavItem({
               className={cn(
                 "h-5 w-5 shrink-0 transition-colors",
                 isActive
-                  ? "text-white"
-                  : "text-muted-foreground group-hover:text-[#81a2fc]"
+                  ? "text-primary-foreground"
+                  : "text-muted-foreground group-hover:text-nav-icon-hover"
               )}
             />
           ) : null}
