@@ -75,8 +75,8 @@
       "desc": "Manage roles and permissions."
     },
     "settings": {
-      "title": "Settings",
-      "desc": "Manage system settings."
+      "title": "Platform Settings",
+      "desc": "Configure platform rules and settings"
     },
     "login": {
       "title": "Login",
