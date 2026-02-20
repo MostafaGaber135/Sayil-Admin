@@ -1,11 +1,11 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { useAppDispatch } from "@/shared/lib/rtk/hooks";
-import { setAuth, clearAuth } from "@/features/auth/redux-toolkit/auth.slice";
+import { clearAuth, setAuth } from "@/features/auth/redux-toolkit/auth.slice";
 import { adminLogin, adminLogout } from "@/features/auth/services/auth.services";
-import type { AdminLoginRequest, AdminLoginResponse } from "@/features/auth/types";
+import type { AdminLoginRequest, AdminLoginResponse } from "@/features/auth/types/auth.types";
 import { clearTokens, setTokens } from "@/shared/lib/auth/token";
+import { useAppDispatch } from "@/shared/lib/rtk/hooks";
+import { useMutation } from "@tanstack/react-query";
 
 export function useAdminLogin() {
   const dispatch = useAppDispatch();

@@ -12,35 +12,47 @@ function isNetworkErrorResult(value: UpstreamResult): value is NetworkErrorResul
   );
 }
 
-export async function POST(req: Request) {
-  const API_BASE_URL = process.env.API_BASE_URL;
+function normalizeApiBaseUrl(value: string) {
+  let base = value.trim();
+  while (base.endsWith("/")) base = base.slice(0, -1);
+  if (base.toLowerCase().endsWith("/api")) base = base.slice(0, -4);
+  return base;
+}
 
-  if (!API_BASE_URL) {
+export async function POST(req: Request) {
+  const rawBase = process.env.API_BASE_URL;
+
+  if (!rawBase) {
     return NextResponse.json(
       {
         statusCode: 500,
         succeeded: false,
         message: "API_BASE_URL is not configured on the server.",
         errors: ["Missing API_BASE_URL"],
-        data: null
+        data: null,
       },
       { status: 500 }
     );
   }
 
+  const API_BASE_URL = normalizeApiBaseUrl(rawBase);
+
   const body: unknown = await req.json().catch(() => null);
   const authorization = req.headers.get("authorization") || "";
 
-  const upstream: UpstreamResult = await fetch(`${API_BASE_URL}/api/admin/account/logout`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json, text/plain",
-      ...(authorization ? { Authorization: authorization } : {})
-    },
-    body: JSON.stringify(body ?? {}),
-    cache: "no-store"
-  }).catch((error: unknown) => {
+  const upstream: UpstreamResult = await fetch(
+    `${API_BASE_URL}/api/admin/account/logout`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json, text/plain",
+        ...(authorization ? { Authorization: authorization } : {}),
+      },
+      body: JSON.stringify(body ?? {}),
+      cache: "no-store",
+    }
+  ).catch((error: unknown) => {
     return { __network_error__: true, error };
   });
 
@@ -51,7 +63,7 @@ export async function POST(req: Request) {
         succeeded: false,
         message: "Cannot reach upstream API.",
         errors: ["Upstream unreachable"],
-        data: null
+        data: null,
       },
       { status: 502 }
     );
@@ -64,7 +76,7 @@ export async function POST(req: Request) {
   if (contentType.includes("application/json")) {
     return new NextResponse(text, {
       status,
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
   }
 
@@ -74,7 +86,7 @@ export async function POST(req: Request) {
   } catch {
     return new NextResponse(text, {
       status,
-      headers: { "Content-Type": "text/plain" }
+      headers: { "Content-Type": "text/plain" },
     });
   }
 }

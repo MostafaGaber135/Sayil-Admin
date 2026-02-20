@@ -1,31 +1,22 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { UserRound } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocale, useTranslations } from "next-intl";
-import { UserRound } from "lucide-react";
-import axios from "axios";
 
-import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { Button } from "@/shared/components/ui/button";
-import LocaleSwitch from "@/shared/ui/LocaleSwitch";
 import { useRouter } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent } from "@/shared/components/ui/card";
+import LocaleSwitch from "@/shared/ui/LocaleSwitch";
 
-import {
-  createAdminLoginSchema,
-  type AdminLoginFormValues,
-} from "@/features/auth/validation/login.validation";
 import { useAdminLogin } from "@/features/auth/hooks/auth.hooks";
+import type { AdminLoginFormValues, LoginPreset } from "@/features/auth/types/auth.types";
 import LoginForm from "@/features/auth/ui/LoginForm";
-
-type Preset = {
-  roleLabel: string;
-  phoneNumber: string;
-  password: string;
-  hint?: string;
-};
+import { createAdminLoginSchema } from "@/features/auth/validation/login.validation";
 
 export default function AdminLoginScreen() {
   const t = useTranslations();
@@ -65,12 +56,12 @@ export default function AdminLoginScreen() {
     [t]
   );
 
-  const presets: Preset[] = useMemo(
+  const presets: LoginPreset[] = useMemo(
     () => [
       {
         roleLabel: t("auth.samples.admin"),
-        phoneNumber: "+966501234567",
-        password: "admin123",
+        phoneNumber: "+966512345678",
+        password: "Admin@123456",
       },
       {
         roleLabel: t("auth.samples.agent"),
@@ -87,7 +78,7 @@ export default function AdminLoginScreen() {
     [t]
   );
 
-  const applyPreset = (p: Preset) => {
+  const applyPreset = (p: LoginPreset) => {
     setApiError(null);
     form.setValue("phoneNumber", p.phoneNumber, {
       shouldDirty: true,
@@ -142,13 +133,13 @@ export default function AdminLoginScreen() {
 
       <div className="relative z-10">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 lg:py-14">
-	          <div className="grid items-center gap-10 lg:grid-cols-2">
-	            <div
-	              className={cn(
-	                "space-y-8",
-	                isRTL ? "text-right" : "text-left"
-	              )}
-	            >
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <div
+              className={cn(
+                "space-y-8",
+                isRTL ? "text-right" : "text-left"
+              )}
+            >
               <div className="space-y-2">
                 <h1
                   className={cn(
@@ -223,7 +214,7 @@ export default function AdminLoginScreen() {
               </div>
             </div>
 
-	            <Card className="relative rounded-2xl border-0 bg-white shadow-xl">
+            <Card className="relative rounded-2xl border-0 bg-white shadow-xl">
               <CardContent className="p-8 sm:p-10">
                 <div
                   className={cn(

@@ -1,41 +1,41 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Controller, type UseFormReturn } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Phone, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { AdminLoginFormValues } from "@/features/auth/validation/login.validation";
+import type { LoginFormProps } from "@/features/auth/types";
 
-type Props = {
-  form: UseFormReturn<AdminLoginFormValues>;
-  isRTL: boolean;
-  submitting: boolean;
-  onSubmit: (values: AdminLoginFormValues) => void | Promise<void>;
-  errorText?: string | null;
-  labels: {
-    heading: string;
-    phone: string;
-    phonePlaceholder: string;
-    password: string;
-    passwordPlaceholder: string;
-    submit: string;
-  };
-};
-
-export default function LoginForm({ form, isRTL, submitting, onSubmit, errorText, labels }: Props) {
+export default function LoginForm({
+  form,
+  isRTL,
+  submitting,
+  onSubmit,
+  errorText,
+  labels,
+}: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const SubmitIcon = useMemo(() => (isRTL ? ArrowLeft : ArrowRight), [isRTL]);
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>
-      <div className="text-center text-2xl font-bold text-foreground">{labels.heading}</div>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="space-y-5"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div className="text-center text-2xl font-bold text-foreground">
+        {labels.heading}
+      </div>
 
       <div className="space-y-2">
         <label
-          className={cn("flex items-center gap-2 text-sm font-medium text-foreground", isRTL ? "flex-row justify-start" : "")}
+          className={cn(
+            "flex items-center gap-2 text-sm font-medium text-foreground",
+            isRTL ? "flex-row justify-start" : ""
+          )}
           htmlFor="phoneNumber"
         >
           <Phone className="h-4 w-4 text-muted-foreground" />
@@ -62,7 +62,14 @@ export default function LoginForm({ form, isRTL, submitting, onSubmit, errorText
               />
 
               {fieldState.error ? (
-                <p className={cn("text-xs text-destructive", isRTL ? "text-right" : "")}>{fieldState.error.message}</p>
+                <p
+                  className={cn(
+                    "text-xs text-destructive",
+                    isRTL ? "text-right" : ""
+                  )}
+                >
+                  {fieldState.error.message}
+                </p>
               ) : null}
             </div>
           )}
@@ -71,7 +78,10 @@ export default function LoginForm({ form, isRTL, submitting, onSubmit, errorText
 
       <div className="space-y-2">
         <label
-          className={cn("flex items-center gap-2 text-sm font-medium text-foreground", isRTL ? "flex-row justify-start" : "")}
+          className={cn(
+            "flex items-center gap-2 text-sm font-medium text-foreground",
+            isRTL ? "flex-row justify-start" : ""
+          )}
           htmlFor="password"
         >
           <Lock className="h-4 w-4 text-muted-foreground" />
@@ -105,11 +115,22 @@ export default function LoginForm({ form, isRTL, submitting, onSubmit, errorText
                   )}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4 cursor-pointer" /> : <Eye className="h-4 w-4 cursor-pointer" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 cursor-pointer" />
+                  ) : (
+                    <Eye className="h-4 w-4 cursor-pointer" />
+                  )}
                 </button>
               </div>
               {fieldState.error ? (
-                <p className={cn("text-xs text-destructive", isRTL ? "text-right" : "")}>{fieldState.error.message}</p>
+                <p
+                  className={cn(
+                    "text-xs text-destructive",
+                    isRTL ? "text-right" : ""
+                  )}
+                >
+                  {fieldState.error.message}
+                </p>
               ) : null}
             </div>
           )}
@@ -117,11 +138,7 @@ export default function LoginForm({ form, isRTL, submitting, onSubmit, errorText
       </div>
 
       {errorText ? (
-        <div
-          className={cn(
-            "rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive",
-          )}
-        >
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {errorText}
         </div>
       ) : null}

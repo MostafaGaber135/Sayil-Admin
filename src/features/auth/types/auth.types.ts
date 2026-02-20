@@ -15,6 +15,15 @@ export type AdminLoginRequest = {
   password: string;
 };
 
+export type AdminLoginFormValues = AdminLoginRequest;
+
+export type LoginPreset = {
+  roleLabel: string;
+  phoneNumber: string;
+  password: string;
+  hint?: string;
+};
+
 export type AdminLoginData = {
   token: string;
   refreshToken: string;
