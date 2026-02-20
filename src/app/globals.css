@@ -53,10 +53,10 @@
   --radius: 0.5rem;
 
   /* Main Theme Colors */
-  --background: #f9fafb; /* Main Site BG */
-  --foreground: #263052; /* Main Site Text */
+  --background: #f9fafb;
+  --foreground: #263052;
 
-  --primary: #3c71ff; /* Brand Blue */
+  --primary: #3c71ff;
   --primary-foreground: #ffffff;
 
   --muted: #f2f3f5;
@@ -114,11 +114,9 @@
   --border: #334155;
   --input: #1e293b;
 
-  /* Ensuring custom colors feel right in dark mode */
   --ui-neutral: #1e293b;
   --ui-ghost: #1e293b;
 
-  /* Additional UI Tokens */
   --overlay: #000000;
   --nav-hover: #1e293b;
   --nav-icon-hover: #81a2fc;

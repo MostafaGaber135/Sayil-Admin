@@ -1,0 +1,21 @@
+info:
+  name: Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/admin/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "phoneNumber": "+966512345678",
+        "password": "Admin@123456"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

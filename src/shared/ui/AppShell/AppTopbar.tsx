@@ -13,11 +13,16 @@ import {
 import AppSidebar from "./AppSidebar";
 import LocaleSwitch from "@/shared/ui/LocaleSwitch";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useLogout } from "@/features/auth/hooks/auth.hooks";
+import { defaultLocale } from "@/shared/lib/i18n/routing";
 
 export default function AppTopbar() {
   const t = useTranslations();
   const [open, setOpen] = useState(false);
+
+  const router = useRouter();
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   const locale = useLocale();
   const pathname = usePathname();
@@ -38,9 +43,9 @@ export default function AppTopbar() {
 
   const NotifBtn = (
     <Button variant="ghost" size="icon" className="relative cursor-pointer" aria-label={t("topbar.notifications")}>
-      <Bell className="h-5 w-5" />
+      <Bell className="h-6 w-6" />
       <span
-        className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full text-[11px] font-semibold bg-destructive text-destructive-foreground"
+        className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
       >
         2
       </span>
@@ -48,7 +53,7 @@ export default function AppTopbar() {
   );
 
   const Divider = (
-    <div className="h-6 w-px bg-border/60" />
+    <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" />
   );
 
   const UserDropdown = (
@@ -81,7 +86,21 @@ export default function AppTopbar() {
 
       <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-44 ">
         <DropdownMenuItem className="cursor-pointer">{t("topbar.profile")}</DropdownMenuItem>
-        <DropdownMenuItem className="text-destructive cursor-pointer">{t("topbar.logout")}</DropdownMenuItem>
+        <DropdownMenuItem
+          className="text-destructive cursor-pointer"
+          disabled={isLoggingOut}
+          onSelect={(e) => {
+            e.preventDefault();
+            logout(undefined, {
+              onSettled: () => {
+                const loginPath = locale === defaultLocale ? "/login" : `/${locale}/login`;
+                router.replace(loginPath);
+              }
+            });
+          }}
+        >
+          {t("topbar.logout")}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

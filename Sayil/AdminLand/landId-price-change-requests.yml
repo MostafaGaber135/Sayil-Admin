@@ -1,0 +1,14 @@
+info:
+  name: landId/price-change-requests
+  type: http
+  seq: 11
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/admin/land/listings/{landId}/price-change-requests"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
