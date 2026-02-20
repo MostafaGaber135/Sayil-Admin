@@ -1,5 +1,5 @@
+import type { AdminLoginRequest, AdminLoginResponse } from "@/features/auth/types/auth.types";
 import { api } from "@/shared/lib/axios/axios.instance";
-import type { AdminLoginRequest, AdminLoginResponse } from "@/features/auth/types";
 
 const LOGIN_PATH = "/api/admin/auth/login";
 const LOGOUT_PATH = "/api/admin/account/logout";

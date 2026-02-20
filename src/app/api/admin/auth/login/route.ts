@@ -12,10 +12,20 @@ function isNetworkErrorResult(value: UpstreamResult): value is NetworkErrorResul
   );
 }
 
-export async function POST(req: Request) {
-  const API_BASE_URL = process.env.API_BASE_URL;
+function normalizeApiBaseUrl(value: string) {
+  let base = value.trim();
 
-  if (!API_BASE_URL) {
+  while (base.endsWith("/")) base = base.slice(0, -1);
+
+  if (base.toLowerCase().endsWith("/api")) base = base.slice(0, -4);
+
+  return base;
+}
+
+export async function POST(req: Request) {
+  const rawBase = process.env.API_BASE_URL;
+
+  if (!rawBase) {
     return NextResponse.json(
       {
         statusCode: 500,
@@ -27,6 +37,8 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+
+  const API_BASE_URL = normalizeApiBaseUrl(rawBase);
 
   const body: unknown = await req.json().catch(() => null);
 

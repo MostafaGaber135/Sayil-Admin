@@ -1,5 +1,5 @@
+import type { AdminUser, AuthState } from "@/features/auth/types/auth.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AdminUser, AuthState } from "@/features/auth/types";
 
 const initialState: AuthState = {
     token: null,

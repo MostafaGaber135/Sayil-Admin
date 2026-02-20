@@ -14,4 +14,4 @@ export const adminLoginSchema = createAdminLoginSchema({
   passwordRequired: "Password is required",
 });
 
-export type AdminLoginFormValues = z.infer<ReturnType<typeof createAdminLoginSchema>>;
+export type { AdminLoginFormValues } from "@/features/auth/types/auth.types";
