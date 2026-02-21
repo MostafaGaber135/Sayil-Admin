@@ -13,16 +13,16 @@ export function useAdminLogin() {
   return useMutation<AdminLoginResponse, unknown, AdminLoginRequest>({
     mutationFn: (payload) => adminLogin(payload),
     onSuccess: (res) => {
-      const data = res?.data;
-      if (!data?.token) return;
+      const payload: any = (res as any)?.data;
+      if (!payload?.token) return;
 
-      setTokens(data.token, data.refreshToken);
+      setTokens(payload.token, payload.refreshToken);
       dispatch(
         setAuth({
-          token: data.token,
-          refreshToken: data.refreshToken,
-          isFirstTimeLogin: data.isFirstTimeLogin,
-          user: data.user
+          token: payload.token,
+          refreshToken: payload.refreshToken,
+          isFirstTimeLogin: payload.isFirstTimeLogin,
+          user: payload.user
         })
       );
     }

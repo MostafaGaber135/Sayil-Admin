@@ -126,10 +126,10 @@ export default function AdminLoginScreen() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#3c71ff]">
-      <div className="absolute inset-0 bg-linear-to-b from-[#3c71ff] to-[#2f3a66]" />
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-primary">
+      <div className="absolute inset-0 bg-linear-to-b from-primary to-(--auth-hero-to)" />
       <div className="absolute inset-0 bg-black/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_30%_0%,rgba(255,255,255,0.16),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_30%_0%,var(--auth-hero-glow),transparent_60%)]" />
 
       <div className="relative z-10">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 lg:py-14">

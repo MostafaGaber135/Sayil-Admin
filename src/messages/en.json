@@ -56,7 +56,20 @@
   "pages": {
     "dashboard": {
       "title": "Dashboard",
-      "desc": "Overview and quick insights."
+      "desc": "Overview of your platform performance",
+      "kpis": {
+        "totalListings": "Total Listings",
+        "pendingApprovals": "Pending Approvals",
+        "totalUsers": "Total Users",
+        "propertiesSold": "Properties Sold",
+        "totalCommissions": "Total Commissions",
+        "fromLastMonth": "from last month"
+      },
+      "charts": {
+        "listingsByLocation": "Listings by Location",
+        "statusDistribution": "Listing Status Distribution",
+        "commissionByLocation": "Commission Earned by Location"
+      }
     },
     "listings": {
       "title": "Listings",

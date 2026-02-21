@@ -15,7 +15,7 @@ export default function AppShell({
                 </aside>
 
                 <div className="w-full md:ps-64">
-                    <main className="p-4">{children}</main>
+                    <main className="p-6">{children}</main>
                 </div>
             </div>
         </div>

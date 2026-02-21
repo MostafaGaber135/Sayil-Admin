@@ -1,12 +1,5 @@
-import PageHeader from "@/shared/ui/PageHeader";
-import { useTranslations } from "next-intl";
+import DashboardScreen from "@/features/dashboard/ui/DashboardScreen";
 
 export default function Page() {
-  const t = useTranslations();
-  return (
-    <div>
-      <PageHeader title={t("pages.dashboard.title")} description={t("pages.dashboard.desc")} />
-      <div className="text-sm text-muted-foreground">{t("common.comingSoon")}</div>
-    </div>
-  );
+  return <DashboardScreen />;
 }
