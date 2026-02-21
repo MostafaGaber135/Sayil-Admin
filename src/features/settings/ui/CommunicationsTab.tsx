@@ -6,14 +6,14 @@ import React from "react";
 export default function CommunicationsTab() {
   return (
     <>
-      <Card className="p-6">
+      <div className="p-4">
         <div>
-          <h1 className="text-lg font-semibold">Commission & Offer Settings</h1>
+          <h1 className="text-lg font-semibold">Mobile App Communications</h1>
           <p className=" text-sm text-gray-500 mt-1">
             Configure contact information for the mobile application
           </p>
         </div>
-        <Card className=" p-6">
+        <Card className=" p-4 mt-4">
           <div>
             <Input
             placeholder="Enter WhatsApp number (e.g., +966501234567)"
@@ -93,7 +93,7 @@ export default function CommunicationsTab() {
             </Button>
           </div>
         </Card>
-      </Card>
+      </div>
     </>
   );
 }

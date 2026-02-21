@@ -5,7 +5,7 @@ import React from "react";
 
 export default function CommissionOfferTab() {
   return (
-    <Card className=" p-6">
+    <div className=" p-6">
       <div className="space-y-6 ">
         {/* Page Title */}
         <h1 className="text-lg font-semibold">Commission & Offer Settings</h1>
@@ -119,6 +119,6 @@ export default function CommissionOfferTab() {
           </Card>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

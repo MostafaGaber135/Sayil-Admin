@@ -2,28 +2,103 @@ import CommissionOfferTab from "@/features/settings/ui/CommissionOfferTab";
 import CommunicationsTab from "@/features/settings/ui/CommunicationsTab";
 import FaqManagementTab from "@/features/settings/ui/FaqManagementTab";
 import LandClassificationsTab from "@/features/settings/ui/LandClassificationsTab";
-import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
-import { TableCell, TableRow } from "@/shared/components/ui/table";
-import PageHeader from "@/shared/ui/PageHeader";
+import { Card } from "@/shared/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/shared/components/ui/tabs";
 import { useTranslations } from "next-intl";
 
 export default function Page() {
   const t = useTranslations();
   return (
     <>
-      <div>
-        {/* <PageHeader title={t("pages.settings.title")} description={t("pages.settings.desc")} />
-      <div className="text-sm text-muted-foreground">{t("common.comingSoon")}</div> */}
-        <h1 className=" text-2xl font-bold text-sayil-dark-blue">
+      <div className="p-4 space-y-4">
+        <h1 className="text-2xl font-bold text-sayil-dark-blue">
           {t("pages.settings.title")}
         </h1>
-        <h2 className=" text-gray-600 mt-1">{t("pages.settings.desc")}</h2>
+
+        <h2 className="text-gray-600">{t("pages.settings.desc")}</h2>
+
+        <Card className="p-4">
+          <Tabs defaultValue="land">
+            <TabsList
+              className="border-b border-border bg-transparent"
+              variant="line"
+            >
+              <TabsTrigger
+                className="      data-[state=active]:text-primary
+    data-[state=active]:after:absolute
+    data-[state=active]:after:left-0
+    data-[state=active]:after:bottom-[-1px]
+    data-[state=active]:after:h-[2px]
+    data-[state=active]:after:w-full
+    data-[state=active]:after:bg-primary"
+                value="land"
+              >
+                Land Classifications
+              </TabsTrigger>
+
+              <TabsTrigger
+                className="    data-[state=active]:text-primary
+    data-[state=active]:after:absolute
+    data-[state=active]:after:left-0
+    data-[state=active]:after:bottom-[-1px]
+    data-[state=active]:after:h-[2px]
+    data-[state=active]:after:w-full
+    data-[state=active]:after:bg-primary"
+                value="commission"
+              >
+                Commission & Offer Settings
+              </TabsTrigger>
+
+              <TabsTrigger
+                className="    data-[state=active]:text-primary
+    data-[state=active]:after:absolute
+    data-[state=active]:after:left-0
+    data-[state=active]:after:bottom-[-1px]
+    data-[state=active]:after:h-[2px]
+    data-[state=active]:after:w-full
+    data-[state=active]:after:bg-primary"
+                value="communications"
+              >
+                Communications
+              </TabsTrigger>
+
+              <TabsTrigger
+                className="    data-[state=active]:text-primary
+    data-[state=active]:after:absolute
+    data-[state=active]:after:left-0
+    data-[state=active]:after:bottom-[-1px]
+    data-[state=active]:after:h-[2px]
+    data-[state=active]:after:w-full
+    data-[state=active]:after:bg-primary"
+                value="faq"
+              >
+                FAQ Management
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="land">
+              <LandClassificationsTab />
+            </TabsContent>
+
+            <TabsContent value="commission">
+              <CommissionOfferTab />
+            </TabsContent>
+
+            <TabsContent value="communications">
+              <CommunicationsTab />
+            </TabsContent>
+
+            <TabsContent value="faq">
+              <FaqManagementTab />
+            </TabsContent>
+          </Tabs>
+        </Card>
       </div>
-      {/* <LandClassificationsTab /> */}
-      {/* <CommissionOfferTab/> */}
-      {/* <CommunicationsTab/> */}
-      <FaqManagementTab/>
-      
     </>
   );
 }
