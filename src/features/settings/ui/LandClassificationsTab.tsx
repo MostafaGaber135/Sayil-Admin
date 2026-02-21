@@ -13,28 +13,37 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 import { User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 export default function LandClassificationsTab() {
+   const t = useTranslations();
   return (
     <Card className="mb-4 p-4">
       <div className="text-lg font-semibold flex flex-wrap justify-between  ">
-        <h1>Land Classifications</h1>
-        <Button>+ Add Classification</Button>
+        <h1>{t("pages.settings.Land")}</h1>
+        <Button className="inline-flex items-center gap-2 px-4 py-2 text-white rounded-lg  transition-colors cursor-pointer text-[17px]">{t("pages.settings.Add")}</Button>
       </div>
       <Table className=" bg-white rounded-lg border border-gray-200 overflow-hidden">
         <TableHeader className=" bg-[#F9FAFB]">
-          <TableHead>Name</TableHead>
-          <TableHead>Discount (%)</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t("pages.settings.Name")}
+          </TableHead>
+          <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t("pages.settings.Discount")} (%)
+          </TableHead>
+          <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t("pages.settings.Actions")}
+          </TableHead>
         </TableHeader>
-        <TableRow>
-          <TableCell className=" flex gap-2">
-            {" "}
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground">
-              A
-            </span>{" "}
-            <span>Class A</span>
+        <TableRow className="">
+          <TableCell data-slot="table-cell">
+            <div className="flex items-center gap-2 bg">
+              <span className="inline-flex items-center justify-center w-8 h-8 bg-sayil-bright-blue text-white rounded-full text-sm font-bold bg-primary">
+                A
+              </span>
+              <span>Class A</span>
+            </div>
           </TableCell>
           <TableCell>10%</TableCell>
           <TableCell className="flex gap-3 ">
@@ -74,12 +83,13 @@ export default function LandClassificationsTab() {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className=" flex gap-2">
-            {" "}
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground">
-              B
-            </span>{" "}
-            <span>Class B</span>
+          <TableCell data-slot="table-cell">
+            <div className="flex items-center gap-2 bg">
+              <span className="inline-flex items-center justify-center w-8 h-8 bg-sayil-bright-blue text-white rounded-full text-sm font-bold bg-primary">
+                A
+              </span>
+              <span>Class A</span>
+            </div>
           </TableCell>
           <TableCell>10%</TableCell>
           <TableCell className="flex gap-3 ">
@@ -119,12 +129,13 @@ export default function LandClassificationsTab() {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className=" flex gap-2">
-            {" "}
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground">
-              C
-            </span>{" "}
-            <span>Class C</span>
+          <TableCell data-slot="table-cell">
+            <div className="flex items-center gap-2 bg">
+              <span className="inline-flex items-center justify-center w-8 h-8 bg-sayil-bright-blue text-white rounded-full text-sm font-bold bg-primary">
+                A
+              </span>
+              <span>Class A</span>
+            </div>
           </TableCell>
           <TableCell>10%</TableCell>
           <TableCell className="flex gap-3 ">

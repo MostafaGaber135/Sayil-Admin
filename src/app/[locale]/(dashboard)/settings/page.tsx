@@ -1,3 +1,6 @@
+import CommissionOfferTab from "@/features/settings/ui/CommissionOfferTab";
+import CommunicationsTab from "@/features/settings/ui/CommunicationsTab";
+import FaqManagementTab from "@/features/settings/ui/FaqManagementTab";
 import LandClassificationsTab from "@/features/settings/ui/LandClassificationsTab";
 import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
@@ -16,7 +19,11 @@ export default function Page() {
         </h1>
         <h2 className=" text-gray-600 mt-1">{t("pages.settings.desc")}</h2>
       </div>
-      <LandClassificationsTab />
+      {/* <LandClassificationsTab /> */}
+      {/* <CommissionOfferTab/> */}
+      {/* <CommunicationsTab/> */}
+      <FaqManagementTab/>
+      
     </>
   );
 }

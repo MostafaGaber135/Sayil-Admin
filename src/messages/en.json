@@ -76,7 +76,12 @@
     },
     "settings": {
       "title": "Platform Settings",
-      "desc": "Configure platform rules and settings"
+      "desc": "Configure platform rules and settings",
+      "Land":"Land Classifications",
+      "Add":"Add Classification",
+      "Name":"Name",
+      "Discount":"Discount",
+      "Actions":"Actions"
     },
     "login": {
       "title": "Login",
