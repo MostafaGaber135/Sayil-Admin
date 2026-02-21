@@ -96,6 +96,10 @@
   --overlay: #000000;
   --nav-hover: #f3f4f6;
   --nav-icon-hover: #81a2fc;
+
+  /* Auth (Login) hero */
+  --auth-hero-to: #2f3a66;
+  --auth-hero-glow: rgba(255, 255, 255, 0.16);
 }
 
 .dark {
@@ -120,6 +124,10 @@
   --overlay: #000000;
   --nav-hover: #1e293b;
   --nav-icon-hover: #81a2fc;
+
+  /* Auth (Login) hero */
+  --auth-hero-to: #0b1224;
+  --auth-hero-glow: rgba(255, 255, 255, 0.12);
 }
 
 @layer base {

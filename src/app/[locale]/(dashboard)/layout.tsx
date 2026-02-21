@@ -1,16 +1,16 @@
 import AppShell from "@/shared/ui/AppShell/AppShell";
 import { AuthGuard } from "@/shared/lib/auth/guards";
 
-export default function DashboardLayout({
-  children,
-  params
-}: {
+type DashboardLayoutProps = {
   children: React.ReactNode;
-  params: { locale: string };
-}) {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
+  const { locale } = await params;
   return (
     <AuthGuard>
-      <AppShell locale={params.locale}>{children}</AppShell>
+      <AppShell locale={locale}>{children}</AppShell>
     </AuthGuard>
   );
 }
