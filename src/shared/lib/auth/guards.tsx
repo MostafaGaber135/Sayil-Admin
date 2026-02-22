@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useParams, useRouter } from "next/navigation";
-import { useAppSelector } from "@/shared/lib/rtk/hooks";
 import { locales, defaultLocale } from "@/shared/lib/i18n/routing";
-import { getAccessToken } from "@/shared/lib/auth/token";
+import { useSession } from "next-auth/react";
 
 function stripLocale(pathname: string) {
   const parts = pathname.split("/");
@@ -33,9 +32,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const params = useParams<{ locale?: string }>();
 
+  const { status } = useSession();
+
   const locale = params?.locale ?? defaultLocale;
 
-  const reduxToken = useAppSelector((s) => s.auth.token);
   const [allowed, setAllowed] = useState(true);
 
   const isProtected = useMemo(() => {
@@ -49,16 +49,19 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const token = reduxToken || getAccessToken();
+    if (status === "loading") {
+      setAllowed(false);
+      return;
+    }
 
-    if (!token) {
+    if (status !== "authenticated") {
       setAllowed(false);
       router.replace(buildPath(locale, "/login"));
       return;
     }
 
     setAllowed(true);
-  }, [isProtected, reduxToken, router, locale]);
+  }, [isProtected, router, locale, status]);
 
   if (!allowed && isProtected) return null;
 
@@ -70,13 +73,18 @@ export function GuestGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const params = useParams<{ locale?: string }>();
 
+  const { status } = useSession();
+
   const locale = params?.locale ?? defaultLocale;
-  const reduxToken = useAppSelector((s) => s.auth.token);
   const [allowed, setAllowed] = useState(true);
 
   useEffect(() => {
-    const token = reduxToken || getAccessToken();
-    if (!token) {
+    if (status === "loading") {
+      setAllowed(false);
+      return;
+    }
+
+    if (status !== "authenticated") {
       setAllowed(true);
       return;
     }
@@ -91,7 +99,7 @@ export function GuestGuard({ children }: { children: React.ReactNode }) {
 
     setAllowed(false);
     router.replace(buildPath(locale, "/dashboard"));
-  }, [pathname, reduxToken, router, locale]);
+  }, [pathname, router, locale, status]);
 
   if (!allowed) return null;
 
