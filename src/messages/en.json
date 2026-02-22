@@ -88,8 +88,19 @@
       "desc": "Manage roles and permissions."
     },
     "settings": {
-      "title": "Settings",
-      "desc": "Manage system settings."
+      "title": "Platform Settings",
+      "desc": "Configure platform rules and settings",
+      "Land":"Land Classifications",
+      "Add":"Add Classification",
+      "Name":"Name",
+      "Discount":"Discount",
+      "Actions":"Actions",
+      "FAQ Management":"FAQ Management",
+      "Drag and drop to reorder FAQs or use the arrow buttons":"Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ":"+ Add FAQ",
+      "How does Sayil work?":"How does Sayil work?",
+      "Sayil connects landowners with investors through our digital platform.":"Sayil connects landowners with investors through our digitalplatform.",
+      "What are the fees?":"What are the fees?"
     },
     "login": {
       "title": "Login",
