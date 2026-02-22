@@ -56,7 +56,20 @@
   "pages": {
     "dashboard": {
       "title": "لوحة التحكم",
-      "desc": "نظرة عامة وإحصائيات سريعة."
+      "desc": "نظرة عامة على أداء المنصة",
+      "kpis": {
+        "totalListings": "إجمالي الإعلانات",
+        "pendingApprovals": "موافقات قيد الانتظار",
+        "totalUsers": "إجمالي المستخدمين",
+        "propertiesSold": "عقارات مباعة",
+        "totalCommissions": "إجمالي العمولات",
+        "fromLastMonth": "من الشهر الماضي"
+      },
+      "charts": {
+        "listingsByLocation": "الإعلانات حسب المدينة",
+        "statusDistribution": "توزيع حالات الإعلان",
+        "commissionByLocation": "العمولة حسب المدينة"
+      }
     },
     "listings": {
       "title": "الإعلانات",
@@ -75,8 +88,13 @@
       "desc": "إدارة الأدوار والصلاحيات."
     },
     "settings": {
-      "title": "الإعدادات",
-      "desc": "إدارة إعدادات النظام."
+      "title": "إعدادات النظام الأساسي",
+      "desc": "قم بتكوين قواعد وإعدادات النظام الأساسي",
+      "Land": "تصنيفات الأراضي",
+      "Add": "إضافة تصنيف",
+      "Name": "الاسم",
+      "Discount": "تخفيض",
+      "Actions": "الإجراءات"
     },
     "login": {
       "title": "تسجيل الدخول",

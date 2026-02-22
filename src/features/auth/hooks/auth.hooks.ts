@@ -1,68 +1,44 @@
 "use client";
 
-import { useState } from "react";
-import { signIn, signOut, type SignInResponse } from "next-auth/react";
-import type { AdminLoginRequest } from "../types/auth.types";
-
-type MutateOptions<TData = unknown> = {
-  onSuccess?: (data: TData) => void;
-  onError?: (error: unknown) => void;
-  onSettled?: () => void;
-};
-
-type SignInResult = SignInResponse | undefined;
+import { clearAuth, setAuth } from "@/features/auth/redux-toolkit/auth.slice";
+import { adminLogin, adminLogout } from "@/features/auth/services/auth.services";
+import type { AdminLoginRequest, AdminLoginResponse } from "@/features/auth/types/auth.types";
+import { clearTokens, setTokens } from "@/shared/lib/auth/token";
+import { useAppDispatch } from "@/shared/lib/rtk/hooks";
+import { useMutation } from "@tanstack/react-query";
 
 export function useAdminLogin() {
-  const [isPending, setIsPending] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const mutateAsync = async (payload: AdminLoginRequest, options?: MutateOptions<SignInResult>) => {
-    setIsPending(true);
-    try {
-      const res = await signIn("credentials", {
-        phoneNumber: payload.phoneNumber,
-        password: payload.password,
-        redirect: false,
-      });
+  return useMutation<AdminLoginResponse, unknown, AdminLoginRequest>({
+    mutationFn: (payload) => adminLogin(payload),
+    onSuccess: (res) => {
+      const payload: any = (res as any)?.data;
+      if (!payload?.token) return;
 
-      options?.onSuccess?.(res);
-      return res;
-    } catch (error) {
-      options?.onError?.(error);
-      throw error;
-    } finally {
-      setIsPending(false);
-      options?.onSettled?.();
+      setTokens(payload.token, payload.refreshToken);
+      dispatch(
+        setAuth({
+          token: payload.token,
+          refreshToken: payload.refreshToken,
+          isFirstTimeLogin: payload.isFirstTimeLogin,
+          user: payload.user
+        })
+      );
     }
-  };
-
-  const mutate = (payload: AdminLoginRequest, options?: MutateOptions<SignInResult>) => {
-    void mutateAsync(payload, options);
-  };
-
-  return { mutateAsync, mutate, isPending };
+  });
 }
 
-
 export function useLogout() {
-  const [isPending, setIsPending] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const mutateAsync = async (_vars?: unknown, options?: MutateOptions<void>) => {
-    setIsPending(true);
-    try {
-      await signOut({ redirect: false });
-      options?.onSuccess?.();
-    } catch (error) {
-      options?.onError?.(error);
-      throw error;
-    } finally {
-      setIsPending(false);
-      options?.onSettled?.();
+  return useMutation<void, unknown, void>({
+    mutationFn: async () => {
+      await adminLogout();
+    },
+    onSettled: () => {
+      clearTokens();
+      dispatch(clearAuth());
     }
-  };
-
-  const mutate = (_vars?: unknown, options?: MutateOptions<void>) => {
-    void mutateAsync(_vars, options);
-  };
-
-  return { mutateAsync, mutate, isPending };
+  });
 }
