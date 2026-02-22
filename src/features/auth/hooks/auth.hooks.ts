@@ -12,7 +12,6 @@ type MutateOptions<TData = unknown> = {
 
 type SignInResult = SignInResponse | undefined;
 
-
 export function useAdminLogin() {
   const [isPending, setIsPending] = useState(false);
 
