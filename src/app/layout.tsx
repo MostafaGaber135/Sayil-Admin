@@ -25,10 +25,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cookieLocale = store.get("NEXT_LOCALE")?.value;
   const locale = resolveLocale(cookieLocale);
   const dir = locale === "ar" ? "rtl" : "ltr";
+  const apiBaseUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   return (
     <html lang={locale} dir={dir}>
       <body className={`${inter.variable} antialiased`}>
+        {/*
+          Runtime API base URL injection.
+          This prevents client requests from accidentally hitting Next.js app routes
+          (e.g. /api/admin/*) when NEXT_PUBLIC_API_BASE_URL isn't available in the bundle.
+        */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `window.__API_BASE_URL__=${JSON.stringify(apiBaseUrl)};`
+          }}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>
