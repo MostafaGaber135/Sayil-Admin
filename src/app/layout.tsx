@@ -28,15 +28,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const apiBaseUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   return (
-    <html lang={locale} dir={dir}>
+  <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
-        {/*
-          Runtime API base URL injection.
-          This prevents client requests from accidentally hitting Next.js app routes
-          (e.g. /api/admin/*) when NEXT_PUBLIC_API_BASE_URL isn't available in the bundle.
-        */}
         <script
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html: `window.__API_BASE_URL__=${JSON.stringify(apiBaseUrl)};`
           }}
