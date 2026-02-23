@@ -1,4 +1,4 @@
-import type { NextAuthOptions, User } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { AdminLoginResponse } from "@/features/auth/types/auth.types";
 
@@ -9,8 +9,40 @@ function normalizeApiBaseUrl(value: string) {
   return base;
 }
 
+function pickId(adminUser: AdminLoginResponse["data"]["user"], fallback: string) {
+  const candidate =
+    (typeof (adminUser as Record<string, unknown>).id === "string" ||
+      typeof (adminUser as Record<string, unknown>).id === "number"
+      ? (adminUser as Record<string, unknown>).id
+      : undefined) ??
+    (typeof (adminUser as Record<string, unknown>)._id === "string" ||
+      typeof (adminUser as Record<string, unknown>)._id === "number"
+      ? (adminUser as Record<string, unknown>)._id
+      : undefined);
+
+  return String(candidate ?? fallback);
+}
+
+function pickName(adminUser: AdminLoginResponse["data"]["user"]) {
+  const r = adminUser as Record<string, unknown>;
+  const name =
+    (typeof r.name === "string" ? r.name : undefined) ??
+    (typeof r.fullName === "string" ? r.fullName : undefined) ??
+    (typeof r.username === "string" ? r.username : undefined) ??
+    "";
+
+  const trimmed = name.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+function pickEmail(adminUser: AdminLoginResponse["data"]["user"]) {
+  const r = adminUser as Record<string, unknown>;
+  return typeof r.email === "string" ? r.email : undefined;
+}
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -18,6 +50,7 @@ export const authOptions: NextAuthOptions = {
         phoneNumber: { label: "Phone", type: "text" },
         password: { label: "Password", type: "password" }
       },
+
       async authorize(raw) {
         const phoneNumber = String(raw?.phoneNumber ?? "").trim();
         const password = String(raw?.password ?? "");
@@ -38,34 +71,25 @@ export const authOptions: NextAuthOptions = {
           body: JSON.stringify({ phoneNumber, password }),
           cache: "no-store"
         });
+
         if (!res.ok) return null;
+
         const data = (await res.json()) as AdminLoginResponse;
+
         if (!data?.succeeded || !data?.data?.token) return null;
 
         const adminUser = data.data.user;
-        const user: User & {
-          accessToken: string;
-          refreshToken: string | null;
-          isFirstTimeLogin: boolean;
-          user: typeof adminUser;
-        } = {
-          id: String((adminUser as any)?.id ?? (adminUser as any)?._id ?? phoneNumber),
-          name:
-            String(
-              (adminUser as any)?.name ??
-              (adminUser as any)?.fullName ??
-              (adminUser as any)?.username ??
-              ""
-            ) || undefined,
-          email: (adminUser as any)?.email ?? undefined,
+
+        return {
+          id: pickId(adminUser, phoneNumber),
+          name: pickName(adminUser),
+          email: pickEmail(adminUser),
 
           accessToken: data.data.token,
           refreshToken: data.data.refreshToken ?? null,
           isFirstTimeLogin: Boolean(data.data.isFirstTimeLogin),
           user: adminUser
         };
-
-        return user;
       }
     })
   ],
@@ -73,22 +97,27 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = (user as any).accessToken;
-        token.refreshToken = (user as any).refreshToken ?? null;
-        token.user = (user as any).user ?? null;
-        token.isFirstTimeLogin = (user as any).isFirstTimeLogin ?? false;
-        token.sub = (user as any).id ?? token.sub;
-        token.name = (user as any).name ?? token.name;
-        token.email = (user as any).email ?? token.email;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken ?? null;
+        token.user = user.user ?? null;
+        token.isFirstTimeLogin = user.isFirstTimeLogin ?? false;
+
+        token.sub = user.id ?? token.sub;
+        token.name = user.name ?? token.name;
+        token.email = user.email ?? token.email;
       }
 
       return token;
     },
+
     async session({ session, token }) {
-      (session as any).accessToken = (token as any).accessToken;
-      (session as any).refreshToken = (token as any).refreshToken ?? null;
-      session.user = (token as any).user as any;
-      (session as any).isFirstTimeLogin = (token as any).isFirstTimeLogin ?? false;
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken ?? null;
+      session.isFirstTimeLogin = token.isFirstTimeLogin ?? false;
+
+      if (token.user) {
+        session.user = token.user;
+      }
 
       return session;
     }
