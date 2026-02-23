@@ -107,7 +107,7 @@ export default function AdminLoginScreen() {
       }
 
       router.push("/dashboard");
-    } catch (e: unknown) {
+    } catch {
       setApiError(t("auth.login.errors.network"));
     }
   };

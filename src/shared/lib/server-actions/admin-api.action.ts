@@ -1,6 +1,7 @@
 "use server";
 
 import { getServerSession } from "next-auth";
+import type { Session } from "next-auth";
 import { authOptions } from "@/shared/lib/auth/nextauth.options";
 
 function normalizeApiBaseUrl(value: string) {
@@ -21,11 +22,13 @@ function resolveServerApiBaseUrl() {
 }
 
 export async function adminApiFetch(path: string, init: RequestInit = {}) {
-  const session = await getServerSession(authOptions);
-  const accessToken = (session as any)?.accessToken as string | undefined;
+  const session: Session | null = await getServerSession(authOptions);
+  const accessToken = session?.accessToken;
 
   const base = resolveServerApiBaseUrl();
-  const url = path.startsWith("http") ? path : `${base}${path.startsWith("/") ? "" : "/"}${path}`;
+  const url = path.startsWith("http")
+    ? path
+    : `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 
   const headers = new Headers(init.headers);
   if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
