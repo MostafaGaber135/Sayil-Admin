@@ -6,7 +6,7 @@ export type ApiResponse<T> = {
   data: T;
 };
 
-export type KpiKey =
+export type DashboardKpiKey =
   | "totalListings"
   | "pendingApprovals"
   | "totalUsers"
@@ -14,11 +14,11 @@ export type KpiKey =
   | "totalCommissions";
 
 export type NormalizedKpi = {
-  key: KpiKey;
+  key: DashboardKpiKey;
   title: string;
   value: number;
   changePct?: number;
-  periodLabel?: string;
+  periodLabel: string;
 };
 
 export type LocationSeriesItem = {
@@ -26,9 +26,8 @@ export type LocationSeriesItem = {
   value: number;
 };
 
-export type StatusKey = "Pending" | "Active" | "Sold" | "Rejected" | string;
-
 export type StatusSeriesItem = {
-  status: StatusKey;
+  label: any;
+  status: string;
   value: number;
 };
