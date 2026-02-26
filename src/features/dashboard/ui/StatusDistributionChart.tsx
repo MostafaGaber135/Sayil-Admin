@@ -11,27 +11,26 @@ import {
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
-import { useStatusDistribution } from "../hooks/dashboard.hooks";
+import type { StatusSeriesItem } from "@/features/dashboard/types";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
-export default function StatusDistributionChart() {
-  const { data: series, isLoading } = useStatusDistribution();
+type Props = {
+  title: string;
+  data: StatusSeriesItem[];
+  isLoading?: boolean;
+};
 
-  const labels = (series ?? []).map((x) => x.label);
+export default function StatusDistributionChart({ title, data: series, isLoading }: Props) {
+  const labels = (series ?? []).map((x) => String(x.label ?? x.status ?? ""));
   const values = (series ?? []).map((x) => x.value);
 
-  const data: ChartData<"doughnut", number[], string> = {
+  const chartData: ChartData<"doughnut", number[], string> = {
     labels,
     datasets: [
       {
         data: values,
-        backgroundColor: [
-          "#f59e0b",
-          "#3b82f6",
-          "#14b8a6",
-          "#ef4444",
-        ],
+        backgroundColor: ["#f59e0b", "#3b82f6", "#14b8a6", "#ef4444"],
         borderWidth: 2,
       },
     ],
@@ -41,26 +40,81 @@ export default function StatusDistributionChart() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: "bottom",
-      },
       title: {
         display: true,
-        text: "Listing Status Distribution",
+        text: title,
         align: "start",
         font: { size: 20, weight: "bold" },
         padding: { bottom: 20 },
       },
+
+      tooltip: {
+        callbacks: {
+          // ✅ بدل الشرطة نقطة + إظهار الرقم
+          label: (ctx) => {
+            const label = ctx.label ?? "";
+            const v = Number(ctx.parsed ?? 0);
+            return `• ${label} (${v})`;
+          },
+        },
+      },
+
+      legend: {
+        position: "bottom",
+        labels: {
+          // ✅ نخلي الليجند نقط (circle) بدل المستطيل
+          usePointStyle: true,
+          pointStyle: "circle",
+          boxWidth: 10,
+          boxHeight: 10,
+          padding: 18,
+
+          // ✅ نعرض الأرقام جنب الاسم: Pending (17)
+          generateLabels: (chart) => {
+            const dataset = chart.data.datasets[0];
+            const dataArr = (dataset?.data ?? []) as unknown as number[];
+            const bgArr = (dataset?.backgroundColor ?? []) as string[] | string;
+
+            return (chart.data.labels ?? []).map((l, i) => {
+              const textLabel = String(l ?? "");
+              const v = Number(dataArr[i] ?? 0);
+
+              const fillStyle = Array.isArray(bgArr) ? bgArr[i] : bgArr;
+
+              return {
+                text: `${textLabel} (${Number.isFinite(v) ? v : 0})`,
+                fillStyle,
+                strokeStyle: fillStyle,
+                lineWidth: 0,
+                hidden: !chart.getDataVisibility(i),
+                index: i,
+              };
+            });
+          },
+        },
+        onClick: (e, legendItem, legend) => {
+          // ✅ نحافظ على toggle الافتراضي (إخفاء/إظهار slice)
+          const index = legendItem.index;
+          if (index === undefined) return;
+          legend.chart.toggleDataVisibility(index);
+          legend.chart.update();
+        },
+      },
     },
+
     cutout: "65%",
   };
+
+  const hasData = labels.length > 0 && values.some((v) => Number.isFinite(v) && v > 0);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md h-[360px]">
       {isLoading ? (
         <div className="h-full w-full rounded-xl bg-slate-50 animate-pulse" />
+      ) : hasData ? (
+        <Doughnut data={chartData} options={options} />
       ) : (
-        <Doughnut data={data} options={options} />
+        <div className="text-sm text-muted-foreground">No data</div>
       )}
     </div>
   );
