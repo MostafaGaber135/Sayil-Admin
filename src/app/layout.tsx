@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Sayil Admin",
+  title: "Sayil Admin Dashboard",
   description: "Sayil admin dashboard"
 };
 
