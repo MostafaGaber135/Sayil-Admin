@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname, useParams, useRouter } from "next/navigation";
-import { useAppSelector } from "@/shared/lib/rtk/hooks";
-import { locales, defaultLocale } from "@/shared/lib/i18n/routing";
-import { getAccessToken } from "@/shared/lib/auth/token";
+import { useEffect, useMemo } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { defaultLocale, locales } from "@/shared/lib/i18n/routing";
 
 function stripLocale(pathname: string) {
   const parts = pathname.split("/");
@@ -32,35 +31,30 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams<{ locale?: string }>();
+  const { status } = useSession();
 
   const locale = params?.locale ?? defaultLocale;
 
-  const reduxToken = useAppSelector((s) => s.auth.token);
-  const [allowed, setAllowed] = useState(true);
+  const pathNoLocale = useMemo(() => stripLocale(pathname), [pathname]);
+  const isProtected = useMemo(() => isProtectedPath(pathNoLocale), [pathNoLocale]);
 
-  const isProtected = useMemo(() => {
-    const pathNoLocale = stripLocale(pathname);
-    return isProtectedPath(pathNoLocale);
-  }, [pathname]);
+  const shouldBlockRender = useMemo(() => {
+    if (!isProtected) return false;
+    if (status === "loading") return true;
+    if (status !== "authenticated") return true;
+    return false;
+  }, [isProtected, status]);
 
   useEffect(() => {
-    if (!isProtected) {
-      setAllowed(true);
-      return;
-    }
+    if (!isProtected) return;
+    if (status === "loading") return;
 
-    const token = reduxToken || getAccessToken();
-
-    if (!token) {
-      setAllowed(false);
+    if (status !== "authenticated") {
       router.replace(buildPath(locale, "/login"));
-      return;
     }
+  }, [isProtected, status, router, locale]);
 
-    setAllowed(true);
-  }, [isProtected, reduxToken, router, locale]);
-
-  if (!allowed && isProtected) return null;
+  if (shouldBlockRender) return null;
 
   return <>{children}</>;
 }
@@ -69,31 +63,31 @@ export function GuestGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams<{ locale?: string }>();
+  const { status } = useSession();
 
   const locale = params?.locale ?? defaultLocale;
-  const reduxToken = useAppSelector((s) => s.auth.token);
-  const [allowed, setAllowed] = useState(true);
+
+  const pathNoLocale = useMemo(() => stripLocale(pathname), [pathname]);
+  const isAuthPath = useMemo(
+    () => pathNoLocale === "/login" || pathNoLocale.startsWith("/login/"),
+    [pathNoLocale]
+  );
+
+  const shouldBlockRender = useMemo(() => {
+    if (status === "loading") return true;
+    if (status === "authenticated" && isAuthPath) return true;
+    return false;
+  }, [status, isAuthPath]);
 
   useEffect(() => {
-    const token = reduxToken || getAccessToken();
-    if (!token) {
-      setAllowed(true);
-      return;
+    if (status === "loading") return;
+
+    if (status === "authenticated" && isAuthPath) {
+      router.replace(buildPath(locale, "/dashboard"));
     }
+  }, [status, isAuthPath, router, locale]);
 
-    const pathNoLocale = stripLocale(pathname);
-    const isAuthPath = pathNoLocale === "/login" || pathNoLocale.startsWith("/login/");
-
-    if (!isAuthPath) {
-      setAllowed(true);
-      return;
-    }
-
-    setAllowed(false);
-    router.replace(buildPath(locale, "/dashboard"));
-  }, [pathname, reduxToken, router, locale]);
-
-  if (!allowed) return null;
+  if (shouldBlockRender) return null;
 
   return <>{children}</>;
 }

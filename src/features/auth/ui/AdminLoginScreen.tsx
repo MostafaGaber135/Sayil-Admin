@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -97,31 +96,19 @@ export default function AdminLoginScreen() {
     try {
       const res = await login.mutateAsync(values);
 
-      if (!res?.succeeded) {
-        setApiError(res?.message || t("auth.login.errors.generic"));
-        return;
-      }
+      if (!res?.ok) {
+        if (res?.error === "CredentialsSignin" || res?.status === 401) {
+          setApiError(t("auth.login.errors.unauthorized"));
+          return;
+        }
 
-      if (!res?.data?.token) {
-        setApiError(t("auth.login.errors.generic"));
+        setApiError(t("auth.login.errors.invalid"));
         return;
       }
 
       router.push("/dashboard");
-    } catch (e: unknown) {
-      if (!axios.isAxiosError(e) || !e.response) {
-        setApiError(t("auth.login.errors.network"));
-        return;
-      }
-
-      const status = e.response.status;
-
-      if (status === 401) {
-        setApiError(t("auth.login.errors.unauthorized"));
-        return;
-      }
-
-      setApiError(t("auth.login.errors.invalid"));
+    } catch {
+      setApiError(t("auth.login.errors.network"));
     }
   };
 
