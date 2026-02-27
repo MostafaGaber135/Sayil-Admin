@@ -1,0 +1,30 @@
+info:
+  name: Update Role
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/admin/roles/{id}"
+  headers:
+    - name: Authorization
+      value: Bearer {{token}}
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "roleId": 1,
+        "roleName": "Admin Updated",
+        "description": "Updated description",
+        "claimIds": [1, 2, 5],
+        "isActive": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

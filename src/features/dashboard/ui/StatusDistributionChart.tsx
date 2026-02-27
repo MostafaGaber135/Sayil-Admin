@@ -50,7 +50,6 @@ export default function StatusDistributionChart({ title, data: series, isLoading
 
       tooltip: {
         callbacks: {
-          // ✅ بدل الشرطة نقطة + إظهار الرقم
           label: (ctx) => {
             const label = ctx.label ?? "";
             const v = Number(ctx.parsed ?? 0);
@@ -62,14 +61,11 @@ export default function StatusDistributionChart({ title, data: series, isLoading
       legend: {
         position: "bottom",
         labels: {
-          // ✅ نخلي الليجند نقط (circle) بدل المستطيل
           usePointStyle: true,
           pointStyle: "circle",
           boxWidth: 10,
           boxHeight: 10,
           padding: 18,
-
-          // ✅ نعرض الأرقام جنب الاسم: Pending (17)
           generateLabels: (chart) => {
             const dataset = chart.data.datasets[0];
             const dataArr = (dataset?.data ?? []) as unknown as number[];
@@ -93,7 +89,6 @@ export default function StatusDistributionChart({ title, data: series, isLoading
           },
         },
         onClick: (e, legendItem, legend) => {
-          // ✅ نحافظ على toggle الافتراضي (إخفاء/إظهار slice)
           const index = legendItem.index;
           if (index === undefined) return;
           legend.chart.toggleDataVisibility(index);
