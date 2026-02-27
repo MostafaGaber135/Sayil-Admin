@@ -36,6 +36,7 @@
     },
     "login": {
       "heading": "Login to Your Account",
+      "success": "Logged in successfully.",
       "phone": "Phone Number",
       "phonePlaceholder": "Enter your phone number (e.g., +966501234567)",
       "password": "Password",
@@ -85,22 +86,33 @@
     },
     "roles": {
       "title": "Roles & permissions",
-      "desc": "Manage roles and permissions."
+      "desc": "Manage roles and permissions.",
+      "actions": {
+        "addNewRole": "Add New Role"
+      },
+      "toasts": {
+        "addSuccess": "Role added successfully",
+        "addError": "Failed to add role",
+        "updateSuccess": "Role updated successfully",
+        "updateError": "Failed to update role",
+        "deleteSuccess": "Role deleted successfully",
+        "deleteError": "Failed to delete role"
+      }
     },
     "settings": {
       "title": "Platform Settings",
       "desc": "Configure platform rules and settings",
-      "Land":"Land Classifications",
-      "Add":"Add Classification",
-      "Name":"Name",
-      "Discount":"Discount",
-      "Actions":"Actions",
-      "FAQ Management":"FAQ Management",
-      "Drag and drop to reorder FAQs or use the arrow buttons":"Drag and drop to reorder FAQs or use the arrow buttons",
-      "+ Add FAQ":"+ Add FAQ",
-      "How does Sayil work?":"How does Sayil work?",
-      "Sayil connects landowners with investors through our digital platform.":"Sayil connects landowners with investors through our digitalplatform.",
-      "What are the fees?":"What are the fees?"
+      "Land": "Land Classifications",
+      "Add": "Add Classification",
+      "Name": "Name",
+      "Discount": "Discount",
+      "Actions": "Actions",
+      "FAQ Management": "FAQ Management",
+      "Drag and drop to reorder FAQs or use the arrow buttons": "Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ": "+ Add FAQ",
+      "How does Sayil work?": "How does Sayil work?",
+      "Sayil connects landowners with investors through our digital platform.": "Sayil connects landowners with investors through our digitalplatform.",
+      "What are the fees?": "What are the fees?"
     },
     "login": {
       "title": "Login",
