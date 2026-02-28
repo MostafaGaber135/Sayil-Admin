@@ -1,6 +1,11 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { queryKeys } from "@/shared/lib/react-query/queryKeys";
 import { useTranslations } from "next-intl";
 import { toast } from "react-toastify";
@@ -63,7 +68,6 @@ function getApiMessage(errorOrResponse: unknown): string | null {
   if (typeof succeeded === "boolean" && succeeded === false) return "Request failed";
   return null;
 }
-
 
 function showSuccess(t: (key: string) => string, key: string, apiMsg: string | null) {
   toast.success(t(key));
@@ -244,17 +248,36 @@ export function normalizeRoleById(
   } satisfies Role;
 }
 
+function rolesPaginatedKey(body: RolesPaginatedBody) {
+  return [
+    ...queryKeys.roles,
+    "paginated",
+    body.searchTerm ?? "",
+    body.sortColumn ?? "",
+    body.sortOrder ?? "",
+    body.pageNumber ?? 1,
+    body.pageSize ?? 50,
+  ] as const;
+}
+
 export function usePagesWithClaims() {
   return useQuery({
     queryKey: [...queryKeys.roles, "pages-with-claims"],
     queryFn: fetchPagesWithClaims,
+    staleTime: 30 * 60 * 1000, 
+    gcTime: 60 * 60 * 1000, 
+    refetchOnMount: false,
   });
 }
 
 export function useRolesPaginated(body: RolesPaginatedBody) {
   return useQuery({
-    queryKey: [...queryKeys.roles, "paginated", body],
+    queryKey: rolesPaginatedKey(body),
     queryFn: () => fetchRolesPaginated(body),
+    staleTime: 60 * 1000, 
+    gcTime: 10 * 60 * 1000, 
+    refetchOnMount: false,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -263,6 +286,9 @@ export function useRoleById(id: string | number | null, enabled: boolean) {
     queryKey: [...queryKeys.roles, "by-id", id],
     queryFn: () => fetchRoleById(id as string | number),
     enabled: Boolean(id) && enabled,
+    staleTime: 2 * 60 * 1000, 
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
   });
 }
 
@@ -274,7 +300,7 @@ export function useAddRoleMutation() {
     mutationFn: (body: AddRoleBody) => addRole(body),
     onSuccess: async (res) => {
       showSuccess(t, "addSuccess", getApiMessage(res));
-      await qc.invalidateQueries({ queryKey: queryKeys.roles });
+      await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
     },
     onError: (error) => {
       showError(t, "addError", getApiMessage(error));
@@ -292,7 +318,7 @@ export function useUpdateRoleMutation() {
     onSuccess: async (res, vars) => {
       showSuccess(t, "updateSuccess", getApiMessage(res));
       await Promise.all([
-        qc.invalidateQueries({ queryKey: queryKeys.roles }),
+        qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] }),
         qc.invalidateQueries({ queryKey: [...queryKeys.roles, "by-id", vars.id] }),
       ]);
     },
@@ -310,7 +336,7 @@ export function useDeleteRoleMutation() {
     mutationFn: (id: string | number) => deleteRole(id),
     onSuccess: async (res) => {
       showSuccess(t, "deleteSuccess", getApiMessage(res));
-      await qc.invalidateQueries({ queryKey: queryKeys.roles });
+      await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
     },
     onError: (error) => {
       showError(t, "deleteError", getApiMessage(error));
