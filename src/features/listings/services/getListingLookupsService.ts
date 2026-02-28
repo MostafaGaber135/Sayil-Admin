@@ -3,8 +3,8 @@ import { RawLookupItem, LookupItem, LookupsShape } from "@/features/listings";
 import {fetchAllLookups} from "@/features/listings/api";
 
 export const getListingLookupsService = async (): Promise<LookupsShape<LookupItem>> => {
-  const response = await fetchAllLookups(); // AllLookupsResponse
-  const rawData = response.data;            // ✅ ده الـ LookupsShape
+  const response = await fetchAllLookups();
+  const rawData = response.data;
 
   const transform = (items: RawLookupItem[]): LookupItem[] =>
       (items || []).map(item => ({

@@ -97,7 +97,52 @@ export type ListingsResponse =
 
 
 // Requests
+export interface ListingDetail {
+  id: number;
+  title: string;
+  description: string;
+  area: number;
+  price: number;
+  discountedPrice: number;
+  discountPercent: number;
 
+  // Property Details
+  landType: string;
+  facingDirection: string;
+  ownershipType: string;
+  deedType: string;
+  neighborType: string;
+  features: string[];
+
+  // Location
+  city: string;
+  region: string;
+  street: string;
+  latitude?: number;
+  longitude?: number;
+
+  // Documents
+  documents: ListingDocument[];
+
+  // Media
+  images: string[];
+
+  // Admin
+  ownerName: string;
+  agentName: string;
+  classificationName: string;
+
+  // Status
+  statusId: number;
+  statusLabel: string;
+}
+
+export interface ListingDocument {
+  id: number;
+  name: string;
+  isAvailable: boolean;
+  url?: string;
+}
 
 export interface ApproveLandRequest {
   landId: string;

@@ -1,6 +1,7 @@
 'use client';
 import { UseFormSetValue, UseFormWatch, FieldErrors } from "react-hook-form";
-import { ListingFormValues } from "../../types";
+import {ListingFormValues} from "@/features/listings/validation";
+
 
 interface Props {
     setValue: UseFormSetValue<ListingFormValues>;
@@ -18,7 +19,6 @@ export const LegalDocsSection = ({ setValue, watch, errors }: Props) => {
                 currentUrl={watch("titleDeedUrl")}
                 error={errors.titleDeedUrl?.message}
                 onUpload={(url) => setValue("titleDeedUrl", url)}
-                // 🔧 TODO: مرر الـ upload function الحقيقية
             />
             <DocUploader
                 label="National ID Copy"
@@ -56,8 +56,6 @@ const DocUploader = ({ label, required, currentUrl, error, onUpload }: DocUpload
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // 🔧 TODO: ابعت الـ file للـ upload API وعمل onUpload(returnedUrl)
-        // مثال:
         // const formData = new FormData();
         // formData.append("file", file);
         // const { data } = await axios.post("/api/upload", formData);

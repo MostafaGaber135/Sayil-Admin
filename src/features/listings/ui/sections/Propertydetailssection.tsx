@@ -86,7 +86,6 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("neighborTypeId")}
             >
                 <option value="">Select Neighbor Type</option>
-                {/* 🔧 TODO: لو في neighborTypes في الـ lookups حطها هنا */}
                 <option value="1">Mixed</option>
                 <option value="2">Residential Only</option>
                 <option value="3">Commercial Only</option>

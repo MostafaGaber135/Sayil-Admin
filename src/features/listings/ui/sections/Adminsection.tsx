@@ -7,7 +7,7 @@ interface Props {
     errors: FieldErrors<ListingFormValues>;
     watch: UseFormWatch<ListingFormValues>;
     lookups?: ListingLookups;
-    // 🔧 TODO: مرر الـ users و agents من الـ API
+
     // users?:  { id: number; name: string; email: string }[];
     // agents?: { id: number; name: string; email: string }[];
 }
@@ -34,11 +34,6 @@ export const AdminSection = ({ register, errors, watch, lookups }: Props) => {
                     <label className="text-sm font-medium text-gray-700">Owner</label>
                     <select {...register("userId")} className={selectCls(!!errors.userId)}>
                         <option value="">No Owner Selected</option>
-                        {/* 🔧 TODO: شيل الـ static options لما الـ API يجي
-                users?.map(u => (
-                  <option key={u.id} value={u.id}>{u.name} ({u.email})</option>
-                ))
-            */}
                         <option value="1">Khalid Al-Otaibi (khalid.otaibi@gmail.com)</option>
                         <option value="2">Fatima Al-Dosari (fatima.dosari@gmail.com)</option>
                         <option value="3">Mohammed Al-Harbi (mohammed.harbi@gmail.com)</option>
@@ -51,11 +46,6 @@ export const AdminSection = ({ register, errors, watch, lookups }: Props) => {
                     <label className="text-sm font-medium text-gray-700">Assigned Agent</label>
                     <select {...register("agentId")} className={selectCls(!!errors.agentId)}>
                         <option value="">No Agent Selected</option>
-                        {/* 🔧 TODO: شيل الـ static options لما الـ API يجي
-                agents?.map(a => (
-                  <option key={a.id} value={a.id}>{a.name} ({a.email})</option>
-                ))
-            */}
                         <option value="1">Ahmed Al-Mansouri (ahmed.mansouri@sayil.com)</option>
                         <option value="2">Sara Al-Mahmoud (sara.mahmoud@sayil.com)</option>
                         <option value="5">Omar Al-Zahrani (omar.zahrani@sayil.com)</option>

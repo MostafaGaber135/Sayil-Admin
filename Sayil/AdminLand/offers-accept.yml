@@ -1,0 +1,14 @@
+info:
+  name: offers/accept
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/admin/land/offers/accept"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

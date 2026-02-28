@@ -20,10 +20,56 @@
     "logout": "Logout",
     "menu": "Menu"
   },
+  "auth": {
+    "brand": {
+      "title": "Sayil Admin Dashboard",
+      "subtitle": "Land Management Platform"
+    },
+    "samples": {
+      "title": "Sample Credentials",
+      "password": "Password",
+      "use": "Use these credentials",
+      "admin": "Administrator",
+      "agent": "Agent",
+      "manager": "Manager",
+      "firstTime": "First time login"
+    },
+    "login": {
+      "heading": "Login to Your Account",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter your phone number (e.g., +966501234567)",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Login",
+      "errors": {
+        "generic": "Something went wrong. Please try again.",
+        "invalid": "Invalid phone number or password.",
+        "unauthorized": "Not allowed (not an admin).",
+        "network": "Network error: the API could not be reached."
+      },
+      "validation": {
+        "phoneRequired": "Phone number is required",
+        "passwordRequired": "Password is required"
+      }
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Dashboard",
-      "desc": "Overview and quick insights."
+      "desc": "Overview of your platform performance",
+      "kpis": {
+        "totalListings": "Total Listings",
+        "pendingApprovals": "Pending Approvals",
+        "totalUsers": "Total Users",
+        "propertiesSold": "Properties Sold",
+        "totalCommissions": "Total Commissions",
+        "fromLastMonth": "from last month"
+      },
+      "charts": {
+        "listingsByLocation": "Listings by Location",
+        "statusDistribution": "Listing Status Distribution",
+        "commissionByLocation": "Commission Earned by Location"
+      }
     },
     "listings": {
       "title": "Listings",
@@ -42,8 +88,19 @@
       "desc": "Manage roles and permissions."
     },
     "settings": {
-      "title": "Settings",
-      "desc": "Manage system settings."
+      "title": "Platform Settings",
+      "desc": "Configure platform rules and settings",
+      "Land":"Land Classifications",
+      "Add":"Add Classification",
+      "Name":"Name",
+      "Discount":"Discount",
+      "Actions":"Actions",
+      "FAQ Management":"FAQ Management",
+      "Drag and drop to reorder FAQs or use the arrow buttons":"Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ":"+ Add FAQ",
+      "How does Sayil work?":"How does Sayil work?",
+      "Sayil connects landowners with investors through our digital platform":"Sayil connects landowners with investors through our digitalplatform.",
+      "What are the fees?":"What are the fees?"
     },
     "login": {
       "title": "Login",

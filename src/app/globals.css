@@ -53,10 +53,10 @@
   --radius: 0.5rem;
 
   /* Main Theme Colors */
-  --background: #f9fafb; /* Main Site BG */
-  --foreground: #263052; /* Main Site Text */
+  --background: #f9fafb;
+  --foreground: #263052;
 
-  --primary: #3c71ff; /* Brand Blue */
+  --primary: #3c71ff;
   --primary-foreground: #ffffff;
 
   --muted: #f2f3f5;
@@ -96,6 +96,10 @@
   --overlay: #000000;
   --nav-hover: #f3f4f6;
   --nav-icon-hover: #81a2fc;
+
+  /* Auth (Login) hero */
+  --auth-hero-to: #2f3a66;
+  --auth-hero-glow: rgba(255, 255, 255, 0.16);
 }
 
 .dark {
@@ -114,14 +118,16 @@
   --border: #334155;
   --input: #1e293b;
 
-  /* Ensuring custom colors feel right in dark mode */
   --ui-neutral: #1e293b;
   --ui-ghost: #1e293b;
 
-  /* Additional UI Tokens */
   --overlay: #000000;
   --nav-hover: #1e293b;
   --nav-icon-hover: #81a2fc;
+
+  /* Auth (Login) hero */
+  --auth-hero-to: #0b1224;
+  --auth-hero-glow: rgba(255, 255, 255, 0.12);
 }
 
 @layer base {

@@ -1,40 +1,24 @@
 'use client';
 import { useFieldArray, Control, UseFormRegister } from "react-hook-form";
-import { ListingFormValues } from "../../types";
+import {ListingFormValues} from "@/features/listings/validation";
+
 
 interface Props {
     control: Control<ListingFormValues>;
     register: UseFormRegister<ListingFormValues>;
-    // 🔧 TODO: مرر الـ predefined features من الـ API
     // availableFeatures?: { id: string; label: string }[];
 }
 
 export const FeaturesSection = ({ control }: Props) => {
 
-    // useFieldArray بيدير الـ dynamic list في الـ form
     const { fields, append, remove } = useFieldArray({
         control,
-        // 🔧 NOTE: features في الـ schema هي array of strings
-        // لو الـ API بيرجع objects هتحتاج تعدل الـ schema
         name: "features" as never,
     });
 
     return (
         <div className="space-y-4">
 
-            {/* 🔧 TODO: لما الـ API يرجع الـ features، اعرضها هنا كـ chips قابلة للاختيار
-          مثال:
-          <div className="flex flex-wrap gap-2 mb-4">
-            {availableFeatures.map(f => (
-              <button type="button" key={f.id} onClick={() => append(f.label)}
-                className="px-3 py-1 text-sm border rounded-full hover:bg-blue-50">
-                + {f.label}
-              </button>
-            ))}
-          </div>
-      */}
-
-            {/* Predefined Suggestions - مؤقتة لحد ما الـ API يجي */}
             <div>
                 <p className="text-xs text-gray-500 mb-2">Quick add:</p>
                 <div className="flex flex-wrap gap-2">
@@ -88,19 +72,17 @@ export const FeaturesSection = ({ control }: Props) => {
 
 // ── Custom Feature Input ──
 const CustomFeatureInput = ({ onAdd }: { onAdd: (val: string) => void }) => {
-    // 🔧 TODO: اعمل state محلي هنا عشان الـ input
     // const [value, setValue] = useState("");
     return (
         <div className="flex gap-2">
             <input
                 type="text"
                 placeholder='Add custom feature e.g. "Corner plot"'
-                // 🔧 TODO: value={value} onChange={e => setValue(e.target.value)}
+
                 className="flex-1 bg-gray-50/50 border border-gray-200 text-gray-900 text-sm rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-gray-400"
             />
             <button
                 type="button"
-                // 🔧 TODO: onClick={() => { if(value.trim()) { onAdd(value.trim()); setValue(""); }}}
                 className="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-black transition-colors"
             >
                 Add
@@ -109,7 +91,6 @@ const CustomFeatureInput = ({ onAdd }: { onAdd: (val: string) => void }) => {
     );
 };
 
-// 🔧 TODO: شيل الـ array دي لما الـ API يجي
 const PLACEHOLDER_FEATURES = [
     "Near main road",
     "Utilities ready",

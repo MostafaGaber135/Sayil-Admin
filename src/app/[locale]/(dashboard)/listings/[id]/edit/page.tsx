@@ -1,27 +1,32 @@
-'use client'
 // app/listings/[id]/edit/page.tsx
-import { use } from "react";
-import {ListingForm, useListingById} from "@/features/listings";
-import {useLookups} from "@/features/listings/hooks/useLookups";
-import {mapListingToForm} from "@/lib/utils";
+import { getQueryClient } from "@/shared/lib/react-query/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import {getListingLookupsService} from "@/features/listings/services";
+import {EditListingContainer} from "@/features/listings/ui/EditListingContainer";
+import {fetchGetLand, fetchRegions} from "@/features/listings/api";
 
-export default function EditListingPage({
-                                            params,
-                                        }: {
-    params: Promise<{ id: string }>;
-}) {
-    const { id } = use(params);
-    const { data: lookups, isLoading: lookupsLoading } = useLookups();
-    const { data: response, isLoading: listingLoading } = useListingById(id);
-    // const { mutate: updateListing, isPending } = useUpdateListing();
-    const defaultData = response?.data ? mapListingToForm(response.data) : undefined;
-    if (lookupsLoading || listingLoading) return <h1>Loading</h1>;
+
+export default async function EditListingPage({params,}: { params: Promise<{ id: number }> }) {
+    const { id } = await params;
+    const queryClient = getQueryClient();
+    await Promise.all([
+        queryClient.prefetchQuery({
+            queryKey: ['listings-lookups'],
+            queryFn: getListingLookupsService,
+        }),
+        queryClient.prefetchQuery({
+            queryKey: ['getLand', id],
+            queryFn: () => fetchGetLand(id),
+        }),
+        // queryClient.prefetchQuery({
+        //     queryKey: ['listings-regions'],
+        //     queryFn: () => fetchRegions(id),
+        // }),
+    ]);
+
     return (
-        <ListingForm
-            lookups={lookups}
-            defaultData={defaultData}
-            // isPending={isPending}
-            // onSubmit={(data) => updateListing({ id: params.id, data })}
-        />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <EditListingContainer id={id} />
+        </HydrationBoundary>
     );
 }

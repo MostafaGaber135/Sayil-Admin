@@ -1,6 +1,16 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {ApproveLandRequest, CreateListingRequest, RejectLandRequest} from "@/features/listings";
-import {fetchAddLand, fetchApproveLand, fetchDeleteLand, fetchRejectLand} from "@/features/listings/api";
+import {ApproveLandRequest, RejectLandRequest, useListingsMutation} from "@/features/listings";
+import {
+    fetchAddLand,
+    fetchAllListing,
+    fetchApproveLand,
+    fetchDeleteLand,
+    fetchRejectLand,
+    fetchUpdate
+} from "@/features/listings/api";
+import {CreateListingRequest} from "@/features/listings/validation";
+import { useActionState, useTransition } from "react";
+import { fetchAddLandAction } from "@/server-actions/listings/create-land.action";
 
 export const useApproveLand = () => {
     const queryClient = useQueryClient();
@@ -37,8 +47,39 @@ export const useCreateListing = () => {
             console.log('✅ Created listing id:', data.data);
         },
         onError: (error) => {
-            console.error('❌ Error:', error);
-            // 🔧 TODO: toast.error
+            console.error(' Error:', error);
+        },
+    })
+    // server action
+    // const [isPending, startTransition] = useTransition()
+    // const [state, addListingAction] = useActionState(fetchAddLandAction, undefined);
+    //
+    // const handleAddListings = (formData: FormData) => {
+    //     startTransition(() => {
+    //         addListingAction(formData)
+    //     })
+    // }
+    //
+    // return { handleAddListings, isPending, state }
+}
+
+export const useUpdateListing =  () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(body:CreateListingRequest)=> fetchUpdate(body),
+        onSuccess:async(data:any) => {
+            if (data?.data?.id) {
+                await queryClient.invalidateQueries({
+                    queryKey: ["getLand", data?.data?.id],
+                });
+            }
+            const latestListings = await fetchAllListing({});
+            console.log("Latest listings after update:", latestListings);
+
+            console.log('✅ update listing id:', data.data);
+        },
+        onError: (error) => {
+            console.error(' Error:', error);
         },
     })
 }

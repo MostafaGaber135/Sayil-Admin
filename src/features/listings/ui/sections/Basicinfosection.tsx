@@ -1,6 +1,7 @@
 'use client';
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { ListingFormValues } from "../../types";
+import {ListingFormValues} from "@/features/listings/validation";
+
 
 interface Props {
     register: UseFormRegister<ListingFormValues>;
@@ -73,7 +74,7 @@ export const BasicInfoSection = ({ register, errors }: Props) => {
     );
 };
 
-// ── Shared UI helpers (محلية في الـ section دي بس) ──
+
 const inputCls = (hasError: boolean) =>
     `w-full bg-gray-50/50 border ${hasError ? "border-red-400" : "border-gray-200"} 
    text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/20 

@@ -1,9 +1,8 @@
 'use client';
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { ListingFormValues } from "../../types";
-
 import { useState } from "react";
 import {useUploadImages} from "@/features/listings";
+import {ListingFormValues} from "@/features/listings/validation";
 
 
 interface Props {
@@ -103,7 +102,7 @@ export const MediaSection = ({ setValue, watch }: Props) => {
                 </p>
             </div>
 
-            {/* Video Upload - نفس الفكرة */}
+
             <div className="space-y-3">
                 <label className="text-sm font-medium text-gray-700">Upload Explanatory Video</label>
                 <label className="flex items-center gap-4 w-full p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all group">
@@ -123,7 +122,7 @@ export const MediaSection = ({ setValue, watch }: Props) => {
                         }
                     </div>
                     <input type="file" accept="video/*" className="hidden" onChange={(e) => {
-                        // 🔧 TODO: useUploadDocument أو endpoint مخصص للـ video
+
                         console.log(e.target.files?.[0]);
                     }} />
                 </label>

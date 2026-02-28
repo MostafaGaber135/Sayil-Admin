@@ -7,3 +7,4 @@ export * from './sections/Mediasection';
 export * from './sections/Legaldocssection';
 export * from './sections/Adminsection';
 export * from './ListingsPage';
+export * from './ListingViewPage';

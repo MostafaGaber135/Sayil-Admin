@@ -1,23 +1,21 @@
-
-'use client'
-import PageHeader from "@/shared/ui/PageHeader";
-import { useTranslations } from "next-intl";
-import {ListingForm, useCreateListing} from "@/features/listings";
-import {useLookups} from "@/features/listings/hooks/useLookups";
-
 // app/listings/new/page.tsx
-export default function AddListingPage() {
-    const { data: lookups, isLoading, isError } = useLookups();
-    const { mutate: createListing, isPending } = useCreateListing();
+import { getQueryClient } from "@/shared/lib/react-query/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getListingLookupsService } from "@/features/listings/services";
+import {AddListingContainer} from "@/features/listings/ui/AddListingContainer";
 
-    if (isLoading) return <h1>isLoading</h1>;
-    if (isError) return <h1>Error</h1>;
+
+export default async function AddListingPage() {
+    const queryClient = getQueryClient();
+
+    await queryClient.prefetchQuery({
+        queryKey: ['listings-lookups'],
+        queryFn: getListingLookupsService,
+    });
 
     return (
-        <ListingForm
-            lookups={lookups}
-            isPending={isPending}
-            onSubmit={(data) => createListing(data)}
-        />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <AddListingContainer />
+        </HydrationBoundary>
     );
 }

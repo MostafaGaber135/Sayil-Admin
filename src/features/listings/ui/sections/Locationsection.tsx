@@ -1,8 +1,9 @@
 'use client';
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import {ListingFormValues, ListingLookupsResponse} from "../../types";
+import { ListingLookupsResponse} from "../../types";
 import {useRegion} from "@/features/listings/hooks/useLookups";
 import {useState} from "react";
+import {ListingFormValues} from "@/features/listings/validation";
 
 interface Props {
     register: UseFormRegister<ListingFormValues>;
@@ -30,7 +31,7 @@ export const LocationSection = ({ register, errors, lookups }: Props) => {
                     className={selectCls(!!errors.cityId)}
                 >
                     <option value="">Select City</option>
-                    {lookups?.cities.map(c => (
+                    {lookups?.cities?.map(c => (
                         <option key={c.value} value={c.value}>{c.label}</option>
                     )) ?? <>
                         <option value="1">Riyadh</option>
