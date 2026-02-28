@@ -94,7 +94,7 @@ export default function AppTopbar() {
             e.preventDefault();
             logout(undefined, {
               onSuccess: () => {
-                toast.success(t("topbar.logoutSuccess")); // أو نص ثابت
+                toast.success(t("topbar.logoutSuccess")); 
                 const loginPath = locale === defaultLocale ? "/login" : `/${locale}/login`;
                 router.replace(loginPath);
               },
