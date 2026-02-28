@@ -28,15 +28,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const apiBaseUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   return (
-  <html lang={locale} dir={dir} suppressHydrationWarning>
+      <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
-        <script
+      <script
           dangerouslySetInnerHTML={{
             __html: `window.__API_BASE_URL__=${JSON.stringify(apiBaseUrl)};`
           }}
-        />
-        <Providers>{children}</Providers>
+      />
+      <Providers>{children}</Providers>
       </body>
-    </html>
+      </html>
   );
 }

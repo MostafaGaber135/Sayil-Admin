@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, type Locale } from "@/shared/lib/i18n/routing";
 import { stripLocale, withLocale } from "@/shared/lib/i18n/pathname";
