@@ -10,8 +10,13 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   const { locale } = await params;
   return (
     // <AuthGuard>
+<<<<<<< HEAD
+      <AppShell locale={locale}>{children}</AppShell>
+    // </AuthGuard>
+=======
     //   <AppShell locale={locale}>{children}</AppShell>
     // </AuthGuard>
     <AppShell locale={locale}>{children}</AppShell>
+>>>>>>> 087adf5bd80216a06bb8eba6c23effcf703224be
   );
 }

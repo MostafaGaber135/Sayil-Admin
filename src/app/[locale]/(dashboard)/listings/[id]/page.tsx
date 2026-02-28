@@ -1,16 +1,17 @@
-import PageHeader from "@/shared/ui/PageHeader";
-import { useTranslations } from "next-intl";
+// app/listings/[id]/page.tsx
 
-export default function ListingDetailsPage() {
-  const t = useTranslations();
 
-  return (
-    <div>
-      <PageHeader
-        title={t("pages.listingDetails.title")}
-        description={t("pages.listingDetails.desc")}
-      />
-      <div className="text-sm text-muted-foreground">{t("common.comingSoon")}</div>
-    </div>
-  );
+import {ListingViewPage} from "@/features/listings";
+import {fetchGetLand} from "@/features/listings/api";
+
+interface PageProps {
+    params: Promise<{ id: number }>;
+}
+
+export default async function Page({ params }: PageProps) {
+    const { id } = await params;
+
+    const response = await fetchGetLand(id);
+
+    return <ListingViewPage listing={response.data} />;
 }

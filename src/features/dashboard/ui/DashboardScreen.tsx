@@ -11,7 +11,7 @@ import {
   useListingsByLocation,
   useStatusDistribution,
 } from "@/features/dashboard/hooks/dashboard.hooks";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 export default function DashboardScreen() {
   const t = useTranslations();

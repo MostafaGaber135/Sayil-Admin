@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 import { Phone, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import type { LoginFormProps } from "@/features/auth/types";
 
 export default function LoginForm({
