@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,9 +16,15 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-import { useCommissionByLocation } from "../hooks/dashboard.hooks";
+import type { LocationSeriesItem } from "@/features/dashboard/types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+type Props = {
+  title: string;
+  data: LocationSeriesItem[];
+  isLoading?: boolean;
+};
 
 const chartAreaBorder: Plugin<"bar"> = {
   id: "chartAreaBorder",
@@ -45,71 +52,77 @@ const chartAreaBorder: Plugin<"bar"> = {
   },
 };
 
-export default function CommissionByLocationChart() {
-  const { data: series, isLoading } = useCommissionByLocation();
+export default function CommissionByLocationChart({
+  title,
+  data: series,
+  isLoading,
+}: Props) {
+  const labels = useMemo(() => (series ?? []).map((x) => x.label), [series]);
+  const values = useMemo(() => (series ?? []).map((x) => x.value), [series]);
 
-  const labels = (series ?? []).map((x) => x.label);
-  const values = (series ?? []).map((x) => x.value);
-
-  const data: ChartData<"bar", number[], string> = {
-    labels,
-    datasets: [
-      {
-        label: "Commission",
-        data: values,
-        backgroundColor: "#4fbfc8",
-
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0,
+  const data = useMemo<ChartData<"bar", number[], string>>(
+    () => ({
+      labels,
+      datasets: [
+        {
+          label: "Commission",
+          data: values,
+          backgroundColor: "#4fbfc8",
+          borderRadius: {
+            topLeft: 6,
+            topRight: 6,
+            bottomLeft: 0,
+            bottomRight: 0,
+          },
+          borderSkipped: false,
+          barThickness: 120,
+          maxBarThickness: 140,
+          categoryPercentage: 0.8,
+          barPercentage: 0.9,
         },
-        borderSkipped: false,
+      ],
+    }),
+    [labels, values]
+  );
 
-        barThickness: 120,
-        maxBarThickness: 140,
-        categoryPercentage: 0.8,
-        barPercentage: 0.9,
-      },
-    ],
-  };
-
-  const options: ChartOptions<"bar"> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Commission Earned by Location",
-        align: "start",
-        font: { size: 20, weight: "bold" },
-        padding: { bottom: 20 },
-      },
-      tooltip: {
-        callbacks: {
-          label: (ctx: TooltipItem<"bar">) => {
-            const v = ctx.parsed.y ?? 0;
-            return `Commission: ${Math.round(v / 1000)}K`;
+  const options = useMemo<ChartOptions<"bar">>(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: title,
+          align: "start",
+          font: { size: 20, weight: "bold" },
+          padding: { bottom: 20 },
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx: TooltipItem<"bar">) => {
+              const v = ctx.parsed.y ?? 0;
+              return `Commission: ${Math.round(v / 1000)}K`;
+            },
           },
         },
       },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 1000000,
-        ticks: {
-          stepSize: 250000,
-          callback: (value) => `${Number(value) / 1000}K`,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 1000000,
+          ticks: {
+            stepSize: 250000,
+            callback: (value) => `${Number(value) / 1000}K`,
+          },
+        },
+        x: {
+          grid: { display: false },
         },
       },
-      x: {
-        grid: { display: false },
-      },
-    },
-  };
+    }),
+    [title]
+  );
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md h-[420px]">

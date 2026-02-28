@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,56 +14,70 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-import { useListingsByLocation } from "../hooks/dashboard.hooks";
+import type { LocationSeriesItem } from "@/features/dashboard/types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function ListingsByLocationChart() {
-  const { data: series, isLoading } = useListingsByLocation();
+type Props = {
+  title: string;
+  data: LocationSeriesItem[];
+  isLoading?: boolean;
+};
 
-  const labels = (series ?? []).map((x) => x.label);
-  const values = (series ?? []).map((x) => x.value);
+export default function ListingsByLocationChart({
+  title,
+  data: series,
+  isLoading,
+}: Props) {
+  const labels = useMemo(() => (series ?? []).map((x) => x.label), [series]);
+  const values = useMemo(() => (series ?? []).map((x) => x.value), [series]);
 
-  const data: ChartData<"bar", number[], string> = {
-    labels,
-    datasets: [
-      {
-        label: "Listings",
-        data: values,
-        backgroundColor: "#3b82f6",
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
+  const data = useMemo<ChartData<"bar", number[], string>>(
+    () => ({
+      labels,
+      datasets: [
+        {
+          label: "Listings",
+          data: values,
+          backgroundColor: "#3b82f6",
+          borderRadius: {
+            topLeft: 6,
+            topRight: 6,
+          },
+          borderSkipped: false,
         },
-        borderSkipped: false,
-      },
-    ],
-  };
+      ],
+    }),
+    [labels, values]
+  );
 
-  const options: ChartOptions<"bar"> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Listings by Location",
-        align: "start",
-        font: { size: 20, weight: "bold" },
-        padding: { bottom: 20 },
+  const options = useMemo<ChartOptions<"bar">>(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: title,
+          align: "start",
+          font: { size: 20, weight: "bold" },
+          padding: { bottom: 20 },
+        },
       },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 600,
-        ticks: { stepSize: 150 },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 600,
+          ticks: { stepSize: 150 },
+        },
+        x: {
+          grid: { display: false },
+        },
       },
-      x: {
-        grid: { display: false },
-      },
-    },
-  };
+    }),
+    [title]
+  );
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md h-[360px]">
