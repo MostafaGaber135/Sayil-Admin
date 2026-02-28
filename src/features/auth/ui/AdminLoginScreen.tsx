@@ -99,12 +99,9 @@ export default function AdminLoginScreen() {
 
       if (!res?.ok) {
         if (res?.error === "CredentialsSignin" || res?.status === 401) {
-          setApiError(t("auth.login.errors.unauthorized"));
           toast.error(t("auth.login.errors.unauthorized"));
           return;
         }
-
-        setApiError(t("auth.login.errors.invalid"));
         toast.error(t("auth.login.errors.invalid"));
         return;
       }

@@ -18,6 +18,7 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
+    "logoutSuccess": "Logged out successfully",
     "menu": "Menu"
   },
   "auth": {
@@ -36,17 +37,17 @@
     },
     "login": {
       "heading": "Login to Your Account",
-      "success": "Logged in successfully.",
+      "success": "Logged in successfully",
       "phone": "Phone Number",
       "phonePlaceholder": "Enter your phone number (e.g., +966501234567)",
       "password": "Password",
       "passwordPlaceholder": "Enter your password",
       "submit": "Login",
       "errors": {
-        "generic": "Something went wrong. Please try again.",
-        "invalid": "Invalid phone number or password.",
-        "unauthorized": "Not allowed (not an admin).",
-        "network": "Network error: the API could not be reached."
+        "generic": "Something went wrong. Please try again!",
+        "invalid": "Invalid phone number or password",
+        "unauthorized": "Not allowed (not an admin)",
+        "network": "Network error: the API could not be reached"
       },
       "validation": {
         "phoneRequired": "Phone number is required",
