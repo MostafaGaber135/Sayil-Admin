@@ -1,6 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
+import ConfirmDialog from "@/shared/components/modals/ConfirmDialog";
 import { cn } from "@/lib/utils";
 import { Pencil, Shield, Trash2, Users } from "lucide-react";
 import type { Permission, Role } from "../types";
@@ -23,90 +27,121 @@ export default function RoleCard({
   onEdit: (role: Role) => void;
   onDelete: (role: Role) => void;
 }) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   const displayed = role.permissionIds.slice(0, 3);
   const remaining = Math.max(0, role.permissionIds.length - displayed.length);
 
   const idToPermission = new Map(permissions.map((p) => [p.id, p] as const));
 
+  const handleConfirmDelete = () => {
+    onDelete(role);
+    setDeleteOpen(false);
+  };
+
   return (
-    <Card className="pt-0 gap-0 h-full">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="size-12 shrink-0 rounded-xl bg-blue-600 flex items-center justify-center">
-              <Shield className="size-6 text-white" />
+    <>
+      <Card className="pt-0 gap-0 h-full">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="size-12 shrink-0 rounded-xl bg-blue-600 flex items-center justify-center">
+                <Shield className="size-6 text-white" />
+              </div>
+
+              <div>
+                <div className="text-base font-semibold text-foreground">
+                  {role.name}
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  {role.description}
+                </div>
+              </div>
             </div>
 
-            <div>
-              <div className="text-base font-semibold text-foreground">{role.name}</div>
-              <div className="mt-1 text-sm text-muted-foreground">{role.description}</div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
+                onClick={() => onEdit(role)}
+                aria-label="Edit role"
+              >
+                <Pencil className="size-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-muted-foreground hover:text-destructive cursor-pointer"
+                onClick={() => setDeleteOpen(true)}
+                aria-label="Delete role"
+              >
+                <Trash2 className="size-4" />
+              </Button>
             </div>
           </div>
 
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground hover:text-foreground cursor-pointer"
-              onClick={() => onEdit(role)}
-              aria-label="Edit role"
-            >
-              <Pencil className="size-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground hover:text-destructive cursor-pointer"
-              onClick={() => onDelete(role)}
-              aria-label="Delete role"
-            >
-              <Trash2 className="size-4" />
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-4 flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Users className="size-4" />
-            <span>
-              <span className="text-foreground font-medium">{role.usersCount}</span> Users
-            </span>
-          </div>
-
-          {role.isActive ? (
-            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Active</Badge>
-          ) : (
-            <Badge variant="secondary">Inactive</Badge>
-          )}
-        </div>
-
-        <div className="mt-4">
-          <div className="text-sm font-semibold">Permissions</div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {displayed.map((id) => {
-              const p = idToPermission.get(id);
-              if (!p) return null;
-              return (
-                <span
-                  key={id}
-                  className={cn(
-                    "inline-flex items-center rounded-md border px-3 py-1 text-xs font-medium",
-                    permissionPillClass(id)
-                  )}
-                >
-                  {p.label}
-                </span>
-              );
-            })}
-
-            {remaining > 0 ? (
-              <span className="inline-flex items-center rounded-md border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                +{remaining} more
+          <div className="mt-4 flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users className="size-4" />
+              <span>
+                <span className="text-foreground font-medium">
+                  {role.usersCount}
+                </span>{" "}
+                Users
               </span>
-            ) : null}
+            </div>
+
+            {role.isActive ? (
+              <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                Active
+              </Badge>
+            ) : (
+              <Badge variant="secondary">Inactive</Badge>
+            )}
           </div>
-        </div>
-      </CardContent>
-    </Card>
+
+          <div className="mt-4">
+            <div className="text-sm font-semibold">Permissions</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {displayed.map((id) => {
+                const p = idToPermission.get(id);
+                if (!p) return null;
+                return (
+                  <span
+                    key={id}
+                    className={cn(
+                      "inline-flex items-center rounded-md border px-3 py-1 text-xs font-medium",
+                      permissionPillClass(id)
+                    )}
+                  >
+                    {p.label}
+                  </span>
+                );
+              })}
+
+              {remaining > 0 ? (
+                <span className="inline-flex items-center rounded-md border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                  +{remaining} more
+                </span>
+              ) : null}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete role?"
+        description="This action cannot be undone."
+        cancelText="Cancel"
+        confirmText="Delete"
+        isPending={false}
+        confirmVariant="destructive"
+        onConfirm={handleConfirmDelete}
+      />
+    </>
   );
 }

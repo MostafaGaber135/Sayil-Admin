@@ -16,6 +16,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useLogout } from "@/features/auth/hooks/auth.hooks";
 import { defaultLocale } from "@/shared/lib/i18n/routing";
+import { toast } from "react-toastify";
 
 export default function AppTopbar() {
   const t = useTranslations();
@@ -92,10 +93,18 @@ export default function AppTopbar() {
           onSelect={(e) => {
             e.preventDefault();
             logout(undefined, {
-              onSettled: () => {
+              onSuccess: () => {
+                toast.success(t("topbar.logoutSuccess")); 
                 const loginPath = locale === defaultLocale ? "/login" : `/${locale}/login`;
                 router.replace(loginPath);
-              }
+              },
+              onError: (err: any) => {
+                const msg =
+                  err?.response?.data?.error?.message ||
+                  err?.message ||
+                  t("common.somethingWentWrong");
+                toast.error(msg);
+              },
             });
           }}
         >
