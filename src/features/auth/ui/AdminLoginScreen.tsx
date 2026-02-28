@@ -5,6 +5,7 @@ import { UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
@@ -99,16 +100,20 @@ export default function AdminLoginScreen() {
       if (!res?.ok) {
         if (res?.error === "CredentialsSignin" || res?.status === 401) {
           setApiError(t("auth.login.errors.unauthorized"));
+          toast.error(t("auth.login.errors.unauthorized"));
           return;
         }
 
         setApiError(t("auth.login.errors.invalid"));
+        toast.error(t("auth.login.errors.invalid"));
         return;
       }
 
+      toast.success(t("auth.login.success"));
       router.push("/dashboard");
     } catch {
       setApiError(t("auth.login.errors.network"));
+      toast.error(t("auth.login.errors.network"));
     }
   };
 

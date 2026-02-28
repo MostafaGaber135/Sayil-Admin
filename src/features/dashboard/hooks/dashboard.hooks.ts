@@ -201,7 +201,7 @@ export function normalizeKpis(payload: unknown): NormalizedKpi[] {
 export function normalizeLocationSeries(payload: unknown): LocationSeriesItem[] {
   if (isRecord(payload)) {
     const rec = payload as Record<string, unknown>;
-    const items = (rec.items as unknown[]) ?? (rec.data as unknown[]);
+    const items = (rec.value as unknown[]) ?? (rec.items as unknown[]) ?? (rec.data as unknown[]);
     if (Array.isArray(items)) payload = items;
   }
 
@@ -222,8 +222,13 @@ export function normalizeLocationSeries(payload: unknown): LocationSeriesItem[] 
   return list
     .map((row) => {
       if (!isRecord(row)) return null;
-      const label = String(row.location ?? row.city ?? row.name ?? row.label ?? "").trim();
-      const value = toNumber(row.count ?? row.value ?? row.total ?? row.amount) ?? 0;
+      const label = String(
+        row.cityName ?? row.location ?? row.city ?? row.name ?? row.label ?? ""
+      ).trim();
+      const value =
+        toNumber(
+          row.count ?? row.totalCommission ?? row.value ?? row.total ?? row.amount
+        ) ?? 0;
       if (!label) return null;
       return { label, value } satisfies LocationSeriesItem;
     })
@@ -233,7 +238,7 @@ export function normalizeLocationSeries(payload: unknown): LocationSeriesItem[] 
 export function normalizeStatusSeries(payload: unknown): StatusSeriesItem[] {
   if (isRecord(payload)) {
     const rec = payload as Record<string, unknown>;
-    const items = (rec.items as unknown[]) ?? (rec.data as unknown[]);
+    const items = (rec.value as unknown[]) ?? (rec.items as unknown[]) ?? (rec.data as unknown[]);
     if (Array.isArray(items)) payload = items;
   }
 
@@ -254,10 +259,15 @@ export function normalizeStatusSeries(payload: unknown): StatusSeriesItem[] {
   return list
     .map((row) => {
       if (!isRecord(row)) return null;
-      const status = String(row.status ?? row.key ?? row.name ?? row.label ?? "").trim();
+      const status = String(
+        row.statusName ?? row.status ?? row.key ?? row.name ?? row.label ?? ""
+      ).trim();
       const value = toNumber(row.count ?? row.value ?? row.total) ?? 0;
       if (!status) return null;
-      return { status, value } satisfies StatusSeriesItem;
+      return {
+        status, value,
+        label: undefined
+      } satisfies StatusSeriesItem;
     })
     .filter(Boolean) as StatusSeriesItem[];
 }

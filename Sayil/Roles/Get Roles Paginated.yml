@@ -1,0 +1,30 @@
+info:
+  name: Get Roles Paginated
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/admin/roles/paginated"
+  headers:
+    - name: Authorization
+      value: Bearer {{token}}
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "searchTerm": "",
+        "sortColumn": "name",
+        "sortOrder": "asc",
+        "pageNumber": 1,
+        "pageSize": 10
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
