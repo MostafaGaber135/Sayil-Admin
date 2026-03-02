@@ -147,6 +147,13 @@
       "Drag":"Drag and drop to reorder FAQs or use the arrow buttons",
       "+ Add FAQ":"+ Add FAQ"
     },
+    "notification":{
+      "Notifications":"Notifications",
+      "Mark":"Mark all as read",
+      "Marking":"Marking",
+      "View all":"View all notifications",
+      "No notifications":"No notifications"
+    },
     "login": {
       "title": "Login",
       "desc": "Sign in to continue."
