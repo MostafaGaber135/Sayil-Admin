@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Building2,
   Clock3,
@@ -6,8 +7,13 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import type { DashboardKpiKey, StatCardProps } from "../types";
-import { useDashboardKpis } from "../hooks/dashboard.hooks";
+import type { DashboardKpiKey, NormalizedKpi, StatCardProps } from "../types";
+
+type Props = {
+  items: NormalizedKpi[];
+  isLoading?: boolean;
+  isError?: boolean;
+};
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
@@ -27,7 +33,8 @@ function buildChangeText(changePct?: number) {
 }
 
 function getChangeClassName(changePct?: number) {
-  if (typeof changePct !== "number" || !Number.isFinite(changePct)) return "text-slate-400";
+  if (typeof changePct !== "number" || !Number.isFinite(changePct))
+    return "text-slate-400";
   return changePct >= 0 ? "text-emerald-600" : "text-red-500";
 }
 
@@ -85,13 +92,19 @@ function StatCard({
         </div>
 
         <div className="mt-3 flex items-center gap-2 text-sm">
-          <span className={`${changeClassName ?? "text-emerald-600"} font-semibold`}>{changeText}</span>
+          <span
+            className={`${changeClassName ?? "text-emerald-600"} font-semibold`}
+          >
+            {changeText}
+          </span>
           <span className="text-slate-500">{subText}</span>
         </div>
       </div>
 
       <div
-        className={`w-14 h-14 rounded-xl ${iconBgClassName ?? "bg-blue-600"} flex items-center justify-center text-white`}
+        className={`w-14 h-14 rounded-xl ${
+          iconBgClassName ?? "bg-blue-600"
+        } flex items-center justify-center text-white`}
       >
         {icon ?? <Building2 className="w-7 h-7" />}
       </div>
@@ -99,9 +112,7 @@ function StatCard({
   );
 }
 
-export default function StatsCards() {
-  const { data, isLoading, isError } = useDashboardKpis();
-
+export default function StatsCards({ items, isLoading, isError }: Props) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-6">
@@ -115,7 +126,7 @@ export default function StatsCards() {
     );
   }
 
-  if (isError || !data?.length) {
+  if (isError || !items?.length) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-6">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 text-slate-600">
@@ -125,7 +136,7 @@ export default function StatsCards() {
     );
   }
 
-  const cards: StatCardProps[] = data.map((kpi) => {
+  const cards: StatCardProps[] = items.map((kpi) => {
     const cfg = getKpiConfig(kpi.key);
     const displayValue =
       kpi.key === "totalCommissions"

@@ -26,11 +26,19 @@ export default function DashboardScreen() {
   return (
     <div className={cn("space-y-4", isRTL ? "text-right" : "text-left")}>
       <div className="px-1">
-        <div className="text-2xl font-semibold tracking-tight">{t("pages.dashboard.title")}</div>
-        <div className="mt-1 text-sm text-muted-foreground">{t("pages.dashboard.desc")}</div>
+        <div className="text-2xl font-semibold tracking-tight">
+          {t("pages.dashboard.title")}
+        </div>
+        <div className="mt-1 text-sm text-muted-foreground">
+          {t("pages.dashboard.desc")}
+        </div>
       </div>
 
-      <StatsCards items={kpis.data ?? []} isLoading={kpis.isLoading} />
+      <StatsCards
+        items={kpis.data ?? []}
+        isLoading={kpis.isLoading}
+        isError={kpis.isError}
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <ListingsByLocationChart

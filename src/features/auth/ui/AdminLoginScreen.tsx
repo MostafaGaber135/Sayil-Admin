@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -78,20 +78,21 @@ export default function AdminLoginScreen() {
     [t]
   );
 
-  const applyPreset = (p: LoginPreset) => {
+const applyPreset = useCallback(
+  (p: LoginPreset) => {
     setApiError(null);
-    form.setValue("phoneNumber", p.phoneNumber, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    form.setValue("password", p.password, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    form.setFocus("phoneNumber");
-  };
+    form.reset(
+      { phoneNumber: p.phoneNumber, password: p.password },
+      { keepDirty: true, keepTouched: true }
+    );
 
-  const onSubmit = async (values: AdminLoginFormValues) => {
+    form.trigger(["phoneNumber", "password"]); 
+    form.setFocus("phoneNumber");
+  },
+  [form]
+);
+const onSubmit = useCallback(
+  async (values: AdminLoginFormValues) => {
     setApiError(null);
 
     try {
@@ -112,7 +113,9 @@ export default function AdminLoginScreen() {
       setApiError(t("auth.login.errors.network"));
       toast.error(t("auth.login.errors.network"));
     }
-  };
+  },
+  [login, router, t]
+);
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-primary">

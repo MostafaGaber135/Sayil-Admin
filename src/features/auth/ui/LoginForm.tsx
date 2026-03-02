@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Controller } from "react-hook-form";
 import { Phone, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
@@ -8,7 +8,7 @@ import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import type { LoginFormProps } from "@/features/auth/types";
 
-export default function LoginForm({
+function LoginForm({
   form,
   isRTL,
   submitting,
@@ -19,7 +19,9 @@ export default function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
 
   const SubmitIcon = useMemo(() => (isRTL ? ArrowLeft : ArrowRight), [isRTL]);
-
+  const togglePassword = useCallback(() => {
+    setShowPassword((v) => !v);
+  }, []);
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
@@ -108,7 +110,7 @@ export default function LoginForm({
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword((v) => !v)}
+                  onClick={togglePassword}
                   className={cn(
                     "absolute top-1/2 -translate-y-1/2 rounded-md p-2 text-muted-foreground hover:bg-muted",
                     isRTL ? "left-2" : "right-2"
@@ -163,3 +165,4 @@ export default function LoginForm({
     </form>
   );
 }
+export default memo(LoginForm);
