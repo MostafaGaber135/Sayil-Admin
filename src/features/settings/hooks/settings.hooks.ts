@@ -1,11 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  addFaq,
   createLandClassification,
+  deleteFaq,
   deleteLandClassification,
   getCommissionOfferSettings,
   getCommunication,
+  getFaqs,
   getLandClassifications,
+  reorderFaqs,
   updateCommunicationSettings,
+  updateFaq,
   updateGlobalCommissionRate,
   updateLandClassification,
   updateMaxOfferPercent,
@@ -155,6 +160,84 @@ export const useUpdateCommunicationSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["communication-settings"],
+      });
+    },
+  });
+};
+
+//FAQ
+
+//Post
+export const useAddFaq = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: addFaq,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["faqs"],
+      });
+    },
+  });
+};
+
+//Get
+
+export const useFaqs = ()=>{
+  return useQuery({
+    queryKey:["faqs"],
+    queryFn:async()=>{
+      const res = await getFaqs()
+      return res.data.data.items
+    }
+  })
+}
+
+
+// Patch
+
+export const useReorderFaqs = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: reorderFaqs,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["faqs"],
+      });
+    },
+  });
+};
+
+//Delete
+
+export const useDeleteFaq = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteFaq(id),
+
+    onSuccess: () => {
+      // refresh FAQ list automatically
+      queryClient.invalidateQueries({
+        queryKey: ["faqs"],
+      });
+    },
+  });
+};
+
+// Put
+
+export const useUpdateFaq = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateFaq,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["faqs"],
       });
     },
   });

@@ -139,7 +139,9 @@
       "This action": "This action cannot be reversed.",
       "Cancel": "Cancel",
       "Deleting": "Deleting",
-      "Delete": "Delete"
+      "Delete": "Delete",
+      "Drag":"Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ":"+ Add FAQ"
     },
     "login": {
       "title": "Login",

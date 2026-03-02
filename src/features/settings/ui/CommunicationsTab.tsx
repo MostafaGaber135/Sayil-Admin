@@ -8,6 +8,7 @@ import {
   useUpdateCommunicationSettings,
 } from "../hooks/settings.hooks";
 import { useTranslations } from "next-intl";
+import LoadingState from "@/shared/ui/LoadingState";
 
 export default function CommunicationsTab() {
   const t = useTranslations();
@@ -31,7 +32,7 @@ export default function CommunicationsTab() {
     }
   }, [data]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <LoadingState/>;
   return (
     <div className="p-3 sm:p-4">
       {/* Header */}
