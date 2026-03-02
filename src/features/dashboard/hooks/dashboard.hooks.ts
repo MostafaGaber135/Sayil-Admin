@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/lib/react-query/queryKeys";
 import {
   fetchCommissionByLocation,
@@ -63,7 +63,9 @@ export function normalizeKpis(payload: unknown): NormalizedKpi[] {
       const signedPct =
         typeof mom === "number"
           ? typeof isUp === "boolean"
-            ? (isUp ? Math.abs(mom) : -Math.abs(mom))
+            ? isUp
+              ? Math.abs(mom)
+              : -Math.abs(mom)
             : mom
           : undefined;
 
@@ -85,9 +87,17 @@ export function normalizeKpis(payload: unknown): NormalizedKpi[] {
     ];
   }
 
-  const kpi = (key: NormalizedKpi["key"], title: string, valueKeys: string[], changeKeys: string[]) => {
+  const kpi = (
+    key: NormalizedKpi["key"],
+    title: string,
+    valueKeys: string[],
+    changeKeys: string[]
+  ) => {
     const value = obj ? pickNumber(obj, valueKeys) : undefined;
-    const changePct = obj ? normalizeChangePct(pickNumber(obj, changeKeys) ?? obj[changeKeys[0] ?? ""]) : undefined;
+    const changePct = obj
+      ? normalizeChangePct(pickNumber(obj, changeKeys) ?? obj[changeKeys[0] ?? ""])
+      : undefined;
+
     return {
       key,
       title,
@@ -165,12 +175,7 @@ export function normalizeKpis(payload: unknown): NormalizedKpi[] {
       "pendingApprovals",
       "Pending Approvals",
       ["pendingApprovals", "pending", "pending_approvals", "pendingApprovalCount"],
-      [
-        "pendingApprovalsChangePct",
-        "pendingApprovalsChange",
-        "pendingChangePct",
-        "pendingChange",
-      ]
+      ["pendingApprovalsChangePct", "pendingApprovalsChange", "pendingChangePct", "pendingChange"]
     ),
     kpi(
       "totalUsers",
@@ -188,12 +193,7 @@ export function normalizeKpis(payload: unknown): NormalizedKpi[] {
       "totalCommissions",
       "Total Commissions",
       ["totalCommissions", "commissions", "total_commissions", "commissionTotal"],
-      [
-        "totalCommissionsChangePct",
-        "totalCommissionsChange",
-        "commissionsChangePct",
-        "commissionsChange",
-      ]
+      ["totalCommissionsChangePct", "totalCommissionsChange", "commissionsChangePct", "commissionsChange"]
     ),
   ];
 }
@@ -226,9 +226,7 @@ export function normalizeLocationSeries(payload: unknown): LocationSeriesItem[] 
         row.cityName ?? row.location ?? row.city ?? row.name ?? row.label ?? ""
       ).trim();
       const value =
-        toNumber(
-          row.count ?? row.totalCommission ?? row.value ?? row.total ?? row.amount
-        ) ?? 0;
+        toNumber(row.count ?? row.totalCommission ?? row.value ?? row.total ?? row.amount) ?? 0;
       if (!label) return null;
       return { label, value } satisfies LocationSeriesItem;
     })
@@ -264,10 +262,7 @@ export function normalizeStatusSeries(payload: unknown): StatusSeriesItem[] {
       ).trim();
       const value = toNumber(row.count ?? row.value ?? row.total) ?? 0;
       if (!status) return null;
-      return {
-        status, value,
-        label: undefined
-      } satisfies StatusSeriesItem;
+      return { status, value, label: undefined } satisfies StatusSeriesItem;
     })
     .filter(Boolean) as StatusSeriesItem[];
 }
@@ -280,6 +275,9 @@ export function useDashboardKpis() {
       const payload = (res as any)?.data ?? res;
       return normalizeKpis(payload);
     },
+    staleTime: 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
   });
 }
 
@@ -291,6 +289,10 @@ export function useListingsByLocation() {
       const payload = (res as any)?.data ?? res;
       return normalizeLocationSeries(payload);
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -302,6 +304,10 @@ export function useStatusDistribution() {
       const payload = (res as any)?.data ?? res;
       return normalizeStatusSeries(payload);
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -313,5 +319,9 @@ export function useCommissionByLocation() {
       const payload = (res as any)?.data ?? res;
       return normalizeLocationSeries(payload);
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    placeholderData: keepPreviousData,
   });
 }

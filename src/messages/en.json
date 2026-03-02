@@ -30,7 +30,7 @@
       "title": "Sample Credentials",
       "password": "Password",
       "use": "Use these credentials",
-      "admin": "Administrator",
+      "admin": "Super Admin",
       "agent": "Agent",
       "manager": "Manager",
       "firstTime": "First time login"
@@ -86,6 +86,10 @@
       "desc": "Manage users."
     },
     "roles": {
+      "SuperAdmin": "Super Admin",
+      "Admin": "Administrator",
+      "Agent": "Agent",
+      "Manager": "Manager",
       "title": "Roles & permissions",
       "desc": "Manage roles and permissions.",
       "actions": {
@@ -109,8 +113,8 @@
       "Add": "Add Classification",
       "Name": "Name",
       "Commission": "Commission & Offer Settings",
-      "Global":"Global Commission Rate (%)",
-      "This rate":"This rate applies to all transactions unless overridden by specific agreements.",
+      "Global": "Global Commission Rate (%)",
+      "This rate": "This rate applies to all transactions unless overridden by specific agreements.",
       "Save Changes": "Save Changes",
       "Saving": "Saving",
       "Offer": "Offer Range Settings",
@@ -124,7 +128,7 @@
       "This number": "This number will be used for WhatsApp contact in the mobile app",
       "Contact Us Email": "Contact Us Email",
       "Enter contact email address": "Enter contact email address",
-      "This email":"This email will be used for Contact Us in the mobile app",
+      "This email": "This email will be used for Contact Us in the mobile app",
       "Support Email": "Support Email",
       "Enter support": "Enter support email",
       "This email will": "This email will be used for technical support inquiries",

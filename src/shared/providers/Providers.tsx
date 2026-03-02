@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/shared/lib/react-query/queryClient";
 import { SessionProvider } from "next-auth/react";
@@ -17,12 +17,7 @@ function detectRtlFromHtml(): boolean {
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [isRtl, setIsRtl] = useState(false);
-
-  useEffect(() => {
-    setIsRtl(detectRtlFromHtml());
-  }, []);
-
+  const [isRtl] = useState(() => detectRtlFromHtml());
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>

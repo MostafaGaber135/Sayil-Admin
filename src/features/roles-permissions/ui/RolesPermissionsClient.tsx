@@ -3,9 +3,9 @@
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { Role } from "../types";
+import type { Role, RolesPaginatedBody } from "../types";
 import {
   buildPermissionsFromPages,
   normalizeRoleById,
@@ -19,7 +19,6 @@ import {
 } from "../hooks/roles.hooks";
 import RoleCard from "./RoleCard";
 import RoleFormDialog from "./RoleFormDialog";
-
 export default function RolesPermissionsClient({
   title,
   description,
@@ -30,19 +29,23 @@ export default function RolesPermissionsClient({
   const t = useTranslations();
 
   const pagesQuery = usePagesWithClaims();
+
   const { permissions, claimIdToPermissionId, permissionIdToClaimId } = useMemo(() => {
     const payload = pagesQuery.data?.data;
     return buildPermissionsFromPages(payload);
   }, [pagesQuery.data]);
 
-  const rolesQuery = useRolesPaginated({
+ const rolesQueryBody = useMemo<RolesPaginatedBody>(
+  () => ({
     searchTerm: "",
     sortColumn: "name",
     sortOrder: "asc",
     pageNumber: 1,
     pageSize: 100,
-  });
-
+  }),
+  []
+);
+  const rolesQuery = useRolesPaginated(rolesQueryBody);
   const roles: Role[] = useMemo(() => {
     const payload = rolesQuery.data?.data;
     return normalizeRoles(payload, claimIdToPermissionId);
@@ -65,17 +68,51 @@ export default function RolesPermissionsClient({
   const updateMutation = useUpdateRoleMutation();
   const deleteMutation = useDeleteRoleMutation();
 
-  function openCreate() {
+  const openCreate = useCallback(() => {
     setDialogMode("create");
     setActiveRoleId(null);
     setDialogOpen(true);
-  }
+  }, []);
 
-  function openEdit(role: Role) {
+  const openEdit = useCallback((role: Role) => {
     setDialogMode("edit");
     setActiveRoleId(role.id);
     setDialogOpen(true);
-  }
+  }, []);
+
+  const handleSubmit = useCallback(
+    (payload: { name: string; description: string; permissionIds: string[] }) => {
+      const claimIds = payload.permissionIds
+        .map((pid) => permissionIdToClaimId.get(pid))
+        .filter((x): x is number => typeof x === "number");
+
+      if (dialogMode === "create") {
+        addMutation.mutate({
+          roleName: payload.name,
+          description: payload.description,
+          claimIds,
+          isActive: true,
+        });
+        return;
+      }
+
+      if (!activeRole) return;
+
+      const roleIdNum = Number(activeRole.id);
+
+      updateMutation.mutate({
+        id: activeRole.id,
+        body: {
+          roleId: Number.isFinite(roleIdNum) ? roleIdNum : 0,
+          roleName: payload.name,
+          description: payload.description,
+          claimIds,
+          isActive: true,
+        },
+      });
+    },
+    [permissionIdToClaimId, dialogMode, addMutation, updateMutation, activeRole]
+  );
 
   return (
     <div>
@@ -120,34 +157,7 @@ export default function RolesPermissionsClient({
         role={activeRole}
         permissions={permissions}
         onOpenChange={setDialogOpen}
-        onSubmit={(payload) => {
-          const claimIds = payload.permissionIds
-            .map((pid) => permissionIdToClaimId.get(pid))
-            .filter((x): x is number => typeof x === "number");
-
-          if (dialogMode === "create") {
-            addMutation.mutate({
-              roleName: payload.name,
-              description: payload.description,
-              claimIds,
-              isActive: true,
-            });
-            return;
-          }
-
-          if (!activeRole) return;
-          const roleIdNum = Number(activeRole.id);
-          updateMutation.mutate({
-            id: activeRole.id,
-            body: {
-              roleId: Number.isFinite(roleIdNum) ? roleIdNum : 0,
-              roleName: payload.name,
-              description: payload.description,
-              claimIds,
-              isActive: true,
-            },
-          });
-        }}
+        onSubmit={handleSubmit}
       />
     </div>
   );
