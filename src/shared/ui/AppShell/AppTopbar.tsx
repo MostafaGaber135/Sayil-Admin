@@ -17,13 +17,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useLogout } from "@/features/auth/hooks/auth.hooks";
 import { defaultLocale } from "@/shared/lib/i18n/routing";
 import { toast } from "react-toastify";
+import NotificationDropdown from "@/features/notifications/ui/NotificationsDropdown";
 import { useSession } from "next-auth/react";
-
-function formatRoleFallback(role: unknown) {
-  const r = String(role ?? "").trim();
-  if (!r) return null;
-  return r.replace(/([a-z])([A-Z])/g, "$1 $2");
-}
 
 export default function AppTopbar() {
   const t = useTranslations();
@@ -46,7 +41,7 @@ export default function AppTopbar() {
   if (tRoles.has(roleKey)) return tRoles(roleKey);
 }
     const fallbackLabel = isRTL ? "وكيل" : "Administrator";
-    return formatRoleFallback(rawRole) ?? fallbackLabel;
+    // return formatRoleFallback(rawRole) ?? fallbackLabel;
   }, [session, tRoles, isRTL]);
 
   const MenuBtn = (
@@ -61,14 +56,7 @@ export default function AppTopbar() {
     </div>
   );
 
-  const NotifBtn = (
-    <Button variant="ghost" size="icon" className="relative cursor-pointer" aria-label={t("topbar.notifications")}>
-      <Bell className="h-6 w-6" />
-      <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-        2
-      </span>
-    </Button>
-  );
+
 
   const Divider = (
     <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" />
@@ -130,7 +118,7 @@ export default function AppTopbar() {
   const ControlsLTR = (
     <div className="flex items-center gap-3 ">
       <LocaleSwitch />
-      {NotifBtn}
+      <NotificationDropdown/>
       {Divider}
       {UserDropdown}
     </div>
@@ -140,7 +128,7 @@ export default function AppTopbar() {
     <div className="flex items-center gap-3">
       {UserDropdown}
       {Divider}
-      {NotifBtn}
+      <NotificationDropdown/>
       <LocaleSwitch />
     </div>
   );
@@ -173,6 +161,7 @@ export default function AppTopbar() {
           <AppSidebar onNavigate={() => setOpen(false)} />
         </SheetContent>
       </Sheet>
+      {/* <NotificationDropdown/> */}
     </header>
   );
 }

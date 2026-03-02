@@ -1,12 +1,10 @@
 import { api } from "@/shared/lib/axios/axios.instance";
+import { AddFaqPayload, Data } from "../types";
 
 //Add LandClassification
-export const createLandClassification = (data: {
-  code: string;
-  nameAr: string;
-  nameEn: string;
-  discountPercent: number;
-}) => {
+
+//Post
+export const createLandClassification = (data: Data) => {
   return api.post("/api/admin/land-classifications", data);
 };
 
@@ -63,4 +61,45 @@ export const updateCommunicationSettings = (data: {
   timeZone: string;
 }) => {
   return api.put("/api/admin/communicationssettings", data);
+};
+
+
+// FAQ
+//Post
+export const addFaq = (data: {
+  questionEn: string;
+  questionAr: string;
+  answerEn: string;
+  answerAr: string;
+}) => {
+  return api.post("/api/admin/faq/add", data);
+};
+
+//Get
+export const getFaqs = ()=>{
+  return api.get(`/api/admin/faq/list`)
+}
+
+//Patch
+export const reorderFaqs = (data: {
+  items: { id: number; displayOrder: number }[];
+}) => {
+  return api.patch("/api/admin/faq/reorder", data);
+};
+
+//Delete 
+
+export const deleteFaq = (id: number) => {
+  return api.delete(`/api/admin/faq/${id}`);
+};
+
+//Put
+export const updateFaq = (data: {
+  id: number;
+  questionEn: string;
+  questionAr: string;
+  answerEn: string;
+  answerAr: string;
+}) => {
+  return api.put("/api/admin/faq/update", data);
 };

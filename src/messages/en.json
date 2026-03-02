@@ -119,8 +119,8 @@
       "Saving": "Saving",
       "Offer": "Offer Range Settings",
       "Minimum": "Minimum Offer Percentage (%)",
-      "Represents": "Represents minimum allowed offer (e.g. 85%)",
-      "Represents maximum": "Represents maximum allowed offer (e.g. 115%)",
+      "Represents": "Represents minimum allowed offer",
+      "Represents maximum": "Represents maximum allowed offer",
       "Mobile": "Mobile App Communications",
       "Configure": "Configure contact information for the mobile application",
       "WhatsApp Number": "WhatsApp Number",
@@ -143,7 +143,9 @@
       "This action": "This action cannot be reversed.",
       "Cancel": "Cancel",
       "Deleting": "Deleting",
-      "Delete": "Delete"
+      "Delete": "Delete",
+      "Drag":"Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ":"+ Add FAQ"
     },
     "login": {
       "title": "Login",
