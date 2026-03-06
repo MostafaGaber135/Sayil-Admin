@@ -73,6 +73,15 @@
         "commissionByLocation": "Commission Earned by Location"
       }
     },
+    "profile":{
+      "Profile":"Profile Settings",
+      "Account":"Account Information",
+      "Change Password":"Change Password",
+      "Save Changes":"Save Changes",
+      "Full Name":"Full Name",
+      "Phone Number":"Phone Number",
+      "Role":"Role"
+    },
     "listings": {
       "title": "Listings",
       "desc": "Manage listings."
@@ -101,7 +110,9 @@
         "updateSuccess": "Role updated successfully",
         "updateError": "Failed to update role",
         "deleteSuccess": "Role deleted successfully",
-        "deleteError": "Failed to delete role"
+        "deleteError": "Failed to delete role",
+        "AddedLand":"The operation was successful.",
+        "Failed":"The operation was not successful."
       }
     },
     "settings": {
@@ -146,6 +157,13 @@
       "Delete": "Delete",
       "Drag":"Drag and drop to reorder FAQs or use the arrow buttons",
       "+ Add FAQ":"+ Add FAQ"
+    },
+    "notification":{
+      "Notifications":"Notifications",
+      "Mark":"Mark all as read",
+      "Marking":"Marking",
+      "View all":"View all notifications",
+      "No notifications":"No notifications"
     },
     "login": {
       "title": "Login",

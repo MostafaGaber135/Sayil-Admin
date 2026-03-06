@@ -56,7 +56,7 @@ export default function CommunicationsTab() {
             label={t("pages.settings.WhatsApp Number")}
             type="tel"
             placeholder={t("pages.settings.Enter WhatsApp number")}
-            defaultValue="+966501234567"
+            
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
           />
 
@@ -73,7 +73,7 @@ export default function CommunicationsTab() {
             label={t("pages.settings.Contact Us Email")}
             type="email"
             placeholder={t("pages.settings.Enter contact email address")}
-            defaultValue="support@sayil.com"
+            
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
           />
 
@@ -90,7 +90,7 @@ export default function CommunicationsTab() {
             label={t("pages.settings.Support Email")}
             type="email"
             placeholder={t("pages.settings.Enter support")}
-            defaultValue="help@sayil.com"
+           
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
           />
 
@@ -107,7 +107,7 @@ export default function CommunicationsTab() {
             label={t("pages.settings.Business Hours")}
             type="text"
             placeholder={t("pages.settings.Enter business hours")}
-            defaultValue="9:00 AM - 6:00 PM"
+            
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
           />
 
