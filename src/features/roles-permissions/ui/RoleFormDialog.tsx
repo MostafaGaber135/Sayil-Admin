@@ -66,11 +66,11 @@ export default function RoleFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "max-w-3xl p-0 gap-0 border",
+          "w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] p-0 gap-0 border sm:max-w-3xl",
           "**:data-[slot=dialog-close]:hidden"
         )}
       >
-        <DialogHeader className="px-6 py-5 border-b">
+        <DialogHeader className="px-4 py-4 border-b sm:px-6 sm:py-5">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="size-10 rounded-xl bg-blue-600 flex items-center justify-center">
@@ -93,7 +93,7 @@ export default function RoleFormDialog({
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh]">
-          <div className="px-6 py-6">
+          <div className="px-4 py-5 sm:px-6 sm:py-6">
             <div className="space-y-5">
               <div>
                 <label className="text-sm font-medium">Role Name *</label>
@@ -147,11 +147,11 @@ export default function RoleFormDialog({
           </div>
         </ScrollArea>
 
-        <div className="px-6 py-4 border-t flex items-center justify-end gap-3 bg-muted/20">
+        <div className="px-4 py-4 border-t flex flex-col gap-3 bg-muted/20 sm:px-6 sm:flex-row sm:items-center sm:justify-end">
           <Button
             variant="secondary"
             className={cn(
-              "h-11 rounded-xl px-6",
+              "h-11 w-full rounded-xl px-6 sm:w-auto",
               "bg-[#e5e7eb] text-foreground hover:bg-[#e5e7eb]/80 cursor-pointer",
             )}
             onClick={() => onOpenChange(false)}
@@ -159,7 +159,7 @@ export default function RoleFormDialog({
             Cancel
           </Button>
           <Button
-            className="h-11 rounded-xl bg-blue-600 px-6 hover:bg-blue-700 cursor-pointer"
+            className="h-11 w-full rounded-xl bg-blue-600 px-6 hover:bg-blue-700 cursor-pointer sm:w-auto"
             onClick={() => {
               setTouched(true);
               if (state.name.trim().length === 0) return;
