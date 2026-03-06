@@ -73,6 +73,16 @@
         "commissionByLocation": "العمولة حسب المدينة"
       }
     },
+    
+    "profile":{
+      "Profile":"إعدادات الملف الشخصي",
+      "Account":"معلومات الحساب",
+      "Change Password":"تغيير كلمة المرور",
+      "Save Changes":"حفظ التغييرات",
+      "Full Name":"الاسم الكامل",
+      "Phone Number":"رقم التليفون",
+      "Role":"دور"
+    },
     "listings": {
       "title": "الإعلانات",
       "desc": "إدارة الإعلانات."
@@ -101,7 +111,9 @@
         "updateSuccess": "تم تحديث الدور بنجاح",
         "updateError": "فشل تحديث الدور",
         "deleteSuccess": "تم حذف الدور بنجاح",
-        "deleteError": "فشل حذف الدور"
+        "deleteError": "فشل حذف الدور",
+        "AddedLand":" تمت العمليه بنجاح",
+        "Failed":"لم تتم العمليه بنجاح"
       }
     },
     "settings": {

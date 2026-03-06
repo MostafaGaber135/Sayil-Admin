@@ -4,73 +4,66 @@ import { Card } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { User } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
+  const { data: session } = useSession();
+  const user = session?.user;
+  const t = useTranslations()
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+      {/* Title */}
+      <h1 className="text-2xl font-semibold">{t("pages.profile.Profile")}</h1>
 
-      {/* Page Title */}
-      <h1 className="text-xl font-semibold mb-6">
-        Profile Settings
-      </h1>
-
-      <Card className="p-6 space-y-6">
-
-        {/* Avatar Section */}
-        <div className="flex items-center gap-4">
-          <div className="h-20 w-20 rounded-full bg-primary text-white flex items-center justify-center">
-            <User size={36} />
-          </div>
-
-          <div>
-            <Button variant="outline" className="text-sm">
-              Change Photo
-            </Button>
-          </div>
+      {/* Profile Card */}
+      <Card className="p-6 flex items-center gap-6">
+        <div className="h-24 w-24 rounded-full bg-primary text-white flex items-center justify-center">
+          <User size={40} />
         </div>
 
-        {/* Form */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold">
+            {user?.fullName || "Admin User"}
+          </h2>
 
-          <Input
-            label="Full Name"
-            placeholder="Enter your name"
-          />
+          <p className="text-sm text-muted-foreground">{user?.email}</p>
 
-          <Input
-            label="Email Address"
-            placeholder="Enter email"
-            type="email"
-          />
-
-          <Input
-            label="Phone Number"
-            placeholder="Enter phone number"
-          />
-
-          <Input
-            label="Role"
-            placeholder="Administrator"
-            disabled
-          />
-
+          <p className="text-sm text-muted-foreground">{user?.role}</p>
         </div>
-
-        {/* Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t">
-
-          <Button variant="outline">
-            Change Password
-          </Button>
-
-          <Button>
-            Save Changes
-          </Button>
-
-        </div>
-
       </Card>
 
+      {/* Account Info */}
+      <Card className="p-6 space-y-6">
+        <h2 className="text-lg font-semibold">{t("pages.profile.Account")}</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
+            label={t("pages.profile.Full Name")}
+            defaultValue={user?.fullName}
+          />
+
+          <Input
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
+            label={t("pages.profile.Phone Number")}
+            defaultValue={user?.phoneNumber}
+          />
+
+          <Input
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
+            label={t("pages.profile.Role")}
+            defaultValue={user?.role}
+            disabled
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-4 border-t">
+          <Button variant="outline">{t("pages.profile.Change Password")}</Button>
+
+          <Button>{t("pages.profile.Save Changes")}</Button>
+        </div>
+      </Card>
     </div>
   );
 }

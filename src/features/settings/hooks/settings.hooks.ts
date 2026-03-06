@@ -1,3 +1,4 @@
+"use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addFaq,
@@ -16,11 +17,14 @@ import {
   updateMaxOfferPercent,
   updateMinOfferPercent,
 } from "../services/settings.services";
+import { toast } from "react-toastify";
+import { useTranslations } from "next-intl";
 
 //Land Classification
 
 //Post
 export const useCreateLandClassification = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -30,6 +34,11 @@ export const useCreateLandClassification = () => {
       queryClient.invalidateQueries({
         queryKey: ["land-classifications"],
       });
+
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
@@ -45,6 +54,8 @@ export const useLandClassifications = () => {
 };
 //Delete
 export const useDeleteLandClassification = () => {
+  const t = useTranslations();
+
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -54,11 +65,16 @@ export const useDeleteLandClassification = () => {
       queryClient.invalidateQueries({
         queryKey: ["land-classifications"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
 //Put
 export const useUpdateLandClassification = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -79,6 +95,10 @@ export const useUpdateLandClassification = () => {
       queryClient.invalidateQueries({
         queryKey: ["land-classifications"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
@@ -97,6 +117,7 @@ export const useCommissionOfferSettings = () =>
   });
 //Put
 export const useUpdateGlobalCommission = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -104,13 +125,18 @@ export const useUpdateGlobalCommission = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["commission-settings"],
+        queryKey: ["commission-offer-settings"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
 //Put
 export const useUpdateMinOffer = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -118,13 +144,18 @@ export const useUpdateMinOffer = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["commission-settings"],
+        queryKey: ["commission-offer-settings"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
 //Put
 export const useUpdateMaxOffer = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -132,8 +163,12 @@ export const useUpdateMaxOffer = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["commission-settings"],
+        queryKey: ["commission-offer-settings"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
@@ -152,6 +187,7 @@ export const useCommunication = () => {
 };
 //Put
 export const useUpdateCommunicationSettings = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -161,6 +197,10 @@ export const useUpdateCommunicationSettings = () => {
       queryClient.invalidateQueries({
         queryKey: ["communication-settings"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
@@ -169,6 +209,7 @@ export const useUpdateCommunicationSettings = () => {
 
 //Post
 export const useAddFaq = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -178,26 +219,30 @@ export const useAddFaq = () => {
       queryClient.invalidateQueries({
         queryKey: ["faqs"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
 
 //Get
 
-export const useFaqs = ()=>{
+export const useFaqs = () => {
   return useQuery({
-    queryKey:["faqs"],
-    queryFn:async()=>{
-      const res = await getFaqs()
-      return res.data.data.items
-    }
-  })
-}
-
+    queryKey: ["faqs"],
+    queryFn: async () => {
+      const res = await getFaqs();
+      return res.data.data.items;
+    },
+  });
+};
 
 // Patch
 
 export const useReorderFaqs = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -207,6 +252,10 @@ export const useReorderFaqs = () => {
       queryClient.invalidateQueries({
         queryKey: ["faqs"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
@@ -214,6 +263,7 @@ export const useReorderFaqs = () => {
 //Delete
 
 export const useDeleteFaq = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -224,6 +274,10 @@ export const useDeleteFaq = () => {
       queryClient.invalidateQueries({
         queryKey: ["faqs"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
@@ -231,6 +285,7 @@ export const useDeleteFaq = () => {
 // Put
 
 export const useUpdateFaq = () => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -239,6 +294,10 @@ export const useUpdateFaq = () => {
       queryClient.invalidateQueries({
         queryKey: ["faqs"],
       });
+      toast.success(t("pages.roles.toasts.AddedLand"));
+    },
+    onError: () => {
+      toast.error(t("pages.roles.toasts.Failed"));
     },
   });
 };
