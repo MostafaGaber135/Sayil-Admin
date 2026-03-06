@@ -116,7 +116,7 @@ export default function RolesPermissionsClient({
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
         <div>
           <div className="text-2xl font-semibold tracking-tight">{title}</div>
           {description ? (
@@ -126,7 +126,7 @@ export default function RolesPermissionsClient({
 
         <Button
           onClick={openCreate}
-          className="bg-blue-600 hover:bg-blue-600/90 cursor-pointer"
+          className="w-full bg-blue-600 hover:bg-blue-600/90 cursor-pointer sm:w-auto"
         >
           <Plus className="size-4" />
           {t("pages.roles.actions.addNewRole")}
