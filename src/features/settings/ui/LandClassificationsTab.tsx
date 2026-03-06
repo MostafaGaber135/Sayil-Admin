@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import {
   Table,
+  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -84,6 +85,9 @@ export default function LandClassificationsTab() {
           </TableHeader>
 
 {/* ROWS */}
+<TableBody>
+
+
 {isLoading ? (
   <TableRow>
     <TableCell colSpan={3}>
@@ -157,6 +161,7 @@ export default function LandClassificationsTab() {
     </TableCell>
   </TableRow>
 )}
+</TableBody>
         </Table>
       </Card>
 
