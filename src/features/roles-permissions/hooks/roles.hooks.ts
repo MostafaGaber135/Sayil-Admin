@@ -2,7 +2,6 @@
 
 import {
   keepPreviousData,
-  useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -264,8 +263,8 @@ export function usePagesWithClaims() {
   return useQuery({
     queryKey: [...queryKeys.roles, "pages-with-claims"],
     queryFn: fetchPagesWithClaimsAction,
-    staleTime: 30 * 60 * 1000, 
-    gcTime: 60 * 60 * 1000, 
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnMount: false,
   });
 }
@@ -274,8 +273,8 @@ export function useRolesPaginated(body: RolesPaginatedBody) {
   return useQuery({
     queryKey: rolesPaginatedKey(body),
     queryFn: () => fetchRolesPaginatedAction(body),
-    staleTime: 60 * 1000, 
-    gcTime: 10 * 60 * 1000, 
+    staleTime: 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     refetchOnMount: false,
     placeholderData: keepPreviousData,
   });
@@ -286,60 +285,69 @@ export function useRoleById(id: string | number | null, enabled: boolean) {
     queryKey: [...queryKeys.roles, "by-id", id],
     queryFn: () => fetchRoleByIdAction(id as string | number),
     enabled: Boolean(id) && enabled,
-    staleTime: 2 * 60 * 1000, 
+    staleTime: 2 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnMount: false,
   });
 }
 
-export function useAddRoleMutation() {
+export function useRoleActions() {
   const qc = useQueryClient();
   const t = useTranslations("pages.roles.toasts");
 
-  return useMutation({
-    mutationFn: (body: AddRoleBody) => addRoleAction(body),
-    onSuccess: async (res) => {
+  const refetchRolesPaginated = async () => {
+    await qc.refetchQueries({ queryKey: [...queryKeys.roles, "paginated"] });
+  };
+
+  const addRole = async (body: AddRoleBody) => {
+    try {
+      const res = await addRoleAction(body);
       showSuccess(t, "addSuccess", getApiMessage(res));
-      await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
-    },
-    onError: (error) => {
+      await refetchRolesPaginated();
+      return res;
+    } catch (error) {
       showError(t, "addError", getApiMessage(error));
-    },
-  });
-}
+      throw error;
+    }
+  };
 
-export function useUpdateRoleMutation() {
-  const qc = useQueryClient();
-  const t = useTranslations("pages.roles.toasts");
-
-  return useMutation({
-    mutationFn: ({ id, body }: { id: string | number; body: UpdateRoleBody }) =>
-      updateRoleAction(id, body),
-    onSuccess: async (res, vars) => {
+  const updateRole = async ({
+    id,
+    body,
+  }: {
+    id: string | number;
+    body: UpdateRoleBody;
+  }) => {
+    try {
+      const res = await updateRoleAction(id, body);
       showSuccess(t, "updateSuccess", getApiMessage(res));
       await Promise.all([
-        qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] }),
-        qc.invalidateQueries({ queryKey: [...queryKeys.roles, "by-id", vars.id] }),
+        qc.refetchQueries({ queryKey: [...queryKeys.roles, "paginated"] }),
+        qc.refetchQueries({ queryKey: [...queryKeys.roles, "by-id", id] }),
       ]);
-    },
-    onError: (error) => {
+      return res;
+    } catch (error) {
       showError(t, "updateError", getApiMessage(error));
-    },
-  });
-}
+      throw error;
+    }
+  };
 
-export function useDeleteRoleMutation() {
-  const qc = useQueryClient();
-  const t = useTranslations("pages.roles.toasts");
-
-  return useMutation({
-    mutationFn: (id: string | number) => deleteRoleAction(id),
-    onSuccess: async (res) => {
+  const deleteRole = async (id: string | number) => {
+    try {
+      const res = await deleteRoleAction(id);
       showSuccess(t, "deleteSuccess", getApiMessage(res));
-      await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
-    },
-    onError: (error) => {
+      await refetchRolesPaginated();
+      return res;
+    } catch (error) {
       showError(t, "deleteError", getApiMessage(error));
-    },
-  });
+      throw error;
+    }
+  };
+
+  return {
+    addRole,
+    updateRole,
+    deleteRole,
+  };
 }
+

@@ -10,12 +10,10 @@ import {
   buildPermissionsFromPages,
   normalizeRoleById,
   normalizeRoles,
-  useAddRoleMutation,
-  useDeleteRoleMutation,
   usePagesWithClaims,
+  useRoleActions,
   useRoleById,
   useRolesPaginated,
-  useUpdateRoleMutation,
 } from "../hooks/roles.hooks";
 import RoleCard from "./RoleCard";
 import RoleFormDialog from "./RoleFormDialog";
@@ -64,9 +62,7 @@ export default function RolesPermissionsClient({
     return normalized ?? roles.find((r) => r.id === activeRoleId) ?? null;
   }, [dialogMode, activeRoleId, roleByIdQuery.data, claimIdToPermissionId, roles]);
 
-  const addMutation = useAddRoleMutation();
-  const updateMutation = useUpdateRoleMutation();
-  const deleteMutation = useDeleteRoleMutation();
+  const { addRole, updateRole, deleteRole } = useRoleActions();
 
   const openCreate = useCallback(() => {
     setDialogMode("create");
@@ -81,13 +77,13 @@ export default function RolesPermissionsClient({
   }, []);
 
   const handleSubmit = useCallback(
-    (payload: { name: string; description: string; permissionIds: string[] }) => {
+    async (payload: { name: string; description: string; permissionIds: string[] }) => {
       const claimIds = payload.permissionIds
         .map((pid) => permissionIdToClaimId.get(pid))
         .filter((x): x is number => typeof x === "number");
 
       if (dialogMode === "create") {
-        addMutation.mutate({
+        await addRole({
           roleName: payload.name,
           description: payload.description,
           claimIds,
@@ -100,7 +96,7 @@ export default function RolesPermissionsClient({
 
       const roleIdNum = Number(activeRole.id);
 
-      updateMutation.mutate({
+      await updateRole({
         id: activeRole.id,
         body: {
           roleId: Number.isFinite(roleIdNum) ? roleIdNum : 0,
@@ -111,7 +107,7 @@ export default function RolesPermissionsClient({
         },
       });
     },
-    [permissionIdToClaimId, dialogMode, addMutation, updateMutation, activeRole]
+    [permissionIdToClaimId, dialogMode, addRole, updateRole, activeRole]
   );
 
   return (
@@ -143,8 +139,8 @@ export default function RolesPermissionsClient({
               role={role}
               permissions={permissions}
               onEdit={openEdit}
-              onDelete={(r) => {
-                deleteMutation.mutate(r.id);
+              onDelete={async (r) => {
+                await deleteRole(r.id);
               }}
             />
           </div>
