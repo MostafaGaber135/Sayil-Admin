@@ -19,13 +19,13 @@ import type {
 } from "../types";
 
 import {
-  addRole,
-  deleteRole,
-  fetchPagesWithClaims,
-  fetchRoleById,
-  fetchRolesPaginated,
-  updateRole,
-} from "../services/roles.services";
+  addRoleAction,
+  deleteRoleAction,
+  fetchPagesWithClaimsAction,
+  fetchRoleByIdAction,
+  fetchRolesPaginatedAction,
+  updateRoleAction,
+} from "@/server-actions/roles/roles.actions";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -263,7 +263,7 @@ function rolesPaginatedKey(body: RolesPaginatedBody) {
 export function usePagesWithClaims() {
   return useQuery({
     queryKey: [...queryKeys.roles, "pages-with-claims"],
-    queryFn: fetchPagesWithClaims,
+    queryFn: fetchPagesWithClaimsAction,
     staleTime: 30 * 60 * 1000, 
     gcTime: 60 * 60 * 1000, 
     refetchOnMount: false,
@@ -273,7 +273,7 @@ export function usePagesWithClaims() {
 export function useRolesPaginated(body: RolesPaginatedBody) {
   return useQuery({
     queryKey: rolesPaginatedKey(body),
-    queryFn: () => fetchRolesPaginated(body),
+    queryFn: () => fetchRolesPaginatedAction(body),
     staleTime: 60 * 1000, 
     gcTime: 10 * 60 * 1000, 
     refetchOnMount: false,
@@ -284,7 +284,7 @@ export function useRolesPaginated(body: RolesPaginatedBody) {
 export function useRoleById(id: string | number | null, enabled: boolean) {
   return useQuery({
     queryKey: [...queryKeys.roles, "by-id", id],
-    queryFn: () => fetchRoleById(id as string | number),
+    queryFn: () => fetchRoleByIdAction(id as string | number),
     enabled: Boolean(id) && enabled,
     staleTime: 2 * 60 * 1000, 
     gcTime: 10 * 60 * 1000,
@@ -297,7 +297,7 @@ export function useAddRoleMutation() {
   const t = useTranslations("pages.roles.toasts");
 
   return useMutation({
-    mutationFn: (body: AddRoleBody) => addRole(body),
+    mutationFn: (body: AddRoleBody) => addRoleAction(body),
     onSuccess: async (res) => {
       showSuccess(t, "addSuccess", getApiMessage(res));
       await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
@@ -314,7 +314,7 @@ export function useUpdateRoleMutation() {
 
   return useMutation({
     mutationFn: ({ id, body }: { id: string | number; body: UpdateRoleBody }) =>
-      updateRole(id, body),
+      updateRoleAction(id, body),
     onSuccess: async (res, vars) => {
       showSuccess(t, "updateSuccess", getApiMessage(res));
       await Promise.all([
@@ -333,7 +333,7 @@ export function useDeleteRoleMutation() {
   const t = useTranslations("pages.roles.toasts");
 
   return useMutation({
-    mutationFn: (id: string | number) => deleteRole(id),
+    mutationFn: (id: string | number) => deleteRoleAction(id),
     onSuccess: async (res) => {
       showSuccess(t, "deleteSuccess", getApiMessage(res));
       await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
