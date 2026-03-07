@@ -19,16 +19,13 @@ import type {
 } from "../types";
 
 import {
+  addRole,
+  deleteRole,
   fetchPagesWithClaims,
   fetchRoleById,
   fetchRolesPaginated,
+  updateRole,
 } from "../services/roles.services";
-
-import {
-  addRoleAction,
-  deleteRoleAction,
-  updateRoleAction,
-} from "../actions/roles.actions";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -193,8 +190,8 @@ export function normalizeRoles(
       const permissionIds = permissionsFromStrings.length
         ? permissionsFromStrings
         : claimIds
-          .map((cid) => claimIdToPermissionId.get(cid))
-          .filter((x): x is string => typeof x === "string");
+            .map((cid) => claimIdToPermissionId.get(cid))
+            .filter((x): x is string => typeof x === "string");
 
       if (!id || !name) return null;
 
@@ -235,8 +232,8 @@ export function normalizeRoleById(
   const permissionIds = permissionsFromStrings.length
     ? permissionsFromStrings
     : claimIds
-      .map((cid) => claimIdToPermissionId.get(cid))
-      .filter((x): x is string => typeof x === "string");
+        .map((cid) => claimIdToPermissionId.get(cid))
+        .filter((x): x is string => typeof x === "string");
 
   if (!id || !name) return null;
 
@@ -267,8 +264,8 @@ export function usePagesWithClaims() {
   return useQuery({
     queryKey: [...queryKeys.roles, "pages-with-claims"],
     queryFn: fetchPagesWithClaims,
-    staleTime: 30 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, 
+    gcTime: 60 * 60 * 1000, 
     refetchOnMount: false,
   });
 }
@@ -277,8 +274,8 @@ export function useRolesPaginated(body: RolesPaginatedBody) {
   return useQuery({
     queryKey: rolesPaginatedKey(body),
     queryFn: () => fetchRolesPaginated(body),
-    staleTime: 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 60 * 1000, 
+    gcTime: 10 * 60 * 1000, 
     refetchOnMount: false,
     placeholderData: keepPreviousData,
   });
@@ -289,7 +286,7 @@ export function useRoleById(id: string | number | null, enabled: boolean) {
     queryKey: [...queryKeys.roles, "by-id", id],
     queryFn: () => fetchRoleById(id as string | number),
     enabled: Boolean(id) && enabled,
-    staleTime: 2 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, 
     gcTime: 10 * 60 * 1000,
     refetchOnMount: false,
   });
@@ -300,7 +297,7 @@ export function useAddRoleMutation() {
   const t = useTranslations("pages.roles.toasts");
 
   return useMutation({
-    mutationFn: (body: AddRoleBody) => addRoleAction(body),
+    mutationFn: (body: AddRoleBody) => addRole(body),
     onSuccess: async (res) => {
       showSuccess(t, "addSuccess", getApiMessage(res));
       await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
@@ -317,7 +314,7 @@ export function useUpdateRoleMutation() {
 
   return useMutation({
     mutationFn: ({ id, body }: { id: string | number; body: UpdateRoleBody }) =>
-      updateRoleAction(id, body),
+      updateRole(id, body),
     onSuccess: async (res, vars) => {
       showSuccess(t, "updateSuccess", getApiMessage(res));
       await Promise.all([
@@ -336,7 +333,7 @@ export function useDeleteRoleMutation() {
   const t = useTranslations("pages.roles.toasts");
 
   return useMutation({
-    mutationFn: (id: string | number) => deleteRoleAction(id),
+    mutationFn: (id: string | number) => deleteRole(id),
     onSuccess: async (res) => {
       showSuccess(t, "deleteSuccess", getApiMessage(res));
       await qc.invalidateQueries({ queryKey: [...queryKeys.roles, "paginated"] });
