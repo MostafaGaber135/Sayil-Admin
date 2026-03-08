@@ -73,14 +73,14 @@
         "commissionByLocation": "Commission Earned by Location"
       }
     },
-    "profile":{
-      "Profile":"Profile Settings",
-      "Account":"Account Information",
-      "Change Password":"Change Password",
-      "Save Changes":"Save Changes",
-      "Full Name":"Full Name",
-      "Phone Number":"Phone Number",
-      "Role":"Role"
+    "profile": {
+      "Profile": "Profile Settings",
+      "Account": "Account Information",
+      "Change Password": "Change Password",
+      "Save Changes": "Save Changes",
+      "Full Name": "Full Name",
+      "Phone Number": "Phone Number",
+      "Role": "Role"
     },
     "listings": {
       "title": "Listings",
@@ -91,8 +91,68 @@
       "desc": "Details page placeholder."
     },
     "users": {
-      "title": "Users",
-      "desc": "Manage users."
+      "title": "User Management",
+      "desc": "Manage internal and external users",
+      "actions": {
+        "addUser": "Add User"
+      },
+      "tabs": {
+        "internal": "Internal Users",
+        "external": "External Users"
+      },
+      "searchPlaceholder": "Search users...",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "lastActive": "Last Active",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "deactivate": "Deactivate",
+        "activate": "Activate"
+      },
+      "form": {
+        "addTitle": "Add New User",
+        "editTitle": "Edit User",
+        "personalInformation": "Personal Information",
+        "fullName": "Full Name *",
+        "email": "Email Address *",
+        "phone": "Phone Number",
+        "role": "Role *",
+        "department": "Department",
+        "location": "Location",
+        "initialPassword": "Initial Password *",
+        "passwordHint": "User will be required to change password on first login",
+        "placeholders": {
+          "fullName": "Enter full name",
+          "email": "Enter email address",
+          "phone": "Enter phone number",
+          "department": "Enter department",
+          "location": "Enter location",
+          "password": "Enter initial password"
+        },
+        "cancel": "Cancel",
+        "save": "Save User"
+      },
+      "deleteDialog": {
+        "title": "Delete User",
+        "description": "This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "deactivateDialog": {
+        "deactivateTitle": "Deactivate User",
+        "deactivateDescription": "This user will no longer be able to access the platform until reactivated.",
+        "activateTitle": "Activate User",
+        "activateDescription": "This user will regain access to the platform immediately.",
+        "cancel": "Cancel",
+        "confirmDeactivate": "Deactivate",
+        "confirmActivate": "Activate"
+      }
     },
     "roles": {
       "SuperAdmin": "Super Admin",
@@ -111,8 +171,8 @@
         "updateError": "Failed to update role",
         "deleteSuccess": "Role deleted successfully",
         "deleteError": "Failed to delete role",
-        "AddedLand":"The operation was successful.",
-        "Failed":"The operation was not successful."
+        "AddedLand": "The operation was successful.",
+        "Failed": "The operation was not successful."
       }
     },
     "settings": {
@@ -155,15 +215,15 @@
       "Cancel": "Cancel",
       "Deleting": "Deleting",
       "Delete": "Delete",
-      "Drag":"Drag and drop to reorder FAQs or use the arrow buttons",
-      "+ Add FAQ":"+ Add FAQ"
+      "Drag": "Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ": "+ Add FAQ"
     },
-    "notification":{
-      "Notifications":"Notifications",
-      "Mark":"Mark all as read",
-      "Marking":"Marking",
-      "View all":"View all notifications",
-      "No notifications":"No notifications"
+    "notification": {
+      "Notifications": "Notifications",
+      "Mark": "Mark all as read",
+      "Marking": "Marking",
+      "View all": "View all notifications",
+      "No notifications": "No notifications"
     },
     "login": {
       "title": "Login",

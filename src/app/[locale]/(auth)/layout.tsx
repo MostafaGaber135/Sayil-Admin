@@ -1,9 +1,9 @@
-import { GuestGuard } from "@/shared/lib/auth/guards";
+// import { GuestGuard } from "@/shared/lib/auth/guards";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <GuestGuard>
+    // <GuestGuard>
       <div className="min-h-screen">{children}</div>
-    </GuestGuard>
+    // </GuestGuard>
   );
 }
