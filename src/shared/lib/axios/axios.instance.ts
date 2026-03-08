@@ -21,16 +21,22 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    return (async () => {
-        const token = await getClientAccessToken();
-        if (token) {
-            config.headers = config.headers ?? {};
-            config.headers.Authorization = `Bearer ${token}`;
-            console.log(token);
-            
-        }
-        return config;
-    })();
+  return (async () => {
+
+    // لو الكود يعمل في السيرفر
+    if (typeof window === "undefined") {
+      return config;
+    }
+
+    const token = await getClientAccessToken();
+
+    if (token) {
+      config.headers = config.headers ?? {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  })();
 });
 
 api.interceptors.response.use(
