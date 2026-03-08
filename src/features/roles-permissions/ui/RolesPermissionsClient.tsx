@@ -10,12 +10,10 @@ import {
   buildPermissionsFromPages,
   normalizeRoleById,
   normalizeRoles,
-  useAddRoleMutation,
-  useDeleteRoleMutation,
   usePagesWithClaims,
+  useRoleActions,
   useRoleById,
   useRolesPaginated,
-  useUpdateRoleMutation,
 } from "../hooks/roles.hooks";
 import RoleCard from "./RoleCard";
 import RoleFormDialog from "./RoleFormDialog";
@@ -64,9 +62,7 @@ export default function RolesPermissionsClient({
     return normalized ?? roles.find((r) => r.id === activeRoleId) ?? null;
   }, [dialogMode, activeRoleId, roleByIdQuery.data, claimIdToPermissionId, roles]);
 
-  const addMutation = useAddRoleMutation();
-  const updateMutation = useUpdateRoleMutation();
-  const deleteMutation = useDeleteRoleMutation();
+  const { addRole, updateRole, deleteRole } = useRoleActions();
 
   const openCreate = useCallback(() => {
     setDialogMode("create");
@@ -81,13 +77,13 @@ export default function RolesPermissionsClient({
   }, []);
 
   const handleSubmit = useCallback(
-    (payload: { name: string; description: string; permissionIds: string[] }) => {
+    async (payload: { name: string; description: string; permissionIds: string[] }) => {
       const claimIds = payload.permissionIds
         .map((pid) => permissionIdToClaimId.get(pid))
         .filter((x): x is number => typeof x === "number");
 
       if (dialogMode === "create") {
-        addMutation.mutate({
+        await addRole({
           roleName: payload.name,
           description: payload.description,
           claimIds,
@@ -100,7 +96,7 @@ export default function RolesPermissionsClient({
 
       const roleIdNum = Number(activeRole.id);
 
-      updateMutation.mutate({
+      await updateRole({
         id: activeRole.id,
         body: {
           roleId: Number.isFinite(roleIdNum) ? roleIdNum : 0,
@@ -111,12 +107,12 @@ export default function RolesPermissionsClient({
         },
       });
     },
-    [permissionIdToClaimId, dialogMode, addMutation, updateMutation, activeRole]
+    [permissionIdToClaimId, dialogMode, addRole, updateRole, activeRole]
   );
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
         <div>
           <div className="text-2xl font-semibold tracking-tight">{title}</div>
           {description ? (
@@ -126,7 +122,7 @@ export default function RolesPermissionsClient({
 
         <Button
           onClick={openCreate}
-          className="bg-blue-600 hover:bg-blue-600/90 cursor-pointer"
+          className="w-full bg-blue-600 hover:bg-blue-600/90 cursor-pointer sm:w-auto"
         >
           <Plus className="size-4" />
           {t("pages.roles.actions.addNewRole")}
@@ -143,8 +139,8 @@ export default function RolesPermissionsClient({
               role={role}
               permissions={permissions}
               onEdit={openEdit}
-              onDelete={(r) => {
-                deleteMutation.mutate(r.id);
+              onDelete={async (r) => {
+                await deleteRole(r.id);
               }}
             />
           </div>

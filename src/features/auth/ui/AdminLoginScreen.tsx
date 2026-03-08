@@ -78,44 +78,44 @@ export default function AdminLoginScreen() {
     [t]
   );
 
-const applyPreset = useCallback(
-  (p: LoginPreset) => {
-    setApiError(null);
-    form.reset(
-      { phoneNumber: p.phoneNumber, password: p.password },
-      { keepDirty: true, keepTouched: true }
-    );
+  const applyPreset = useCallback(
+    (p: LoginPreset) => {
+      setApiError(null);
+      form.reset(
+        { phoneNumber: p.phoneNumber, password: p.password },
+        { keepDirty: true, keepTouched: true }
+      );
+      form.trigger(["phoneNumber", "password"]);
+      form.setFocus("phoneNumber");
+    },
+    [form]
+  );
 
-    form.trigger(["phoneNumber", "password"]); 
-    form.setFocus("phoneNumber");
-  },
-  [form]
-);
-const onSubmit = useCallback(
-  async (values: AdminLoginFormValues) => {
-    setApiError(null);
+  const onSubmit = useCallback(
+    async (values: AdminLoginFormValues) => {
+      setApiError(null);
 
-    try {
-      const res = await login.mutateAsync(values);
+      try {
+        const res = await login.mutateAsync(values);
 
-      if (!res?.ok) {
-        if (res?.error === "CredentialsSignin" || res?.status === 401) {
-          toast.error(t("auth.login.errors.unauthorized"));
+        if (!res?.ok) {
+          if (res?.error === "CredentialsSignin" || res?.status === 401) {
+            toast.error(t("auth.login.errors.unauthorized"));
+            return;
+          }
+          toast.error(t("auth.login.errors.invalid"));
           return;
         }
-        toast.error(t("auth.login.errors.invalid"));
-        return;
-      }
 
-      toast.success(t("auth.login.success"));
-      router.push("/dashboard");
-    } catch {
-      setApiError(t("auth.login.errors.network"));
-      toast.error(t("auth.login.errors.network"));
-    }
-  },
-  [login, router, t]
-);
+        toast.success(t("auth.login.success"));
+        router.push("/dashboard");
+      } catch {
+        setApiError(t("auth.login.errors.network"));
+        toast.error(t("auth.login.errors.network"));
+      }
+    },
+    [login, router, t]
+  );
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-primary">
@@ -124,7 +124,7 @@ const onSubmit = useCallback(
       <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_30%_0%,var(--auth-hero-glow),transparent_60%)]" />
 
       <div className="relative z-10">
-        <div className="mx-auto w-full max-w-6xl px-6 py-10 lg:py-14">
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:py-14">
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <div
               className={cn(
@@ -148,12 +148,7 @@ const onSubmit = useCallback(
               </div>
 
               <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
-                <div
-                  className={cn(
-                    "mb-5 flex items-center gap-3 text-lg font-semibold text-white",
-                    isRTL ? "flex-row justify-star" : ""
-                  )}
-                >
+                <div className="mb-5 flex items-center gap-3 text-lg font-semibold text-white">
                   <UserRound className="h-5 w-5" />
                   {t("auth.samples.title")}
                 </div>
@@ -163,24 +158,24 @@ const onSubmit = useCallback(
                     <div
                       key={p.phoneNumber}
                       className={cn(
-                        "flex items-center justify-between rounded-xl bg-white/10 p-5",
-                        isRTL ? "flex-row" : ""
+                        "flex flex-col gap-4 rounded-xl bg-white/10 p-5 sm:flex-row sm:items-center sm:justify-between",
+                        isRTL ? "sm:flex-row-reverse" : ""
                       )}
                     >
-                      <div
-                        className={cn(
-                          "space-y-1",
-                          isRTL ? "text-right" : "text-left"
-                        )}
-                      >
+                      <div className="min-w-0 space-y-1">
                         <div className="text-base font-semibold text-white">
                           {p.roleLabel}
                         </div>
-                        <div className="text-sm text-white/80">
-                          <span dir="ltr">{p.phoneNumber}</span>
+                        <div className="text-sm text-white/80 break-all">
+                          <span dir="ltr" className="break-all">
+                            {p.phoneNumber}
+                          </span>
                         </div>
-                        <div className="text-sm text-white/80">
-                          {t("auth.samples.password")}: <span dir="ltr">{p.password}</span>
+                        <div className="text-sm text-white/80 break-all">
+                          {t("auth.samples.password")}:{" "}
+                          <span dir="ltr" className="break-all">
+                            {p.password}
+                          </span>
                         </div>
                         {p.hint ? (
                           <div className="text-sm font-semibold text-yellow-300">
@@ -192,10 +187,7 @@ const onSubmit = useCallback(
                       <Button
                         type="button"
                         variant="secondary"
-                        className={cn(
-                          "h-10 rounded-lg bg-white/20 px-5 text-sm font-semibold text-white hover:bg-white/30 cursor-pointer",
-                          "border-0 shadow-none"
-                        )}
+                        className="h-10 w-full shrink-0 rounded-lg bg-white/20 px-5 text-sm font-semibold text-white hover:bg-white/30 cursor-pointer sm:w-auto border-0 shadow-none"
                         onClick={() => applyPreset(p)}
                       >
                         {t("auth.samples.use")}
@@ -206,12 +198,12 @@ const onSubmit = useCallback(
               </div>
             </div>
 
-            <Card className="relative rounded-2xl border-0 bg-white shadow-xl">
-              <CardContent className="p-8 sm:p-10">
+            <Card className="relative mx-auto w-full max-w-xl rounded-2xl border-0 bg-white shadow-xl">
+              <CardContent className="pt-14 p-6 sm:pt-10 sm:p-10">
                 <div
                   className={cn(
-                    "absolute top-6",
-                    isRTL ? "left-6" : "right-6"
+                    "absolute top-2 sm:top-10",
+                    isRTL ? "left-2 sm:left-10" : "right-3 sm:right-10"
                   )}
                 >
                   <LocaleSwitch
@@ -223,6 +215,7 @@ const onSubmit = useCallback(
                     )}
                   />
                 </div>
+
                 <LoginForm
                   form={form}
                   isRTL={isRTL}

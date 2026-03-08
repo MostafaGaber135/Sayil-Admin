@@ -76,7 +76,7 @@ export default function PermissionsPicker({
                   />
                   <div className="min-w-0">
                     <div className="text-sm font-medium leading-5">{p.label}</div>
-                    <div className="mt-0.5 text-xs text-muted-foreground">{p.id}</div>
+                    <div className="mt-0.5 break-all text-xs text-muted-foreground">{p.id}</div>
                   </div>
                 </div>
               );

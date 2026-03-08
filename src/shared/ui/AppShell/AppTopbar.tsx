@@ -21,6 +21,7 @@ import NotificationDropdown from "@/features/notifications/ui/NotificationsDropd
 import { useSession } from "next-auth/react";
 
 export default function AppTopbar() {
+  
   const t = useTranslations();
   const tRoles = useTranslations("pages.roles");
   const [open, setOpen] = useState(false);
@@ -87,7 +88,9 @@ export default function AppTopbar() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-44 ">
-        <DropdownMenuItem className="cursor-pointer">{t("topbar.profile")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={()=>{
+          router.push("/profile")
+        }} className="cursor-pointer">{t("topbar.profile")}</DropdownMenuItem>
         <DropdownMenuItem
           className="text-destructive cursor-pointer"
           disabled={isLoggingOut}

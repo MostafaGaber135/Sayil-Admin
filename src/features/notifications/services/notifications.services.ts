@@ -16,7 +16,12 @@ export const getUnreadNotificationsCount = () => {
   return api.get("/api/admin/notifications/unread-count");
 };
 
-//Mark All is Read
+//Mark Read
 export const markNotificationAsRead = (id: number) => {
   return api.post(`/api/admin/notifications/mark-read/${id}`);
+};
+
+//Mark All Read
+export const markAllNotificationsAsRead = () => {
+  return api.post("/api/admin/notifications/mark-all-read");
 };

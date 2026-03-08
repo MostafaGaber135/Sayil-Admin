@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getNotifications,
   getUnreadNotificationsCount,
+  markAllNotificationsAsRead,
   markNotificationAsRead,
 } from "../services/notifications.services";
 
@@ -41,6 +42,27 @@ export const useMarkNotificationAsRead = () => {
         queryKey: ["notifications"],
       });
 
+      queryClient.invalidateQueries({
+        queryKey: ["notifications-unread-count"],
+      });
+    },
+  });
+};
+
+
+export const useMarkAllNotificationsAsRead = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: markAllNotificationsAsRead,
+
+    onSuccess: () => {
+      // تحديث قائمة الإشعارات
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+
+      // تحديث رقم الـ unread
       queryClient.invalidateQueries({
         queryKey: ["notifications-unread-count"],
       });
