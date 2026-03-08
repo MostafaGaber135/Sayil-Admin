@@ -100,6 +100,6 @@ export const listingSchema = z.object({
     purchasedPrice: z.coerce.number().nullable().optional(),
 });
 
-// استخراج التايبس من السكيمة
+
 export type CreateListingRequest = z.infer<typeof listingSchema>;
 export type ListingFormValues = z.infer<typeof listingSchema>;

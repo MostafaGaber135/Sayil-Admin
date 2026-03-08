@@ -1,16 +1,15 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {ApproveLandRequest, RejectLandRequest, useListingsMutation} from "@/features/listings";
+import {ApproveLandRequest, RejectLandRequest} from "@/features/listings";
 import {
     fetchAddLand,
     fetchAllListing,
     fetchApproveLand,
     fetchDeleteLand,
     fetchRejectLand,
-    fetchUpdate
 } from "@/features/listings/api";
-import {CreateListingRequest} from "@/features/listings/validation";
-import { useActionState, useTransition } from "react";
-import { fetchAddLandAction } from "@/server-actions/listings/create-land.action";
+import {CreateListingRequest, ListingFormValues} from "@/features/listings/validation";
+// import { useActionState, useTransition } from "react";
+// import { fetchAddLandAction } from "@/server-actions/listings/create-land.action";
 
 export const useApproveLand = () => {
     const queryClient = useQueryClient();
@@ -63,26 +62,27 @@ export const useCreateListing = () => {
     // return { handleAddListings, isPending, state }
 }
 
-export const useUpdateListing =  () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn:(body:CreateListingRequest)=> fetchUpdate(body),
-        onSuccess:async(data:any) => {
-            if (data?.data?.id) {
-                await queryClient.invalidateQueries({
-                    queryKey: ["getLand", data?.data?.id],
-                });
-            }
-            const latestListings = await fetchAllListing({});
-            console.log("Latest listings after update:", latestListings);
+// export const useUpdateListing = () => {
+//     const queryClient = useQueryClient();
 
-            console.log('✅ update listing id:', data.data);
-        },
-        onError: (error) => {
-            console.error(' Error:', error);
-        },
-    })
-}
+//     return useMutation({
+//         mutationFn: ({ id, data }: { id: number; data: ListingFormValues }) => 
+//             fetchUpdate({ ...data, id } as CreateListingRequest),
+//         onSuccess: async (data: any) => {
+//             if (data?.data?.id) {
+//                 await queryClient.invalidateQueries({
+//                     queryKey: ["getLand", data?.data?.id],
+//                 });
+//             }
+//             await queryClient.invalidateQueries({ queryKey: ["listings"] }); 
+//             console.log('✅ update listing success:', data.data);
+//         },
+//         onError: (error) => {
+//             console.error('❌ Update Error:', error);
+//         },
+//     });
+// };
+
 
 export const useDeleteLand =  (id:string) => {
     const queryClient = useQueryClient();

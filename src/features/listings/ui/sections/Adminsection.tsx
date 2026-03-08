@@ -1,15 +1,15 @@
 'use client';
 import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form";
-import { ListingFormValues, ListingLookups } from "../../types";
+import { ListingFormValues } from "../../validation";
+import { ListingLookupsResponse } from "../..";
+
 
 interface Props {
     register: UseFormRegister<ListingFormValues>;
     errors: FieldErrors<ListingFormValues>;
     watch: UseFormWatch<ListingFormValues>;
-    lookups?: ListingLookups;
+    lookups?: ListingLookupsResponse;
 
-    // users?:  { id: number; name: string; email: string }[];
-    // agents?: { id: number; name: string; email: string }[];
 }
 
 export const AdminSection = ({ register, errors, watch, lookups }: Props) => {
@@ -58,20 +58,11 @@ export const AdminSection = ({ register, errors, watch, lookups }: Props) => {
                     <label className="text-sm font-medium text-gray-700">Land Classification</label>
                     <select {...register("classificationId")} className={selectCls(!!errors.classificationId)}>
                         <option value="">Select Classification</option>
-
-                        {lookups?.classifications?.length > 0 ? (
-                            lookups.classifications.map(c => (
-                                <option key={c.value} value={c.value}>
-                                    {c.label}
-                                </option>
-                            ))
-                        ) : (
-                            <>
-                                <option value="1">Class A (10%)</option>
-                                <option value="2">Class B (20%)</option>
-                                <option value="3">Class C (30%)</option>
-                            </>
-                        )}
+                        {lookups?.classifications?.map(c => (
+                            <option key={c.id} value={c.id}> 
+                                {c.name}                  
+                            </option>
+                        ))}
                     </select>
                     <FieldError message={errors.classificationId?.message} />
                 </div>

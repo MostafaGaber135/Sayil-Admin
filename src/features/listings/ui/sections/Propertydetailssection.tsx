@@ -1,11 +1,11 @@
 'use client';
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { ListingFormValues, ListingLookups } from "../../types";
+
 
 interface Props {
     register: UseFormRegister<ListingFormValues>;
     errors: FieldErrors<ListingFormValues>;
-    lookups?: ListingLookups;
+    lookups?: ListingLookupsResponse;
 }
 
 export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => {
@@ -20,7 +20,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("landTypeId")}
             >
                 <option value="">Select Type</option>
-                {lookups?.landTypes.map(i => (
+                {lookups?.landTypes?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">Residential</option>
@@ -37,7 +37,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("landFacingId")}
             >
                 <option value="">Select Direction</option>
-                {lookups?.landFacing.map(i => (
+                {lookups?.landFacing?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">North</option>
@@ -54,7 +54,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("ownershipStatusId")}
             >
                 <option value="">Select Ownership</option>
-                {lookups?.ownershipStatus.map(i => (
+                {lookups?.ownershipStatus?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">Individual</option>
@@ -70,7 +70,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("deedTypeId")}
             >
                 <option value="">Select Deed</option>
-                {lookups?.deedTypes.map(i => (
+                {lookups?.deedTypes?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">Electronic</option>
@@ -97,6 +97,8 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
 
 // ── Shared Select Component ──
 import { forwardRef } from "react";
+import { ListingFormValues } from "../../validation";
+import { ListingLookupsResponse } from "../..";
 
 interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     label: string;

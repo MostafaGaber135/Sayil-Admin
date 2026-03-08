@@ -31,15 +31,13 @@ export const fetchDeleteLand = async (id:string) => {
 }
 
 
-export const fetchUpdate = async (body: CreateListingRequest): Promise<ListingsResponse> => {
-    try{
-        const { data } = await api.post('/api/admin/land/update', body);
-        return data;
-    }catch (error: any) {
-        console.log("STATUS:", error.response?.status);
-        console.log("BACKEND ERROR:", error.response?.data);
-        throw error;
-    }
-};
-
-
+// export const fetchUpdate = async (body: CreateListingRequest): Promise<ListingsResponse> => {
+//     try{
+//         const { data } = await api.post('/api/admin/land/update', body);
+//         return data;
+//     }catch (error: any) {
+//         console.log("STATUS:", error.response?.status);
+//         console.log("BACKEND ERROR:", error.response?.data);
+//         throw error;
+//     }
+// };

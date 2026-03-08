@@ -9,12 +9,7 @@ export const fetchAllListing = async (body: any): Promise<ListingsResponse> => {
     return data;
 };
 
-export const fetchGetLand =async (id: number) => {
-    try {
-        const {data} = await api.get(`/api/admin/land/${id}`);
-        return data;
-    }catch(error) {
-        console.log("error From fetchGetLand",error);
-    }
-
+export const fetchGetLand = async (id: number) => {
+    const { data } = await api.get(`/api/admin/land/${id}`);
+    return data;
 }

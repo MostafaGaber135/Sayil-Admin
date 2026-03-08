@@ -83,7 +83,7 @@ export default function RoleFormDialog({
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground"
+              className="text-muted-foreground cursor-pointer"
               onClick={() => onOpenChange(false)}
               aria-label="Close"
             >

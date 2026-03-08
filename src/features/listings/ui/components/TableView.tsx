@@ -1,6 +1,7 @@
 import {ListingItem} from "@/features/listings";
 import {StatusBadge} from "@/features/listings/ui/components/StatusBadge";
 import {ActionButtons} from "@/features/listings/ui/components/ActionButtons";
+import Link from "next/link";
 
 
 interface Props {
@@ -12,31 +13,29 @@ export const TableView = ({ listings }: Props) => (
         <div className="overflow-x-auto">
             <table className="w-full text-sm">
                 <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/50">
-                    {["Title", "Location", "Price", "Status", "Agent", "Actions"].map((col) => (
-                        <th
-                            key={col}
-                            className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide"
-                        >
-                            {col}
-                        </th>
-                    ))}
-                </tr>
+                    <tr className="border-b border-gray-100 bg-gray-50/50">
+                        {["Title", "Location", "Price", "Status", "Agent", "Actions"].map((col) => (
+                            <th key={col} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                {col}
+                            </th>
+                        ))}
+                    </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                {listings.map((item) => (
-                    <TableRow key={item.id} item={item} />
-                ))}
+                    {listings.map((item) => (
+                        <TableRow key={item.id} item={item} />
+                    ))}
                 </tbody>
             </table>
         </div>
     </div>
 );
 
-/* ── TableRow ─────────────────────────────────────────────────────── */
-
 const TableRow = ({ item }: { item: ListingItem }) => (
-    <tr className="hover:bg-gray-50/50 transition-colors">
+    <tr
+        className="hover:bg-gray-50/50 transition-colors cursor-pointer"
+        onClick={() => window.location.href = `/listings/${item.id}`} // ← الـ row كله clickable
+    >
         {/* Title */}
         <td className="px-4 py-3">
             <div className="flex items-center gap-3">
@@ -80,12 +79,11 @@ const TableRow = ({ item }: { item: ListingItem }) => (
         <td className="px-4 py-3 text-gray-600">{item.agentName}</td>
 
         {/* Actions */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}> {/* ← عشان الـ actions متعملش navigate */}
             <ActionButtons item={item} />
         </td>
     </tr>
 );
-
 /* ── Skeleton ─────────────────────────────────────────────────────── */
 
 export const TableSkeleton = () => (

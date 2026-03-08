@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Menu, Bell, User, ChevronDown } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/shared/components/ui/sheet";
@@ -16,18 +16,33 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useLogout } from "@/features/auth/hooks/auth.hooks";
 import { defaultLocale } from "@/shared/lib/i18n/routing";
+import { toast } from "react-toastify";
+import NotificationDropdown from "@/features/notifications/ui/NotificationsDropdown";
+import { useSession } from "next-auth/react";
 
 export default function AppTopbar() {
   const t = useTranslations();
+  const tRoles = useTranslations("pages.roles");
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
+  const { data: session } = useSession();
+
   const locale = useLocale();
   const pathname = usePathname();
   const firstSeg = pathname?.split("/")[1]?.toLowerCase();
   const isRTL = firstSeg?.startsWith("ar") || locale?.toLowerCase().startsWith("ar");
+  const shownLabel = useMemo(() => {
+    const rawRole = (session as any)?.user?.role; 
+    const roleKey = String(rawRole ?? "").trim();
+    if (roleKey) {
+  if (tRoles.has(roleKey)) return tRoles(roleKey);
+}
+    const fallbackLabel = isRTL ? "وكيل" : "Administrator";
+    // return formatRoleFallback(rawRole) ?? fallbackLabel;
+  }, [session, tRoles, isRTL]);
 
   const MenuBtn = (
     <Button variant="ghost" size="icon" className="md:hidden cursor-pointer" onClick={() => setOpen(true)}>
@@ -41,16 +56,7 @@ export default function AppTopbar() {
     </div>
   );
 
-  const NotifBtn = (
-    <Button variant="ghost" size="icon" className="relative cursor-pointer" aria-label={t("topbar.notifications")}>
-      <Bell className="h-6 w-6" />
-      <span
-        className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
-      >
-        2
-      </span>
-    </Button>
-  );
+
 
   const Divider = (
     <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" />
@@ -63,21 +69,17 @@ export default function AppTopbar() {
           {isRTL ? (
             <>
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              <span className="hidden sm:inline text-sm font-medium">وكيل</span>
-              <span
-                className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"
-              >
+              <span className="hidden sm:inline text-sm font-medium">{shownLabel}</span>
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
                 <User className="h-5 w-5" />
               </span>
             </>
           ) : (
             <>
-              <span
-                className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"
-              >
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
                 <User className="h-5 w-5" />
               </span>
-              <span className="hidden sm:inline text-sm font-medium">Administrator</span>
+              <span className="hidden sm:inline text-sm font-medium">{shownLabel}</span>
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
             </>
           )}
@@ -92,10 +94,18 @@ export default function AppTopbar() {
           onSelect={(e) => {
             e.preventDefault();
             logout(undefined, {
-              onSettled: () => {
+              onSuccess: () => {
+                toast.success(t("topbar.logoutSuccess"));
                 const loginPath = locale === defaultLocale ? "/login" : `/${locale}/login`;
                 router.replace(loginPath);
-              }
+              },
+              onError: (err: any) => {
+                const msg =
+                  err?.response?.data?.error?.message ||
+                  err?.message ||
+                  t("common.somethingWentWrong");
+                toast.error(msg);
+              },
             });
           }}
         >
@@ -108,7 +118,7 @@ export default function AppTopbar() {
   const ControlsLTR = (
     <div className="flex items-center gap-3 ">
       <LocaleSwitch />
-      {NotifBtn}
+      <NotificationDropdown/>
       {Divider}
       {UserDropdown}
     </div>
@@ -118,7 +128,7 @@ export default function AppTopbar() {
     <div className="flex items-center gap-3">
       {UserDropdown}
       {Divider}
-      {NotifBtn}
+      <NotificationDropdown/>
       <LocaleSwitch />
     </div>
   );
@@ -151,6 +161,7 @@ export default function AppTopbar() {
           <AppSidebar onNavigate={() => setOpen(false)} />
         </SheetContent>
       </Sheet>
+      {/* <NotificationDropdown/> */}
     </header>
   );
 }

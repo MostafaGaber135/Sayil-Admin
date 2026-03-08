@@ -1,24 +1,42 @@
+// EditListingContainer.tsx
 'use client'
-import {ListingForm, useListingById, useUpdateListing} from "@/features/listings";
+import { useActionState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ListingForm, useListingById } from "@/features/listings";
 import { useLookups } from "@/features/listings/hooks/useLookups";
 import { mapListingToForm } from "@/shared/lib/utils";
+import { updateListingAction } from "@/features/listings/actions/update-listing.action";
+import { ListingFormValues } from "@/features/listings/validation";
+
 
 export const EditListingContainer = ({ id }: { id: number }) => {
-
+    const router = useRouter();
     const { data: lookups } = useLookups();
     const { data: response } = useListingById(id);
-    // const { data: response } = useListingById(id);
-
-    const { mutate: updateListing, isPending } = useUpdateListing();
-
+    const [isPending, startTransition] = useTransition();
+    const [state, dispatch] = useActionState(updateListingAction, null);
+    useEffect(() => {
+        if (state?.success) {
+            router.push(`/listings/${id}`);
+        }
+    }, [state]);
     const defaultData = response?.data ? mapListingToForm(response.data) : undefined;
-
+    const handleSubmit = (data: ListingFormValues) => {
+        startTransition(() => {
+            dispatch({ ...data, id }); 
+        });
+    };
     return (
-        <ListingForm
-            lookups={lookups}
-            defaultData={defaultData}
-            isPending={isPending}
-            onSubmit={(data) => updateListing({ ...data, id })}
-        />
+        <>
+            {state?.error && (
+                <p className="text-red-500 text-sm mb-4 px-4">{state.error}</p>
+            )}
+            <ListingForm
+                lookups={lookups}
+                defaultData={defaultData}
+                isPending={isPending}
+                onSubmit={handleSubmit}
+            />
+        </>
     );
 }

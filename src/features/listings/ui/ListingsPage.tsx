@@ -1,61 +1,84 @@
 'use client';
 
 import Link from "next/link";
-import {useListings, useListingsFilters} from "../hooks";
-import {GridSkeleton, GridView, ListingsFilters, TableSkeleton, TableView} from "@/features/listings/ui/components";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useListings, useListingsFilters } from "../hooks";
+import { GridSkeleton, GridView, ListingsFilters, TableSkeleton, TableView } from "@/features/listings/ui/components";
+import { PriceChangeRequestDetails, fetchPriceChangeRequests } from "../api";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PriceRequestDetailsModal } from "./scroll";
+import { priceChangeKeys } from "../hooks/usePriceChange";
 
-export const ListingsPage = () => {
+interface Props {
+  initialRequestId: number | null;
+  priceRequestData: PriceChangeRequestDetails | null;
+}
 
-    const { filters, viewMode, setViewMode, handleFilterChange, handleSearch, handleKeyDown } =
-        useListingsFilters();
+export const ListingsPage = ({ initialRequestId, priceRequestData }: Props) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-    const { data, isPending } = useListings(filters);
+  const openModal = searchParams.get("modal");
+  const requestId = searchParams.get("requestId")
+    ? Number(searchParams.get("requestId"))
+    : null;
 
-    const listings = data?.data?.items ?? [];
+  const close = () => {
+    router.replace("/listings", { scroll: false });
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-50/50 p-6 space-y-6">
+  const { filters, viewMode, setViewMode, handleFilterChange, handleSearch, handleKeyDown } =
+    useListingsFilters();
+  const { data, isPending } = useListings(filters);
+  const listings = data?.data?.items ?? [];
 
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Listings Management</h1>
-                    <p className="text-sm text-gray-400 mt-0.5">Manage property listings and approvals</p>
-                </div>
-                <Link
-                    href="/listings/add"
-                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors"
-                >
-                    + Add Listing
-                </Link>
-            </div>
-
-            {/* Filters */}
-            <ListingsFilters
-                filters={filters}
-                viewMode={viewMode}
-                isPending={isPending}
-                onFilterChange={handleFilterChange}
-                onSearch={handleSearch}
-                onKeyDown={handleKeyDown}
-                onViewChange={setViewMode}
-            />
-
-            {/* Content */}
-            {isPending ? (
-                viewMode === "grid" ? <GridSkeleton /> : <TableSkeleton />
-            ) : listings.length === 0 ? (
-                <EmptyState />
-            ) : viewMode === "grid" ? (
-                <GridView listings={listings} />
-            ) : (
-                <TableView listings={listings} />
-            )}
-
+  return (
+    <div className="min-h-screen bg-gray-50/50 p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Listings Management</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Manage property listings and approvals</p>
         </div>
-    );
-};
+        <Link href="/listings/add" className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">
+          + Add Listing
+        </Link>
+      </div>
 
+      <ListingsFilters
+        filters={filters}
+        viewMode={viewMode}
+        isPending={isPending}
+        onFilterChange={handleFilterChange}
+        onSearch={handleSearch}
+        onKeyDown={handleKeyDown}
+        onViewChange={setViewMode}
+      />
+
+      {isPending ? (
+        viewMode === "grid" ? <GridSkeleton /> : <TableSkeleton />
+      ) : listings.length === 0 ? (
+        <EmptyState />
+      ) : viewMode === "grid" ? (
+        <GridView listings={listings} />
+      ) : (
+        <TableView listings={listings} />
+      )}
+
+      {/* ← fix: requestId من useSearchParams مش initialRequestId */}
+      {requestId && (
+        <PriceRequestDetailsModal
+          isOpen={openModal === "priceDetails"}
+          onClose={close}
+          requestId={requestId}
+          initialData={requestId === initialRequestId ? priceRequestData : null}
+          onCancelled={close}
+        />
+      )}
+    </div>
+  );
+};
 /* ── EmptyState — simple enough to live here ──────────────────────── */
 
 const EmptyState = () => (

@@ -2,26 +2,41 @@
 import { getQueryClient } from "@/shared/lib/react-query/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import {getListingLookupsService} from "@/features/listings/services";
-import {EditListingContainer} from "@/features/listings/ui/EditListingContainer";
-import {fetchGetLand, fetchRegions} from "@/features/listings/api";
+import { getServerSession } from "next-auth";
+import axios from "axios";
+import { authOptions } from "@/shared/lib/auth/nextauth.options";
+import { EditListingContainer } from "@/features/listings";
 
+interface PageProps {
+    params: Promise<{ 
+        id: number;  
+    }>;
+}
 
-export default async function EditListingPage({params,}: { params: Promise<{ id: number }> }) {
+export default async function EditListingPage({ params }: PageProps) {
     const { id } = await params;
     const queryClient = getQueryClient();
+    
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+
+    const serverApi = axios.create({
+        baseURL: process.env.API_BASE_URL,
+        headers: { Authorization: `Bearer ${token}` }
+    });
+
     await Promise.all([
         queryClient.prefetchQuery({
             queryKey: ['listings-lookups'],
             queryFn: getListingLookupsService,
         }),
         queryClient.prefetchQuery({
-            queryKey: ['getLand', id],
-            queryFn: () => fetchGetLand(id),
+            queryKey: ['getLand', String(id)],
+            queryFn: async () => {
+                const { data } = await serverApi.get(`/api/admin/land/${id}`);
+                return data;
+            },
         }),
-        // queryClient.prefetchQuery({
-        //     queryKey: ['listings-regions'],
-        //     queryFn: () => fetchRegions(id),
-        // }),
     ]);
 
     return (

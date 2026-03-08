@@ -1,6 +1,7 @@
+import { ListingItem } from '..';
 import { fetchAllListing } from '../api';
 
-export const getAllListingService = async (body) => {
+export const getAllListingService = async (body:ListingItem) => {
   const response = await fetchAllListing(body);
 
   const data = response;

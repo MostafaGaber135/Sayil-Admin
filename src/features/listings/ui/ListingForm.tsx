@@ -19,9 +19,10 @@ interface Props {
 
 export const ListingForm = ({ defaultData, onSubmit, isPending, lookups }: Props) => {
   const isEditMode = !!defaultData;
-  console.log('from Edit',defaultData)
+  // console.log('from Edit',defaultData)
   const { register, handleSubmit, control, setValue, watch, reset, formState: { errors } } = useForm<ListingFormValues>({
-    resolver: zodResolver(listingSchema),
+    // resolver: zodResolver(listingSchema),
+    resolver: zodResolver(listingSchema) as any,
     defaultValues: defaultData ?? {
       features: [],
       imageUrls: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef"],

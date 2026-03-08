@@ -5,7 +5,7 @@
 export interface ListingsRequest {
   pageNumber?: number;
   pageSize?: number;
-  searchTerm?: string;
+  search?: string;
   cityId?: number;
   statusId?: number;
   agentId?: number;
@@ -28,8 +28,6 @@ export interface PaginatedData<T> {
 
 
 //Lookup Types
-
-
 export interface RawLookupItem {
   value: number;
   label?: string;
@@ -43,7 +41,11 @@ export interface LookupItem {
   value: number;
   label: string;
 }
-
+export type ClassificationItem = {
+  id: number;
+  name: string;
+  code?: string;
+}
 export type LookupsShape<T> = {
   landTypes: T[];
   cities: T[];
@@ -54,7 +56,7 @@ export type LookupsShape<T> = {
   landFacing: T[];
   neighborTypes: T[];
   genders: T[];
-  classifications: T[];
+  fications: ClassificationItem[];
 };
 
 export type AllLookupsResponse = ApiResponse<
@@ -99,6 +101,8 @@ export type ListingsResponse =
 // Requests
 export interface ListingDetail {
   id: number;
+  userId: number;
+  agentId: number;
   title: string;
   description: string;
   area: number;
@@ -106,42 +110,65 @@ export interface ListingDetail {
   discountedPrice: number;
   discountPercent: number;
 
-  // Property Details
-  landType: string;
-  facingDirection: string;
-  ownershipType: string;
-  deedType: string;
-  neighborType: string;
-  features: string[];
-
   // Location
-  city: string;
-  region: string;
-  street: string;
+  cityId: number;
+  cityName: string;
+  regionId: number;
+  regionName: string;
+  address: string;
   latitude?: number;
   longitude?: number;
+  googleMapsLink?: string;
 
-  // Documents
-  documents: ListingDocument[];
+  // Property Details
+  landTypeId: number;
+  landTypeName: string;
+  landFacingId: number;
+  landFacingName: string;
+  ownershipStatusId: number;
+  ownershipStatusName: string;
+  deedTypeId: number;
+  deedTypeName: string;
+  neighborTypeId: number;
+  neighborTypeName: string;
+  features: string[];
 
   // Media
-  images: string[];
+  imageUrls: string[];
+  explanatoryVideoUrl?: string;
+
+  // Documents
+  titleDeedUrl: string;
+  nationalIdCopyUrl: string;
+  landSurveyReportUrl: string;
 
   // Admin
-  ownerName: string;
   agentName: string;
+  classificationId: number;
   classificationName: string;
 
   // Status
   statusId: number;
-  statusLabel: string;
-}
+  statusName: string;
+  isVerified: boolean;
+  isFavorite: boolean;
+  publishDate: string | null;
 
+  // Stats
+  viewCount: number;
+  offerCount: number;
+  pendingRequestsCount: number;
+
+  // Timestamps
+  createdAt: string;
+  updatedAt: string | null;
+}
 export interface ListingDocument {
-  id: number;
-  name: string;
-  isAvailable: boolean;
+  id: number | string;
+  name?: string;    
+  label: string;      
   url?: string;
+  isAvailable?: boolean; 
 }
 
 export interface ApproveLandRequest {
@@ -153,3 +180,18 @@ export interface RejectLandRequest {
   landId: string;
   rejectionReason: string;
 }
+
+export type PriceChangeRequestBody = {
+  landId: number;
+  newPrice: number;
+  reason?: string;
+};
+
+export type PriceChangeRequest = {
+  id: number;
+  landId: number;
+  newPrice: number;
+  reason?: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+};

@@ -18,6 +18,7 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
+    "logoutSuccess": "Logged out successfully",
     "menu": "Menu"
   },
   "auth": {
@@ -29,24 +30,24 @@
       "title": "Sample Credentials",
       "password": "Password",
       "use": "Use these credentials",
-      "admin": "Administrator",
+      "admin": "Super Admin",
       "agent": "Agent",
       "manager": "Manager",
       "firstTime": "First time login"
     },
     "login": {
       "heading": "Login to Your Account",
-      "success": "Logged in successfully.",
+      "success": "Logged in successfully",
       "phone": "Phone Number",
       "phonePlaceholder": "Enter your phone number (e.g., +966501234567)",
       "password": "Password",
       "passwordPlaceholder": "Enter your password",
       "submit": "Login",
       "errors": {
-        "generic": "Something went wrong. Please try again.",
-        "invalid": "Invalid phone number or password.",
-        "unauthorized": "Not allowed (not an admin).",
-        "network": "Network error: the API could not be reached."
+        "generic": "Something went wrong. Please try again!",
+        "invalid": "Invalid phone number or password",
+        "unauthorized": "Not allowed (not an admin)",
+        "network": "Network error: the API could not be reached"
       },
       "validation": {
         "phoneRequired": "Phone number is required",
@@ -85,6 +86,10 @@
       "desc": "Manage users."
     },
     "roles": {
+      "SuperAdmin": "Super Admin",
+      "Admin": "Administrator",
+      "Agent": "Agent",
+      "Manager": "Manager",
       "title": "Roles & permissions",
       "desc": "Manage roles and permissions.",
       "actions": {
@@ -108,14 +113,14 @@
       "Add": "Add Classification",
       "Name": "Name",
       "Commission": "Commission & Offer Settings",
-      "Global":"Global Commission Rate (%)",
-      "This rate":"This rate applies to all transactions unless overridden by specific agreements.",
+      "Global": "Global Commission Rate (%)",
+      "This rate": "This rate applies to all transactions unless overridden by specific agreements.",
       "Save Changes": "Save Changes",
       "Saving": "Saving",
       "Offer": "Offer Range Settings",
       "Minimum": "Minimum Offer Percentage (%)",
-      "Represents": "Represents minimum allowed offer (e.g. 85%)",
-      "Represents maximum": "Represents maximum allowed offer (e.g. 115%)",
+      "Represents": "Represents minimum allowed offer",
+      "Represents maximum": "Represents maximum allowed offer",
       "Mobile": "Mobile App Communications",
       "Configure": "Configure contact information for the mobile application",
       "WhatsApp Number": "WhatsApp Number",
@@ -123,7 +128,7 @@
       "This number": "This number will be used for WhatsApp contact in the mobile app",
       "Contact Us Email": "Contact Us Email",
       "Enter contact email address": "Enter contact email address",
-      "This email":"This email will be used for Contact Us in the mobile app",
+      "This email": "This email will be used for Contact Us in the mobile app",
       "Support Email": "Support Email",
       "Enter support": "Enter support email",
       "This email will": "This email will be used for technical support inquiries",
@@ -138,7 +143,9 @@
       "This action": "This action cannot be reversed.",
       "Cancel": "Cancel",
       "Deleting": "Deleting",
-      "Delete": "Delete"
+      "Delete": "Delete",
+      "Drag":"Drag and drop to reorder FAQs or use the arrow buttons",
+      "+ Add FAQ":"+ Add FAQ"
     },
     "login": {
       "title": "Login",
