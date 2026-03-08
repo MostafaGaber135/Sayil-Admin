@@ -39,7 +39,7 @@
       "heading": "تسجيل الدخول إلى حسابك",
       "success": "تم تسجيل الدخول بنجاح",
       "phone": "رقم الهاتف",
-      "phonePlaceholder": "أدخل رقم هاتفك (مثال: \u2066+966501234567\u2069)",
+      "phonePlaceholder": "أدخل رقم هاتفك (مثال: ⁦+966501234567⁩)",
       "password": "كلمة المرور",
       "passwordPlaceholder": "أدخل كلمة المرور",
       "submit": "تسجيل الدخول",
@@ -73,22 +73,21 @@
         "commissionByLocation": "العمولة حسب المدينة"
       }
     },
-    
-    "profile":{
-      "Profile":"إعدادات الملف الشخصي",
-      "Account":"معلومات الحساب",
-      "Change Password":"تغيير كلمة المرور",
-      "Save Changes":"حفظ التغييرات",
+    "profile": {
+      "Profile": "إعدادات الملف الشخصي",
+      "Account": "معلومات الحساب",
+      "Change Password": "تغيير كلمة المرور",
+      "Save Changes": "حفظ التغييرات",
       "Saving": "حفظ",
-      "Full Name":"الاسم الكامل",
-      "Phone Number":"رقم التليفون",
-      "Role":"دور",
-      "Current Password":" كلمة المرورالحالية ",
-      "New Password":"كلمة المرور الجديدة",
-      "Confirm New Password":"تاكيد كلمة المرور",
-      "Cancel":"الغاء",
-      "All fields are required":"جميع الحقول مطلوبة",
-      "Confirm":"تاكيد كلمة المرور"
+      "Full Name": "الاسم الكامل",
+      "Phone Number": "رقم التليفون",
+      "Role": "دور",
+      "Current Password": "كلمة المرور الحالية",
+      "New Password": "كلمة المرور الجديدة",
+      "Confirm New Password": "تأكيد كلمة المرور الجديدة",
+      "Cancel": "الغاء",
+      "All fields are required": "جميع الحقول مطلوبة",
+      "Confirm": "تأكيد كلمة المرور"
     },
     "listings": {
       "title": "الإعلانات",
@@ -99,8 +98,68 @@
       "desc": "صفحة تفاصيل مؤقتة."
     },
     "users": {
-      "title": "المستخدمين",
-      "desc": "إدارة المستخدمين."
+      "title": "إدارة المستخدمين",
+      "desc": "إدارة المستخدمين الداخليين والخارجيين",
+      "actions": {
+        "addUser": "إضافة مستخدم"
+      },
+      "tabs": {
+        "internal": "المستخدمون الداخليون",
+        "external": "المستخدمون الخارجيون"
+      },
+      "searchPlaceholder": "ابحث عن مستخدمين...",
+      "table": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "role": "الدور",
+        "status": "الحالة",
+        "lastActive": "آخر نشاط",
+        "actions": "الإجراءات"
+      },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "deactivate": "تعطيل",
+        "activate": "تفعيل"
+      },
+      "form": {
+        "addTitle": "إضافة مستخدم جديد",
+        "editTitle": "تعديل المستخدم",
+        "personalInformation": "المعلومات الشخصية",
+        "fullName": "الاسم الكامل *",
+        "email": "البريد الإلكتروني *",
+        "phone": "رقم الهاتف",
+        "role": "الدور *",
+        "department": "القسم",
+        "location": "الموقع",
+        "initialPassword": "كلمة المرور الأولية *",
+        "passwordHint": "سيُطلب من المستخدم تغيير كلمة المرور عند أول تسجيل دخول",
+        "placeholders": {
+          "fullName": "أدخل الاسم الكامل",
+          "email": "أدخل البريد الإلكتروني",
+          "phone": "أدخل رقم الهاتف",
+          "department": "أدخل القسم",
+          "location": "أدخل الموقع",
+          "password": "أدخل كلمة المرور الأولية"
+        },
+        "cancel": "إلغاء",
+        "save": "حفظ المستخدم"
+      },
+      "deleteDialog": {
+        "title": "حذف المستخدم",
+        "description": "لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "confirm": "حذف"
+      },
+      "deactivateDialog": {
+        "deactivateTitle": "تعطيل المستخدم",
+        "deactivateDescription": "لن يتمكن هذا المستخدم من الوصول إلى المنصة حتى تتم إعادة تفعيله.",
+        "activateTitle": "تفعيل المستخدم",
+        "activateDescription": "سيستعيد هذا المستخدم الوصول إلى المنصة فورًا.",
+        "cancel": "إلغاء",
+        "confirmDeactivate": "تعطيل",
+        "confirmActivate": "تفعيل"
+      }
     },
     "roles": {
       "SuperAdmin": "سوبر أدمن",
@@ -119,8 +178,8 @@
         "updateError": "فشل تحديث الدور",
         "deleteSuccess": "تم حذف الدور بنجاح",
         "deleteError": "فشل حذف الدور",
-        "AddedLand":" تمت العمليه بنجاح",
-        "Failed":"لم تتم العمليه بنجاح"
+        "AddedLand": " تمت العمليه بنجاح",
+        "Failed": "لم تتم العمليه بنجاح"
       }
     },
     "settings": {
@@ -130,10 +189,10 @@
       "Communications": "الاتصالات",
       "FAQ": "إدارة الأسئلة الشائعة",
       "Add": "إضافة تصنيف",
-      "Classification Code":"رمز التصنيف",
+      "Classification Code": "رمز التصنيف",
       "Name": "الاسم",
-      "Arabic Name":"الاسم بالعربي",
-      "Enter Arabic name":"ادخل الاسم بالعربي",
+      "Arabic Name": "الاسم بالعربي",
+      "Enter Arabic name": "ادخل الاسم بالعربي",
       "Commission": "إعدادات العمولة والعرض",
       "Global": "نسبة العمولة العالمية (%)",
       "This rate": "ينطبق هذا السعر على جميع المعاملات ما لم يتم تجاوزه بموجب اتفاقيات محددة.",
@@ -141,7 +200,7 @@
       "Saving": "حفظ",
       "Offer": "إعدادات نطاق العرض",
       "Minimum": "الحد الأدنى لنسبة العرض (%)",
-      "Maximum":"الحد الأقصى لنسبة العرض (%)",
+      "Maximum": "الحد الأقصى لنسبة العرض (%)",
       "Represents": "يمثل الحد الأدنى للعرض المسموح به",
       "Represents maximum": "يمثل هذا الحد الأقصى للعرض المسموح به",
       "Mobile": "اتصالات تطبيقات الهاتف المحمول",
@@ -161,33 +220,33 @@
       "Time Zone": "المنطقة الزمنية",
       "Display business": "اعرض ساعات العمل في تطبيق الهاتف المحمول",
       "Discount": "تخفيض",
-      "Enter discount percentage":"أدخل نسبة الخصم...",
+      "Enter discount percentage": "أدخل نسبة الخصم...",
       "Actions": "الإجراءات",
-      "delete?":"هل أنت متأكد من رغبتك في الحذف؟",
-      "This action":"لا يمكن التراجع عن هذا الإجراء.",
-      "Cancel":"الغاء",
-      "Deleting":"جاري المسح",
-      "Delete":"مسح",
-      "Drag":"اسحب وأفلت لإعادة ترتيب الأسئلة الشائعة أو استخدم أزرار الأسهم",
-      "+ Add FAQ":"+ إضافة الأسئلة الشائعة",
-      "Update":"تعديل",
-      "Enter classification name":"أدخل اسم التصنيف",
-      "Enter code (A, B, C)":"أدخل الرمز (أ، ب، ج)",
-      "Question EN":"السؤال باالانجليزي",
-      "Question AR":"السؤال بالعربي",
-      "Enter your question":"ادخل سؤالك",
-      "Answer EN":"الاجابة بالانجليزي",
-      "Answer AR":"الاجابة بالعربي",
-      "Add FAQ":"إضافة الأسئلة الشائعة",
-      "Edit FAQ":"تعديل الأسئلة الشائعة",
-      "Delete FAQ":"هل أنت متأكد من رغبتك في حذف هذه الأسئلة الشائعة؟"
+      "delete?": "هل أنت متأكد من رغبتك في الحذف؟",
+      "This action": "لا يمكن التراجع عن هذا الإجراء.",
+      "Cancel": "الغاء",
+      "Deleting": "جاري المسح",
+      "Delete": "مسح",
+      "Drag": "اسحب وأفلت لإعادة ترتيب الأسئلة الشائعة أو استخدم أزرار الأسهم",
+      "+ Add FAQ": "+ إضافة الأسئلة الشائعة",
+      "Update": "تعديل",
+      "Enter classification name": "أدخل اسم التصنيف",
+      "Enter code (A, B, C)": "أدخل الرمز (أ، ب، ج)",
+      "Question EN": "السؤال بالانجليزي",
+      "Question AR": "السؤال بالعربي",
+      "Enter your question": "ادخل سؤالك",
+      "Answer EN": "الاجابة بالانجليزي",
+      "Answer AR": "الاجابة بالعربي",
+      "Add FAQ": "إضافة الأسئلة الشائعة",
+      "Edit FAQ": "تعديل الأسئلة الشائعة",
+      "Delete FAQ": "هل أنت متأكد من رغبتك في حذف هذه الأسئلة الشائعة؟"
     },
-     "notification":{
-      "Notifications":"الاشعارات",
-      "Mark":"ضع علامة على الكل كقراءة",
-      "Marking":"وضع العلامات",
-      "View all":"عرض جميع الإشعارات",
-      "No notifications":"لا توجد اشعارات"
+    "notification": {
+      "Notifications": "الاشعارات",
+      "Mark": "ضع علامة على الكل كقراءة",
+      "Marking": "وضع العلامات",
+      "View all": "عرض جميع الإشعارات",
+      "No notifications": "لا توجد اشعارات"
     },
     "login": {
       "title": "تسجيل الدخول",

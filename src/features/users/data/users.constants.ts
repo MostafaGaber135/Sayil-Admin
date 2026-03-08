@@ -1,0 +1,73 @@
+import type { ManagedUser, UserRole } from "../types";
+
+export const INTERNAL_USER_ROLE_OPTIONS: UserRole[] = ["Administrator", "Agent"];
+export const EXTERNAL_USER_ROLE_OPTIONS: UserRole[] = ["Landowner", "Investor"];
+
+export const initialUsers: ManagedUser[] = [
+    {
+        id: 1,
+        type: "internal",
+        name: "Ahmed Al-Rashid",
+        email: "ahmed.rashid@sayil.com",
+        role: "Administrator",
+        status: "active",
+        lastActive: "2025-01-28",
+        phone: "+966509876501",
+        department: "Operations",
+    },
+    {
+        id: 2,
+        type: "internal",
+        name: "Sara Al-Mahmoud",
+        email: "sara.mahmoud@sayil.com",
+        role: "Agent",
+        status: "active",
+        lastActive: "2025-01-27",
+        phone: "+966509876532",
+        department: "Sales",
+    },
+    {
+        id: 3,
+        type: "internal",
+        name: "Omar Al-Zahrani",
+        email: "omar.zahrani@sayil.com",
+        role: "Agent",
+        status: "inactive",
+        lastActive: "2025-01-25",
+        phone: "+966509876543",
+        department: "Support",
+    },
+    {
+        id: 4,
+        type: "external",
+        name: "Khalid Al-Otaibi",
+        email: "khalid.otaibi@gmail.com",
+        role: "Landowner",
+        status: "active",
+        lastActive: "2025-01-28",
+        phone: "+966509876543",
+        location: "Riyadh",
+    },
+    {
+        id: 5,
+        type: "external",
+        name: "Fatima Al-Dosari",
+        email: "fatima.dosari@gmail.com",
+        role: "Investor",
+        status: "active",
+        lastActive: "2025-01-27",
+        phone: "+966509876544",
+        location: "Jeddah",
+    },
+    {
+        id: 6,
+        type: "external",
+        name: "Mohammed Al-Harbi",
+        email: "mohammed.harbi@gmail.com",
+        role: "Investor",
+        status: "inactive",
+        lastActive: "2025-01-20",
+        phone: "+966509876545",
+        location: "Dammam",
+    },
+];
