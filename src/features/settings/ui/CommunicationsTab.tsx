@@ -1,19 +1,26 @@
 "use client";
+
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
-import React, { useEffect, useState } from "react";
-import {
-  useCommunication,
-  useUpdateCommunicationSettings,
-} from "../hooks/settings.hooks";
+import React, {
+  useEffect,
+  useState,
+  useTransition,
+  useActionState,
+} from "react";
+import { useCommunication } from "../hooks/settings.hooks";
+
 import { useTranslations } from "next-intl";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 import LoadingState from "@/shared/ui/LoadingState";
+import { updateCommunicationSettingsAction } from "../actions/communication";
 
 export default function CommunicationsTab() {
-  const t = useTranslations();
-  const { mutate: updateSettings, isPending } =
-    useUpdateCommunicationSettings();
+  const t = useTranslations("pages.settings");
+  const queryClient = useQueryClient();
+
   const { data, isLoading } = useCommunication();
 
   const [whatsApp, setWhatsApp] = useState("");
@@ -21,6 +28,18 @@ export default function CommunicationsTab() {
   const [supportEmail, setSupportEmail] = useState("");
   const [businessHours, setBusinessHours] = useState("");
   const [timeZone, setTimeZone] = useState("");
+
+  const [isPending, startTransition] = useTransition();
+
+  const initialState = {
+    success: false,
+    message: "",
+  };
+
+  const [state, formAction] = useActionState(
+    updateCommunicationSettingsAction,
+    initialState,
+  );
 
   useEffect(() => {
     if (data) {
@@ -32,107 +51,101 @@ export default function CommunicationsTab() {
     }
   }, [data]);
 
-  if (isLoading) return <LoadingState/>;
+  /* ===== Toast Handling ===== */
+
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      toast.success(state.message);
+
+      queryClient.invalidateQueries({
+        queryKey: ["communication-settings"],
+      });
+    } else if (state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  /* ===== Save Handler ===== */
+
+  const handleSave = () => {
+    const formData = new FormData();
+
+    formData.set("whatsAppNumber", whatsApp);
+    formData.set("contactUsEmail", contactEmail);
+    formData.set("supportEmail", supportEmail);
+    formData.set("businessHours", businessHours);
+    formData.set("timeZone", timeZone);
+
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
+  if (isLoading) return <LoadingState />;
+
   return (
     <div className="p-3 sm:p-4">
       {/* Header */}
       <div>
         <h1 className="text-base sm:text-lg font-semibold">
-          {t('pages.settings.Mobile')}
+          {t("Mobile")}
         </h1>
 
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          {t("pages.settings.Configure")}
+          {t("Configure")}
         </p>
       </div>
 
       {/* Card */}
       <Card className="p-3 sm:p-4 mt-4 space-y-4 sm:space-y-5">
         {/* WhatsApp */}
-        <div>
-          <Input
-            value={whatsApp}
-            onChange={(e) => setWhatsApp(e.target.value)}
-            label={t("pages.settings.WhatsApp Number")}
-            type="tel"
-            placeholder={t("pages.settings.Enter WhatsApp number")}
-            
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
-          />
-
-          <p className="text-[11px] sm:text-xs text-gray-500 mt-1">
-            {t("pages.settings.This number")}
-          </p>
-        </div>
+        <Input
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+          value={whatsApp}
+          onChange={(e) => setWhatsApp(e.target.value)}
+          label={t("WhatsApp Number")}
+          type="tel"
+        />
 
         {/* Contact Email */}
-        <div>
-          <Input
-            value={contactEmail}
-            onChange={(e) => setContactEmail(e.target.value)}
-            label={t("pages.settings.Contact Us Email")}
-            type="email"
-            placeholder={t("pages.settings.Enter contact email address")}
-            
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
-          />
-
-          <p className="text-[11px] sm:text-xs text-gray-500 mt-1">
-            {t("pages.settings.This email")}
-          </p>
-        </div>
+        <Input
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
+          label={t("Contact Us Email")}
+          type="email"
+        />
 
         {/* Support Email */}
-        <div>
-          <Input
-            value={supportEmail}
-            onChange={(e) => setSupportEmail(e.target.value)}
-            label={t("pages.settings.Support Email")}
-            type="email"
-            placeholder={t("pages.settings.Enter support")}
-           
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
-          />
-
-          <p className="text-[11px] sm:text-xs text-gray-500 mt-1">
-            {t("pages.settings.This email will")}
-          </p>
-        </div>
+        <Input
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+          value={supportEmail}
+          onChange={(e) => setSupportEmail(e.target.value)}
+          label={t("Support Email")}
+          type="email"
+        />
 
         {/* Business Hours */}
-        <div>
-          <Input
-            value={businessHours}
-            onChange={(e) => setBusinessHours(e.target.value)}
-            label={t("pages.settings.Business Hours")}
-            type="text"
-            placeholder={t("pages.settings.Enter business hours")}
-            
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent sm:text-sm"
-          />
-
-          <p className="text-[11px] sm:text-xs text-gray-500 mt-1">
-            {t("pages.settings.Display")}
-          </p>
-        </div>
+        <Input
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+          value={businessHours}
+          onChange={(e) => setBusinessHours(e.target.value)}
+          label={t("Business Hours")}
+          type="text"
+        />
 
         {/* Timezone */}
         <div>
-          <label className="text-xs sm:text-sm font-medium">{t("pages.settings.Time Zone")}</label>
+          <label className="text-sm font-medium">
+            {t("Time Zone")}
+          </label>
 
           <select
             value={timeZone}
             onChange={(e) => setTimeZone(e.target.value)}
-            className="
-              w-full mt-1
-              px-3 py-2
-              text-xs sm:text-sm
-              border border-gray-300
-              rounded-lg
-              focus:ring-2
-              focus:ring-sayil-bright-blue
-              focus:border-transparent
-            "
+            className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
           >
             <option value="Asia/Riyadh">Asia/Riyadh (GMT+3)</option>
             <option value="Asia/Dubai">Asia/Dubai (GMT+4)</option>
@@ -140,39 +153,14 @@ export default function CommunicationsTab() {
             <option value="Asia/Qatar">Asia/Qatar (GMT+3)</option>
             <option value="Asia/Bahrain">Asia/Bahrain (GMT+3)</option>
           </select>
-
-          <p className="text-[11px] sm:text-xs text-gray-500 mt-1">
-            {t("pages.settings.Display business")}
-          </p>
         </div>
 
         {/* Save Button */}
-        <div className="flex justify-end pt-4 border-t border-gray-200">
-          <Button
-            disabled={isPending}
-            onClick={() =>
-              updateSettings({
-                whatsAppNumber: whatsApp,
-                contactUsEmail: contactEmail,
-                supportEmail: supportEmail,
-                businessHours: businessHours,
-                timeZone: timeZone,
-              })
-            }
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-              <polyline points="17 21 17 13 7 13 7 21" />
-              <polyline points="7 3 7 8 15 8" />
-            </svg>
-            {isPending ? t("pages.settings.Saving") : t("pages.settings.Save Changes")}
+        <div className="flex justify-end pt-4 border-t">
+          <Button disabled={isPending} onClick={handleSave}>
+            {isPending
+              ? t("Saving")
+              : t("Save Changes")}
           </Button>
         </div>
       </Card>

@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useTransition,
+  useActionState,
+} from "react";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -9,11 +14,14 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
-  useCreateLandClassification,
-  useUpdateLandClassification,
-} from "../hooks/settings.hooks";
+  createLandClassificationAction,
+  updateLandClassificationAction,
+} from "../actions/land-classification.actions";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -21,23 +29,32 @@ type Props = {
   editData?: any;
 };
 
+const initialState = {
+  success: false,
+  message: "",
+};
+
 export default function AddClassificationModal({
   open,
   onOpenChange,
   editData,
 }: Props) {
+  const queryClient = useQueryClient();
+
   const [code, setCode] = useState("");
   const [nameAr, setNameAr] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [discount, setDiscount] = useState("");
 
-  const { mutate: createClassification, isPending: creating } =
-    useCreateLandClassification();
-
-  const { mutate: updateClassification, isPending: updating } =
-    useUpdateLandClassification();
+  const [isPending, startTransition] = useTransition();
 
   const isEditMode = !!editData;
+
+  const action = isEditMode
+    ? updateLandClassificationAction
+    : createLandClassificationAction;
+
+  const [state, formAction] = useActionState(action, initialState);
 
   /* ================= Fill Edit Data ================= */
 
@@ -52,6 +69,8 @@ export default function AddClassificationModal({
     }
   }, [editData]);
 
+  /* ================= Reset ================= */
+
   const resetForm = () => {
     setCode("");
     setNameAr("");
@@ -59,54 +78,51 @@ export default function AddClassificationModal({
     setDiscount("");
   };
 
-  /* ================= SAVE ================= */
+  /* ================= Toast + Refresh ================= */
 
-  const handleSave = () => {
-    // ✅ fallback logic
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      toast.success(state.message);
+
+      queryClient.invalidateQueries({
+        queryKey: ["land-classifications"],
+      });
+
+      onOpenChange(false);
+      resetForm();
+    } else if (state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  /* ================= Submit ================= */
+
+  const handleSubmit = (formData: FormData) => {
     const finalNameAr = nameAr || nameEn;
     const finalNameEn = nameEn || nameAr;
 
     if (!code || !finalNameAr || !finalNameEn || !discount) {
-      alert("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
-    const payload = {
-      code: code.toUpperCase(),
-      name: finalNameEn, // backend required
-      nameAr: finalNameAr,
-      nameEn: finalNameEn,
-      discountPercent: Number(discount),
-    };
+    formData.set("code", code.toUpperCase());
+    formData.set("nameAr", finalNameAr);
+    formData.set("nameEn", finalNameEn);
+    formData.set("name", finalNameEn);
+    formData.set("discountPercent", discount);
 
     if (isEditMode) {
-      updateClassification(
-        {
-          id: editData.id,
-          data: {
-            id: editData.id,
-            ...payload,
-          },
-        },
-        {
-          onSuccess: () => {
-            onOpenChange(false);
-            resetForm();
-          },
-        },
-      );
-    } else {
-      createClassification(payload, {
-        onSuccess: () => {
-          onOpenChange(false);
-          resetForm();
-        },
-      });
+      formData.set("id", editData.id);
     }
+
+    startTransition(() => {
+      formAction(formData);
+    });
   };
-
-  const isPending = creating || updating;
-
+  const t = useTranslations("pages.settings");
   /* ================= UI ================= */
 
   return (
@@ -124,27 +140,41 @@ export default function AddClassificationModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 mt-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            handleSubmit(formData);
+          }}
+          className="space-y-4 mt-4"
+        >
           {/* CODE */}
           <Input
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             maxLength={1}
-            label="Classification Code"
-            placeholder="Enter code (A, B, C)..."
+            label={t("Classification Code")}
+            placeholder={t("Enter code (A, B, C)")}
           />
 
-          {/* NAME */}
+          {/* NAME EN */}
           <Input
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
             value={nameEn}
             onChange={(e) => setNameEn(e.target.value)}
-            label="English Name"
-            placeholder="Enter classification name..."
+            label={t("Name")}
+            placeholder={t("Enter classification name")}
           />
 
-       
+          {/* NAME AR */}
+          <Input
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+            value={nameAr}
+            onChange={(e) => setNameAr(e.target.value)}
+            label={t("Arabic Name")}
+            placeholder={t("Enter Arabic name")}
+          />
 
           {/* DISCOUNT */}
           <Input
@@ -152,31 +182,34 @@ export default function AddClassificationModal({
             value={discount}
             onChange={(e) => setDiscount(e.target.value)}
             type="number"
-            label="Discount (%)"
-            placeholder="Enter discount percentage..."
+            label={t("Discount")}
+            placeholder={t("Enter discount percentage")}
           />
-          <p className="text-sm text-gray-500 mt-1">
-            Enter discount percentage (0-100)
+
+          <p className="text-sm text-gray-500">
+            {t("Enter discount percentage")} (0-100)
           </p>
+
           {/* ACTIONS */}
           <div className="flex gap-3 pt-2">
-            <Button
-              disabled={isPending}
-              onClick={handleSave}
-              className="cursor-pointer"
-            >
-              {isPending ? "Saving..." : isEditMode ? "Update" : "Save Changes"}
+            <Button className="cursor-pointer" type="submit" disabled={isPending}>
+              {isPending
+                ? t("Saving")
+                : isEditMode
+                  ? t("Update")
+                  : t("Save Changes")}
             </Button>
 
             <Button
+            className="cursor-pointer"
+              type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
             >
-              Cancel
+              {t("Cancel")}
             </Button>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
