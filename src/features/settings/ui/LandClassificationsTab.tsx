@@ -84,84 +84,98 @@ export default function LandClassificationsTab() {
             </TableRow>
           </TableHeader>
 
-{/* ROWS */}
-<TableBody>
+          {/* ROWS */}
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={3}>
+                  <div className="flex justify-center items-center h-40">
+                    <LoadingState />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : data?.length > 0 ? (
+              data.map((item: Data) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-2 ps-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white font-bold">
+                        {item.code}
+                      </span>
 
+                      <span className="font-semibold">{item.nameEn}</span>
+                    </div>
+                  </TableCell>
 
-{isLoading ? (
-  <TableRow>
-    <TableCell colSpan={3}>
-      <div className="flex justify-center items-center h-40">
-        <LoadingState />
-      </div>
-    </TableCell>
-  </TableRow>
-) : data?.length > 0 ? (
-  data.map((item: Data) => (
-    <TableRow key={item.id}>
-      <TableCell>
-        <div className="flex items-center gap-2 ps-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white font-bold">
-            {item.code}
-          </span>
+                  <TableCell>{item.discountPercent}%</TableCell>
 
-          <span className="font-semibold">
-            {item.nameEn}
-          </span>
-        </div>
-      </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex justify-center gap-3">
+                      {/* EDIT */}
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="cursor-pointer p-1.5 rounded text-sayil-bright-blue hover:text-sayil-blue hover:bg-blue-50 transition-colors"
+                        title="Edit"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 hover:text-primary text-primary"
+                        >
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"></path>
+                        </svg>
+                      </button>
 
-      <TableCell>
-        {item.discountPercent}%
-      </TableCell>
-
-      <TableCell className="text-center">
-        <div className="flex justify-center gap-3">
-          {/* EDIT */}
-          <svg
-            onClick={() => handleEdit(item)}
-            className="h-4 w-4 cursor-pointer text-primary"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z" />
-          </svg>
-
-          {/* DELETE */}
-          <svg
-            onClick={() => handleDeleteClick(item.id)}
-            className="h-4 w-4 cursor-pointer text-destructive"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M3 6h18" />
-            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-            <line x1="10" x2="10" y1="11" y2="17" />
-            <line x1="14" x2="14" y1="11" y2="17" />
-          </svg>
-        </div>
-      </TableCell>
-    </TableRow>
-  ))
-) : (
-  <TableRow>
-    <TableCell colSpan={3}>
-      <div className="text-center py-12 text-gray-500">
-        <p>No classifications added yet</p>
-        <p className="text-sm mt-1">
-          Click "Add Classification" to get started
-        </p>
-      </div>
-    </TableCell>
-  </TableRow>
-)}
-</TableBody>
+                      {/* DELETE */}
+                      <button
+                        onClick={() => handleDeleteClick(item.id)}
+                        className="cursor-pointer p-1.5 rounded text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                        title="Delete"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4"
+                        >
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                          <line x1="10" x2="10" y1="11" y2="17"></line>
+                          <line x1="14" x2="14" y1="11" y2="17"></line>
+                        </svg>
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3}>
+                  <div className="text-center py-12 text-gray-500">
+                    <p>No classifications added yet</p>
+                    <p className="text-sm mt-1">
+                      Click "Add Classification" to get started
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </Card>
 

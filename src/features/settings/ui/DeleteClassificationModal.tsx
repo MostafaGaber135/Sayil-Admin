@@ -7,8 +7,12 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
-import { useDeleteLandClassification } from "../hooks/settings.hooks";
+import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
+import { useTransition, useActionState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { deleteLandClassificationAction } from "../actions/land-classification.actions";
 
 type Props = {
   open: boolean;
@@ -16,24 +20,58 @@ type Props = {
   id?: number;
 };
 
+const initialState = {
+  success: false,
+  message: "",
+};
+
 export default function DeleteClassificationModal({
   open,
   onOpenChange,
   id,
 }: Props) {
-  const { mutate: deleteClassification, isPending } =
-    useDeleteLandClassification();
+  const t = useTranslations();
+  const queryClient = useQueryClient();
+
+  const [isPending, startTransition] = useTransition();
+
+  const [state, formAction] = useActionState(
+    deleteLandClassificationAction,
+    initialState
+  );
+
+  /* ================= Toast + Refresh ================= */
+
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      toast.success(state.message);
+
+      queryClient.invalidateQueries({
+        queryKey: ["land-classifications"],
+      });
+
+      onOpenChange(false);
+    } else if (state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  /* ================= Submit ================= */
 
   const handleDelete = () => {
     if (!id) return;
 
-    deleteClassification(id, {
-      onSuccess: () => {
-        onOpenChange(false);
-      },
+    const formData = new FormData();
+    formData.set("id", String(id));
+
+    startTransition(() => {
+      formAction(formData);
     });
   };
-  const t = useTranslations();
+
+  /* ================= UI ================= */
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,7 +86,7 @@ export default function DeleteClassificationModal({
 
         <div className="flex justify-end gap-3 pt-4">
           <Button
-            className=" cursor-pointer"
+            className="cursor-pointer"
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
@@ -56,12 +94,14 @@ export default function DeleteClassificationModal({
           </Button>
 
           <Button
-            className=" cursor-pointer"
+            className="cursor-pointer"
             variant="destructive"
             disabled={isPending}
             onClick={handleDelete}
           >
-            {isPending ? t("pages.settings.Deleting") : t("pages.settings.Delete")}
+            {isPending
+              ? t("pages.settings.Deleting")
+              : t("pages.settings.Delete")}
           </Button>
         </div>
       </DialogContent>

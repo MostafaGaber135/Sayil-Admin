@@ -7,7 +7,11 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
-import { useDeleteFaq } from "../hooks/settings.hooks";
+import { useActionState, useTransition, useEffect } from "react";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { deleteFaqAction } from "../actions/faq.action";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -20,41 +24,73 @@ export default function DeleteFaqModal({
   onOpenChange,
   id,
 }: Props) {
-  const { mutate, isPending } = useDeleteFaq();
+  const queryClient = useQueryClient();
+
+  const [isPending, startTransition] = useTransition();
+
+  const initialState = {
+    success: false,
+    message: "",
+  };
+
+  const [state, formAction] = useActionState(
+    deleteFaqAction,
+    initialState
+  );
+
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      toast.success(state.message);
+
+      queryClient.invalidateQueries({
+        queryKey: ["faqs"],
+      });
+
+      onOpenChange(false);
+    } else if (state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   const handleDelete = () => {
     if (!id) return;
 
-    mutate(id, {
-      onSuccess: () => {
-        onOpenChange(false);
-      },
+    const formData = new FormData();
+    formData.set("id", String(id));
+
+    startTransition(() => {
+      formAction(formData);
     });
   };
+  const t = useTranslations("pages.settings");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Are you sure you want to delete this FAQ?
+           {t("Delete FAQ")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="flex gap-3 mt-4">
           <Button
+          className="cursor-pointer"
             variant="destructive"
             onClick={handleDelete}
             disabled={isPending}
           >
-            {isPending ? "Deleting..." : "Delete"}
+            {isPending ? t("Deleting") : t("Delete")}
           </Button>
 
           <Button
+          className="cursor-pointer"
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
         </div>
       </DialogContent>
