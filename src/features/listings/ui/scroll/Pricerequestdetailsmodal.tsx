@@ -7,6 +7,7 @@ import { priceChangeKeys, useGetPriceChangeRequestDetails } from "../../hooks/us
 import { cancelPriceRequestAction } from "../../actions/price-change-request.actions";
 
 import { PriceChangeRequestDetails } from "../../api/price-change.api";
+import { ListingItem } from "../..";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ interface Props {
   onClose: () => void;
   listing?: Pick<ListingItem, "id" | "title" | "city" | "region" | "area">;
   requestId: number;
-  initialData?: PriceChangeRequestDetails | null; // ← جديد
+  initialData?: PriceChangeRequestDetails | null;
   onCancelled?: () => void;
 }
 
@@ -69,8 +70,8 @@ export const PriceRequestDetailsModal = ({
       const result = await cancelPriceRequestAction(requestId);
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: priceChangeKeys.details(requestId) });
-        queryClient.invalidateQueries({ queryKey: priceChangeKeys.byLand(listing.id) });
-        queryClient.invalidateQueries({ queryKey: offerKeys.list(listing.id, 1, 20) });
+        queryClient.invalidateQueries({ queryKey: priceChangeKeys.byLand(Number(listing?.id)) });
+        queryClient.invalidateQueries({ queryKey: offerKeys.list(Number(listing?.id), 1, 20) });
         onCancelled?.();
         onClose();
       }

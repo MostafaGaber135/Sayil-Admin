@@ -58,7 +58,7 @@ export const AdminSection = ({ register, errors, watch, lookups }: Props) => {
                     <label className="text-sm font-medium text-gray-700">Land Classification</label>
                     <select {...register("classificationId")} className={selectCls(!!errors.classificationId)}>
                         <option value="">Select Classification</option>
-                        {lookups?.classifications?.map(c => (
+                        {lookups?.data?.classifications?.map(c => (
                             <option key={c.id} value={c.id}> 
                                 {c.name}                  
                             </option>

@@ -46,17 +46,21 @@ export type ClassificationItem = {
   name: string;
   code?: string;
 }
+export type regions = {
+  value: number;
+  label: string;
+}
 export type LookupsShape<T> = {
   landTypes: T[];
   cities: T[];
   landStatus: T[];
   ownershipStatus: T[];
   deedTypes: T[];
-  regions: T[];
+  regions: T[]; 
   landFacing: T[];
   neighborTypes: T[];
   genders: T[];
-  fications: ClassificationItem[];
+  classifications: ClassificationItem[];
 };
 
 export type AllLookupsResponse = ApiResponse<
@@ -187,11 +191,47 @@ export type PriceChangeRequestBody = {
   reason?: string;
 };
 
-export type PriceChangeRequest = {
+// export type PriceChangeRequest = {
+//   id: number;
+//   landId: number;
+//   newPrice: number;
+//   reason?: string;
+//   status: "pending" | "approved" | "rejected";
+//   createdAt: string;
+// };
+export interface PriceChangeRequest {
+  requestId: number;
+  landId: number;
+  landTitle: string;
+  city: string;
+  region: string;
+  area: number;
+  classification: string;
+  currentPrice: number;
+  suggestedPrice: number;
+  reason: string;
+  status: "Pending" | "Approved" | "Rejected" | "Cancelled";
+  requestedAt: string;
+}
+
+export interface PriceChangeResponse {
+  value: PriceChangeRequest[];
+
+}
+export interface PriceChangeRequestDetails {
   id: number;
   landId: number;
-  newPrice: number;
-  reason?: string;
-  status: "pending" | "approved" | "rejected";
-  createdAt: string;
-};
+  landTitle: string;
+  city: string;
+  area: number;
+  propertyType: string;
+  requestedOn: string;
+  requestStatus: "Pending" | "Approved" | "Rejected" | "Cancelled";
+  requestedByName: string;
+  currentPrice: number;
+  suggestedPrice: number;
+  reductionValue: number;
+  reductionPercentage: number;
+  reason: string;
+  canCancel: boolean;
+}

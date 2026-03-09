@@ -40,9 +40,6 @@ export const PriceChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props)
     Number(suggestedPrice) > 0 &&
     reason.trim().length > 0;
 
-
-
-
   const handleConfirm = () => {
     if (!isValid) return;
     setSubmitCount(c => c + 1); 

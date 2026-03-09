@@ -20,7 +20,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("landTypeId")}
             >
                 <option value="">Select Type</option>
-                {lookups?.landTypes?.map(i => (
+                {lookups?.data?.landTypes?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">Residential</option>
@@ -37,7 +37,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("landFacingId")}
             >
                 <option value="">Select Direction</option>
-                {lookups?.landFacing?.map(i => (
+                {lookups?.data?.landFacing?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">North</option>
@@ -54,7 +54,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("ownershipStatusId")}
             >
                 <option value="">Select Ownership</option>
-                {lookups?.ownershipStatus?.map(i => (
+                {lookups?.data?.ownershipStatus?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">Individual</option>
@@ -70,7 +70,7 @@ export const PropertyDetailsSection = ({ register, errors, lookups }: Props) => 
                 {...register("deedTypeId")}
             >
                 <option value="">Select Deed</option>
-                {lookups?.deedTypes?.map(i => (
+                {lookups?.data?.deedTypes?.map(i => (
                     <option key={i.value} value={i.value}>{i.label}</option>
                 )) ?? <>
                     <option value="1">Electronic</option>

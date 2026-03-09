@@ -1,11 +1,12 @@
 // features/listings/hooks/use-price-change.hooks.ts
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import {
-    PriceChangeRequestDetails,
     fetchPriceChangeRequests,
     getPriceChangeRequestDetails,
+    serverFetchPriceChangeRequests,
+    serverGetPriceChangeRequestDetails,
 } from "../api/price-change.api";
-import { offerKeys } from "../api";
+import { PriceChangeRequestDetails } from "..";
 
 // ── Keys ───────────────────────────────────────────────────────────────────────
 
@@ -36,28 +37,21 @@ export const useGetPriceChangeRequestDetails = (
       queryFn: () => getPriceChangeRequestDetails(requestId),
       enabled: (options?.enabled ?? true) && !!requestId,
       initialData: options?.initialData ?? undefined,
-      staleTime: options?.initialData ? 30_000 : 0, 
+      staleTime: 60_000, 
     });
   };
 // ── Prefetch (Server Components only) ─────────────────────────────────────────
 
-export const prefetchPriceChangeRequests = async (
-    queryClient: QueryClient,
-    landId: number
-) => {
+export const prefetchPriceChangeRequests = async (queryClient: QueryClient, landId: number) => {
     await queryClient.prefetchQuery({
         queryKey: priceChangeKeys.byLand(landId),
-        queryFn: () => fetchPriceChangeRequests(landId),
+        queryFn: () => serverFetchPriceChangeRequests(landId),
     });
 };
 
-export const prefetchPriceChangeRequestDetails = async (
-    queryClient: QueryClient,
-    requestId: number
-) => {
+export const prefetchPriceChangeRequestDetails = async (queryClient: QueryClient, requestId: number) => {
     await queryClient.prefetchQuery({
         queryKey: priceChangeKeys.details(requestId),
-        queryFn: () => getPriceChangeRequestDetails(requestId),
+        queryFn: () => serverGetPriceChangeRequestDetails(requestId),
     });
 };
-

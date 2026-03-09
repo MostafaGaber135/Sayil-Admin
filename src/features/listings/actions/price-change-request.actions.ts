@@ -2,11 +2,6 @@
 
 import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
 import { revalidatePath } from "next/cache";
-
-
-
-
-
 type PriceChangeRequestInput = {
     landId: number;
     suggestedPrice: number;

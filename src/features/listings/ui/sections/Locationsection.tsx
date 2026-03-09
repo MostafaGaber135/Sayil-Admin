@@ -1,6 +1,6 @@
 'use client';
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { ListingLookupsResponse} from "../../types";
+import { ListingLookupsResponse, LookupItem, regions} from "../../types";
 import {useRegion} from "@/features/listings/hooks/useLookups";
 import {useState} from "react";
 import {ListingFormValues} from "@/features/listings/validation";
@@ -13,7 +13,7 @@ interface Props {
 
 export const LocationSection = ({ register, errors, lookups }: Props) => {
     const [cityId, setCityId] = useState<number | null>(null);
-    const {data:regionData,isError,isLoading} = useRegion(cityId)
+    const {data:regionData,isError,isLoading} = useRegion(Number(cityId))
 
 
     return (
@@ -26,12 +26,12 @@ export const LocationSection = ({ register, errors, lookups }: Props) => {
                 </label>
                 <select
                     {...register("cityId", {
-                        onChange: (e) => setCityId(Number(e.target.value)), // RHF merges this safely
+                        onChange: (e) => setCityId(Number(e.target.value)), 
                     })}
                     className={selectCls(!!errors.cityId)}
                 >
                     <option value="">Select City</option>
-                    {lookups?.cities?.map(c => (
+                    {lookups?.data?.cities?.map(c => (
                         <option key={c.value} value={c.value}>{c.label}</option>
                     )) ?? <>
                         <option value="1">Riyadh</option>
@@ -55,7 +55,7 @@ export const LocationSection = ({ register, errors, lookups }: Props) => {
                     className={selectCls(!!errors.regionId)}
                 >
                     <option value="">Select Region</option>
-                    {regionData?.value?.map(r => (
+                    {regionData?.map((r: LookupItem) => (
                         <option key={r.value} value={r.value}>
                             {r.label}
                         </option>

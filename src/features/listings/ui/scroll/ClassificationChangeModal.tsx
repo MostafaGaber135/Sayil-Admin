@@ -1,6 +1,6 @@
 "use client";
 import { useState, useActionState, useEffect, useTransition } from "react";
-import { ListingItem } from "../../types";
+import { ClassificationItem, ListingItem } from "../../types";
 import { ModalFooter } from "./ModalFooter";
 import { ListingInfo } from "./ListingInfo";
 import { BaseModal } from "@/features/listings/ui/modals";
@@ -71,8 +71,8 @@ export const ClassificationChangeModal = ({ isOpen, onClose, listing, onConfirm 
         ) : (
           <div className="flex flex-col gap-2">
             {classifications
-              ?.filter((c) => c.id !== listing.classificationId)
-              .map((cls) => (
+              ?.filter((c: ClassificationItem) => c.id !== listing.classificationId)
+              .map((cls: ClassificationItem) => (
                 <button
                   key={cls.id}
                   onClick={() => setSelectedId(cls.id)}

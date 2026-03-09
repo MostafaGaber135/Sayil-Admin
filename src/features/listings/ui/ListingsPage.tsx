@@ -5,17 +5,22 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useListings, useListingsFilters } from "../hooks";
 import { GridSkeleton, GridView, ListingsFilters, TableSkeleton, TableView } from "@/features/listings/ui/components";
-import { PriceChangeRequestDetails, fetchPriceChangeRequests } from "../api";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { PriceRequestDetailsModal } from "./scroll";
-import { priceChangeKeys } from "../hooks/usePriceChange";
+import { PriceChangeRequestDetails } from "..";
+import { useGetPriceChangeRequestDetails } from "../hooks/usePriceChange";
 
-interface Props {
+type Props = {
   initialRequestId: number | null;
-  priceRequestData: PriceChangeRequestDetails | null;
+  priceRequestData?: PriceChangeRequestDetails;
 }
 
-export const ListingsPage = ({ initialRequestId, priceRequestData }: Props) => {
+export const ListingsPage = ({ initialRequestId }: Props) => {
+  const { data: priceRequestData } = useGetPriceChangeRequestDetails(
+    initialRequestId!,
+    { enabled: !!initialRequestId }
+  );
   const searchParams = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -66,7 +71,6 @@ export const ListingsPage = ({ initialRequestId, priceRequestData }: Props) => {
         <TableView listings={listings} />
       )}
 
-      {/* ← fix: requestId من useSearchParams مش initialRequestId */}
       {requestId && (
         <PriceRequestDetailsModal
           isOpen={openModal === "priceDetails"}

@@ -22,20 +22,7 @@ export interface Offer {
     totalPages: number;
   }
   
-  export interface PriceChangeRequest {
-    id: number;
-    landId: number;
-    landTitle: string;
-    city: string;
-    region: string;
-    area: number;
-    classification: string;
-    currentPrice: number;
-    suggestedPrice: number;
-    reason: string;
-    status: "Pending" | "Approved" | "Rejected" | "Cancelled";
-    requestedAt: string;
-  }
+
   
 // ── Server Fetchers ────────────────────────────────────────────────────────────
 export const offerKeys = {

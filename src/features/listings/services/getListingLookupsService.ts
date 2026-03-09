@@ -24,7 +24,11 @@ export const getListingLookupsService = async (): Promise<ListingLookupsResponse
           landFacing:      transform(rawData.landFacing),
           neighborTypes:   transform(rawData.neighborTypes),
           genders:         transform(rawData.genders),
-          classifications: transform(rawData.classifications ?? []),
+          classifications: (rawData.classifications ?? []).map(item => ({
+            id: item.id,
+            name: item.name,
+            code: item.code
+          }))
       }
   };
 };

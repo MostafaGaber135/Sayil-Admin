@@ -5,14 +5,15 @@ import { ListingItem } from "@/features/listings";
 import {
   ClassificationChangeModal,
   PriceChangeModal,
-  PriceRequestDetailsModal,
   StatusChangeModal,
 } from "@/features/listings/ui/scroll";
 import { useGetPriceChangeRequests } from "@/features/listings/hooks/usePriceChange";
 import { useRouter } from "next/navigation";
+import { deleteLandAction } from "../../actions/actions";
+import { DeleteModal } from "../scroll/DeleteModal";
 
 
-type ModalType = "status" | "classification" | "price" | "offers" | "priceDetails" | null;
+type ModalType = "status" | "classification" | "price" | "offers" | "priceDetails" | "delete"| null;
 
 interface Props {
   item: ListingItem;
@@ -21,15 +22,22 @@ interface Props {
 export const ActionButtons = ({ item }: Props) => {
   const router = useRouter();
   const [openModal, setOpenModal] = useState<ModalType>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: priceRequests } = useGetPriceChangeRequests(item.id);
 
-  const latestRequestId = priceRequests?.value?.[0]?.requestId;
+  const latestRequestId = (priceRequests as any)?.[0]?.requestId 
+  ?? (priceRequests as any)?.value?.[0]?.requestId;
   const hasPendingRequest = !!latestRequestId;
-    console.log('latestRequestId',latestRequestId);
     
   const close = () => setOpenModal(null);
 
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    const result = await deleteLandAction(String(item.id));
+    setIsDeleting(false);
+    if (result.success) close();
+  };
   const handleStatusConfirm = (newStatusId: number) => {
     console.log("status →", newStatusId);
     close();
@@ -113,16 +121,15 @@ export const ActionButtons = ({ item }: Props) => {
           </div>
         )}
 
-        {/* Price Change → فيه request يعرض التفاصيل، مفيش يفتح الفورم */}
         {item.statusId === 1 && (
           <div className="relative">
             <button
               onClick={() => {
                 openPriceDetails(latestRequestId)
-                // router.push(
-                //   `/listings?modal=priceDetails&requestId=${latestRequestId}`,
-                //   { scroll: false }
-                // );  
+                router.push(
+                  `/listings?modal=priceDetails&requestId=${latestRequestId}`,
+                  { scroll: false }
+                );  
                 // setOpenModal(hasPendingRequest ? "priceDetails" : "price")
               }}
               className={`p-1.5 transition-colors ${
@@ -144,6 +151,19 @@ export const ActionButtons = ({ item }: Props) => {
             )}
           </div>
         )}
+    
+
+        {/* Delete */}
+        <button
+          onClick={() => setOpenModal("delete")}
+          className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+          title="Delete"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
       </div>
 
       {/* ── Modals ────────────────────────────────────────────────────────────── */}
@@ -151,6 +171,7 @@ export const ActionButtons = ({ item }: Props) => {
       <StatusChangeModal isOpen={openModal === "status"} onClose={close} listing={item} onConfirm={close} />
       <ClassificationChangeModal isOpen={openModal === "classification"} onClose={close} listing={item} onConfirm={close} />
       <PriceChangeModal isOpen={openModal === "price"} onClose={close} listing={item} onConfirm={close} />
+      <DeleteModal isOpen={openModal === "delete"} onClose={close} onConfirm={handleDelete} isDeleting={isDeleting} />
     </>
   );
 };

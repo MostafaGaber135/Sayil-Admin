@@ -1,7 +1,7 @@
 "use server"
 
 import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 
 type updateClassification = {
@@ -17,14 +17,13 @@ type ActionState = {
 export async function updateClassificationAction(
     data: updateClassification
 ): Promise<ActionState> {
-
     try {
-        
         await serverApi.post("/api/admin/land/update-classification", {
             landId: data.landId,
             classificationId:data.classificationId
         });
-        revalidatePath(`/listings/${data.landId}`);
+        revalidateTag('listings'); 
+        revalidateTag(`land-${data.landId}`); 
         return {
             success: true,
             message: "تم إرسال طلب تغيير السعر بنجاح",
