@@ -8,8 +8,6 @@ export const fetchAddLand = async (body: CreateListingRequest): Promise<Listings
     const { data } = await api.post('/api/admin/land/add', body);
     return data;
     }catch (error: any) {
-        console.log("STATUS:", error.response?.status);
-        console.log("BACKEND ERROR:", error.response?.data);
         throw error;
     }
 };

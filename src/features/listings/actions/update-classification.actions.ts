@@ -30,7 +30,6 @@ export async function updateClassificationAction(
         };
         
     } catch (error: any) {
-        console.log(error);
         
         return {
             success: false,

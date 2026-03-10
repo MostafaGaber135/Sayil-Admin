@@ -8,7 +8,6 @@ export const useCreateListing = () => {
     return useMutation({
         mutationFn:(body:CreateListingRequest)=> fetchAddLand(body),
         onSuccess:(data:any) => {
-            console.log('✅ Created listing id:', data.data);
         },
         onError: (error) => {
             console.error(' Error:', error);

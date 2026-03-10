@@ -30,7 +30,6 @@ export async function priceChangeRequestAction(
         };
         
     } catch (error: any) {
-        console.log(error);
         
         return {
             success: false,

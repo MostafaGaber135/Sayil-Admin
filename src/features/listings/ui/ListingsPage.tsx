@@ -1,26 +1,25 @@
 'use client';
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useListings, useListingsFilters } from "../hooks";
-import { GridSkeleton, GridView, ListingsFilters, TableSkeleton, TableView } from "@/features/listings/ui/components";
-
+import {
+  GridSkeleton,
+  GridView,
+  ListingsFilters,
+  TableSkeleton,
+  TableView,
+} from "@/features/listings/ui/components";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PriceRequestDetailsModal } from "./scroll";
-import { PriceChangeRequestDetails } from "..";
-import { useGetPriceChangeRequestDetails } from "../hooks/usePriceChange";
+import { priceChangeKeys } from "../hooks/usePriceChange";
+import type { PriceChangeRequestDetails } from "..";
 
 type Props = {
   initialRequestId: number | null;
-  priceRequestData?: PriceChangeRequestDetails;
-}
+};
 
 export const ListingsPage = ({ initialRequestId }: Props) => {
-  const { data: priceRequestData } = useGetPriceChangeRequestDetails(
-    initialRequestId!,
-    { enabled: !!initialRequestId }
-  );
   const searchParams = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -36,17 +35,32 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
 
   const { filters, viewMode, setViewMode, handleFilterChange, handleSearch, handleKeyDown } =
     useListingsFilters();
+
   const { data, isPending } = useListings(filters);
   const listings = data?.data?.items ?? [];
+
+  // Read from cache directly — no extra useQuery call needed
+  // The server already prefetched this into the queryClient via HydrationBoundary
+  const cachedPriceRequest =
+    initialRequestId
+      ? queryClient.getQueryData<PriceChangeRequestDetails>(
+          priceChangeKeys.details(initialRequestId)
+        )
+      : undefined;
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Listings Management</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Manage property listings and approvals</p>
+          <p className="text-sm text-gray-400 mt-0.5">
+            Manage property listings and approvals
+          </p>
         </div>
-        <Link href="/listings/add" className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">
+        <Link
+          href="/listings/add"
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors"
+        >
           + Add Listing
         </Link>
       </div>
@@ -76,24 +90,39 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
           isOpen={openModal === "priceDetails"}
           onClose={close}
           requestId={requestId}
-          initialData={requestId === initialRequestId ? priceRequestData : null}
+          // Pass cached server data → modal won't fire a client fetch if data exists
+          initialData={
+            requestId === initialRequestId ? (cachedPriceRequest ?? null) : null
+          }
           onCancelled={close}
         />
       )}
     </div>
   );
 };
-/* ── EmptyState — simple enough to live here ──────────────────────── */
+
+// ── EmptyState ────────────────────────────────────────────────────────────────
 
 const EmptyState = () => (
-    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-3">
-            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-            </svg>
-        </div>
-        <p className="text-sm font-medium text-gray-700">No listings found</p>
-        <p className="text-xs text-gray-400 mt-1">Try adjusting your filters or search term</p>
+  <div className="bg-white border border-gray-100 rounded-2xl shadow-sm flex flex-col items-center justify-center py-16 text-center">
+    <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-3">
+      <svg
+        className="w-6 h-6 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+        />
+      </svg>
     </div>
+    <p className="text-sm font-medium text-gray-700">No listings found</p>
+    <p className="text-xs text-gray-400 mt-1">
+      Try adjusting your filters or search term
+    </p>
+  </div>
 );

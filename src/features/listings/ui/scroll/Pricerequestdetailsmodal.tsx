@@ -6,8 +6,8 @@ import { offerKeys } from "../../api";
 import { priceChangeKeys, useGetPriceChangeRequestDetails } from "../../hooks/usePriceChange";
 import { cancelPriceRequestAction } from "../../actions/price-change-request.actions";
 
-import { PriceChangeRequestDetails } from "../../api/price-change.api";
-import { ListingItem } from "../..";
+
+import { ListingItem, PriceChangeRequestDetails } from "../..";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 

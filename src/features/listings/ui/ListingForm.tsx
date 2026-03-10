@@ -19,7 +19,6 @@ interface Props {
 
 export const ListingForm = ({ defaultData, onSubmit, isPending, lookups }: Props) => {
   const isEditMode = !!defaultData;
-  // console.log('from Edit',defaultData)
   const { register, handleSubmit, control, setValue, watch, reset, formState: { errors } } = useForm<ListingFormValues>({
     // resolver: zodResolver(listingSchema),
     resolver: zodResolver(listingSchema) as any,
@@ -35,7 +34,6 @@ export const ListingForm = ({ defaultData, onSubmit, isPending, lookups }: Props
   });
 
   const onError = (errors: any) => {
-    console.log("❌ Validation Errors:", errors);
   };
     useEffect(() => {
       if (defaultData) {

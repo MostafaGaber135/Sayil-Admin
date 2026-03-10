@@ -1,33 +1,26 @@
-
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/shared/lib/react-query/server";
 import { DEFAULT_FILTERS } from "@/features/listings/constants";
-
-import { fetchAllListing, serverFetchAllListing } from "@/features/listings/api";
-import { prefetchPriceChangeRequestDetails, prefetchPriceChangeRequests } from "@/features/listings/hooks/usePriceChange";
+import { serverFetchAllListing } from "@/features/listings/api";
+import { prefetchPriceChangeRequestDetails } from "@/features/listings/hooks/usePriceChange";
 import { ListingsPage } from "@/features/listings";
 
-export default async function Page({ 
-  searchParams 
-}: { 
-  searchParams: Promise<{ modal?: string; requestId?: string }>
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ modal?: string; requestId?: string }>;
 }) {
   const { requestId: requestIdParam } = await searchParams;
   const requestId = requestIdParam ? Number(requestIdParam) : null;
 
   const queryClient = getQueryClient();
 
+  // 1. Fetch listings — single API call
   const listingsData = await serverFetchAllListing(DEFAULT_FILTERS);
-  queryClient.setQueryData(['listings', DEFAULT_FILTERS], listingsData);
-  const listings = listingsData?.data?.items ?? [];
+  queryClient.setQueryData(["listings", DEFAULT_FILTERS], listingsData);
 
-  await Promise.all(
-    listings.map((listing: any) =>
-      prefetchPriceChangeRequests(queryClient, listing.id)
-    )
-  );
-
-  // 3. Prefetch price request details if requestId exists
+  // 2. Only prefetch price request details if the modal is already open (URL has requestId)
+  //    Don't prefetch ALL listings' price requests upfront — that's N+1 calls
   if (requestId) {
     await prefetchPriceChangeRequestDetails(queryClient, requestId);
   }
