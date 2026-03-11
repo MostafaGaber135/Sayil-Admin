@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState } from "react";
 
 import AddClassificationModal from "./AddClassificationModal";
@@ -46,7 +46,7 @@ export default function LandClassificationsTab() {
     setDeleteId(id);
     setOpenDeleteModal(true);
   };
-
+  const locale = useLocale();
   /* ================= UI ================= */
 
   return (
@@ -103,7 +103,9 @@ export default function LandClassificationsTab() {
                         {item.code}
                       </span>
 
-                      <span className="font-semibold">{item.nameEn}</span>
+                      <span className="font-semibold">
+                        {locale === "ar" ? item.nameAr : item.nameEn}
+                      </span>
                     </div>
                   </TableCell>
 

@@ -22,6 +22,14 @@ export const markNotificationAsRead = (id: number) => {
 };
 
 //Mark All Read
-export const markAllNotificationsAsRead = () => {
-  return api.post("/api/admin/notifications/mark-all-read");
+export const markAllNotificationsAsRead = (token: string) => {
+  return api.post(
+    "/api/admin/notifications/mark-all-read",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

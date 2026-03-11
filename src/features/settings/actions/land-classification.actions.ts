@@ -8,6 +8,8 @@ import {
   deleteLandClassification,
   updateLandClassification,
 } from "../services/settings.services";
+import { getTranslations } from "next-intl/server";
+
 
 //Post
 
@@ -15,7 +17,9 @@ export async function createLandClassificationAction(
   _prevState: any,
   formData: FormData,
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
+     
     const session = await getServerSession(authOptions);
 
 const payload = {
@@ -32,14 +36,14 @@ const payload = {
 
     return {
       success: true,
-      message: "Added successfully",
+      message: t("Added successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data || error);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Something went wrong",
+      message: error?.response?.data?.message || t("Something went wrong"),
     };
   }
 }
@@ -85,6 +89,7 @@ export async function deleteLandClassificationAction(
   _prevState: any,
   formData: FormData,
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -103,7 +108,7 @@ export async function deleteLandClassificationAction(
 
     return {
       success: false,
-      message: "Failed to delete",
+      message: t("Failed to delete"),
     };
   }
 }

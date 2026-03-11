@@ -4,11 +4,13 @@ import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/shared/lib/auth/nextauth.options";
 import { addFaq, deleteFaq, reorderFaqs, updateFaq } from "../services/settings.services";
+import { getTranslations } from "next-intl/server";
 
 export async function addFaqAction(
   _prevState: any,
   formData: FormData
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -29,14 +31,14 @@ export async function addFaqAction(
 
     return {
       success: true,
-      message: "FAQ added successfully",
+      message: t("FAQ added successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to add FAQ",
+      message: error?.response?.data?.message || t("Failed to add FAQ"),
     };
   }
 }
@@ -45,6 +47,7 @@ export async function reorderFaqsAction(
   _prevState: any,
   formData: FormData
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -56,14 +59,14 @@ export async function reorderFaqsAction(
 
     return {
       success: true,
-      message: "FAQ order updated successfully",
+      message: t("FAQ order updated successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to reorder FAQs",
+      message: error?.response?.data?.message || t("Failed to reorder FAQs"),
     };
   }
 }
@@ -74,6 +77,7 @@ export async function deleteFaqAction(
   _prevState: any,
   formData: FormData
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -85,14 +89,14 @@ export async function deleteFaqAction(
 
     return {
       success: true,
-      message: "FAQ deleted successfully",
+      message: t("FAQ deleted successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to delete FAQ",
+      message: error?.response?.data?.message || t("Failed to delete FAQ"),
     };
   }
 }
@@ -102,6 +106,7 @@ export async function updateFaqAction(
   _prevState: any,
   formData: FormData
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -119,14 +124,14 @@ export async function updateFaqAction(
 
     return {
       success: true,
-      message: "FAQ updated successfully",
+      message: t("FAQ updated successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to update FAQ",
+      message: error?.response?.data?.message || t("Failed to update FAQ"),
     };
   }
 }
