@@ -15,3 +15,11 @@ Authorization:` Bearer ${token}`,
 },
 });
 };
+
+export const updateProfile = (data: { fullName: string; phoneNumber: string }, token: string) => {
+    return api.put("/api/admin/account/profile", data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };

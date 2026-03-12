@@ -1,20 +1,35 @@
-import {ListingsResponse} from "@/features/listings";
-import {api} from "@/shared/lib/axios/axios.instance";
+import type { AxiosInstance } from "axios";
+import { ListingsRequest, ListingsResponse } from "..";
+import { api } from "@/shared/lib/axios/axios.instance";
+import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
 
-export const fetchAllListing = async (body: any): Promise<ListingsResponse> => {
-    const cleanBody = Object.fromEntries(
-        Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "")
-    );
-    const { data } = await api.post('/api/admin/land/listings', cleanBody);
-    return data;
+const buildCleanBody = (body: ListingsRequest) =>
+  Object.fromEntries(
+    Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "")
+  );
+
+// ─── Shared (client + server) ─────────────────────────────────────────────────
+
+export const fetchAllListing = async (
+  body: ListingsRequest,
+  instance: AxiosInstance = api  
+): Promise<ListingsResponse> => {
+  const { data } = await instance.post("/api/admin/land/listings", buildCleanBody(body));
+  return data;
 };
 
-export const fetchGetLand =async (id: number) => {
-    try {
-        const {data} = await api.get(`/api/admin/land/${id}`);
-        return data;
-    }catch(error) {
-        console.log("error From fetchGetLand",error);
-    }
+export const fetchGetLand = async (
+  id: number,
+  instance: AxiosInstance = api
+) => {
+  const { data } = await instance.get(`/api/admin/land/${id}`);
+  return data;
+};
 
-}
+// ─── Server aliases ───────────────────────────────────────────────────────────
+
+export const serverFetchAllListing = (body: ListingsRequest) =>
+  fetchAllListing(body, serverApi);
+
+export const serverFetchGetLand = (id: number) =>
+  fetchGetLand(id, serverApi);

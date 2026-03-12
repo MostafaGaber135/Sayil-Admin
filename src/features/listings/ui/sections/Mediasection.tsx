@@ -123,7 +123,6 @@ export const MediaSection = ({ setValue, watch }: Props) => {
                     </div>
                     <input type="file" accept="video/*" className="hidden" onChange={(e) => {
 
-                        console.log(e.target.files?.[0]);
                     }} />
                 </label>
             </div>

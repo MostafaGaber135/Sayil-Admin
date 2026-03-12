@@ -1,17 +1,22 @@
-'use client'
-import {ListingForm, useCreateListing, useLookups} from "@/features/listings";
-
+"use client";
+import { useRouter } from "next/navigation";
+import { ListingForm } from "@/features/listings";
+import { useLookups } from "@/features/listings/hooks/useLookups";
+import { useAddLand } from "@/features/listings/hooks/use-listing-actions";
 
 export const AddListingContainer = () => {
-    const { data: lookups } = useLookups();
+  const router = useRouter();
+  const { data: lookups } = useLookups();
+  const { addLand, isPending, error } = useAddLand();
 
-    const { mutate: createListing, isPending } = useCreateListing();
-
-    return (
-        <ListingForm
-            lookups={lookups}
-            isPending={isPending}
-            onSubmit={(data) => createListing(data)}
-        />
-    );
-}
+  return (
+    <>
+      {error && <p className="text-red-500 text-sm mb-4 px-4">{error}</p>}
+      <ListingForm
+        lookups={lookups}
+        isPending={isPending}
+        onSubmit={(data) => addLand(data, () => router.push("/listings"))}
+      />
+    </>
+  );
+};

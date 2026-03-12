@@ -1,17 +1,18 @@
-import {ListingFormValues} from "@/features/listings/validation";
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { ListingFormValues } from "@/features/listings/validation";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: any[]) {
-    return twMerge(clsx(inputs))
+    return twMerge(clsx(inputs));
 }
+
 export const mapListingToForm = (data: any): ListingFormValues => ({
     title: data.title,
     description: data.description ?? "",
     area: data.area,
     price: data.price,
-    discountedPrice: data.discountedPrice,
-    discountPercent: data.discountPercent,
+    discountedPrice: data.discountedPrice ?? null,
+    discountPercent: data.discountPercent ?? null,
 
     cityId: data.cityId,
     regionId: data.regionId,
@@ -33,6 +34,7 @@ export const mapListingToForm = (data: any): ListingFormValues => ({
     nationalIdCopyUrl: data.nationalIdCopyUrl ?? "",
     landSurveyReportUrl: data.landSurveyReportUrl ?? "",
 
+    userId: data.userId ?? data.ownerId,   // ← أضفناها + fallback لو الـ API بيبعتها بـ ownerId
     agentId: data.agentId,
     buyerId: data.buyerId ?? null,
     purchasedPrice: data.purchasedPrice ?? null,

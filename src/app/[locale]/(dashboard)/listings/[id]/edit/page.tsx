@@ -1,32 +1,29 @@
-// app/listings/[id]/edit/page.tsx
+// app/[locale]/(dashboard)/listings/[id]/edit/page.tsx
 import { getQueryClient } from "@/shared/lib/react-query/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import {getListingLookupsService} from "@/features/listings/services";
-import {EditListingContainer} from "@/features/listings/ui/EditListingContainer";
-import {fetchGetLand, fetchRegions} from "@/features/listings/api";
+import { getListingLookupsService } from "@/features/listings/services";
+import { serverFetchGetLand } from "@/features/listings/api";
+import { EditListingContainer } from "@/features/listings";
 
+interface PageProps {
+    params: Promise<{ id: number }>;
+}
 
-export default async function EditListingPage({params,}: { params: Promise<{ id: number }> }) {
+export default async function EditListingPage({ params }: PageProps) {
     const { id } = await params;
     const queryClient = getQueryClient();
-    await Promise.all([
-        queryClient.prefetchQuery({
-            queryKey: ['listings-lookups'],
-            queryFn: getListingLookupsService,
-        }),
-        queryClient.prefetchQuery({
-            queryKey: ['getLand', id],
-            queryFn: () => fetchGetLand(id),
-        }),
-        // queryClient.prefetchQuery({
-        //     queryKey: ['listings-regions'],
-        //     queryFn: () => fetchRegions(id),
-        // }),
+
+    const [landData, lookupsData] = await Promise.all([
+        serverFetchGetLand(Number(id)),
+        getListingLookupsService(),
     ]);
+
+    queryClient.setQueryData(['getLand', Number(id)], landData);
+    queryClient.setQueryData(['listings-lookups'], lookupsData);
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <EditListingContainer id={id} />
+            <EditListingContainer id={Number(id)} />
         </HydrationBoundary>
     );
 }

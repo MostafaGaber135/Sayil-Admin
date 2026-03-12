@@ -23,6 +23,7 @@ export async function createLandClassificationAction(
     const session = await getServerSession(authOptions);
 
 const payload = {
+  id: Number(formData.get("id")),
   code: String(formData.get("code")),
   name: String(formData.get("name")),
   nameAr: String(formData.get("nameAr")),

@@ -1,50 +1,12 @@
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {ApproveLandRequest, RejectLandRequest, useListingsMutation} from "@/features/listings";
-import {
-    fetchAddLand,
-    fetchAllListing,
-    fetchApproveLand,
-    fetchDeleteLand,
-    fetchRejectLand,
-    fetchUpdate
-} from "@/features/listings/api";
+import {useMutation} from "@tanstack/react-query";
+;
 import {CreateListingRequest} from "@/features/listings/validation";
-import { useActionState, useTransition } from "react";
 import { fetchAddLandAction } from "@/server-actions/listings/create-land.action";
-
-export const useApproveLand = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn:(body:ApproveLandRequest)=> fetchApproveLand(body),
-        onSuccess:()=> {
-            queryClient.invalidateQueries({ queryKey: ['lands'] });
-            console.log("تمت الموافقة بنجاح!");
-        },
-        onError: (error) => {
-            console.error("حدث خطأ أثناء الموافقة", error);
-        }
-    })
-}
-
-export const useRejectLand = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn:(body:RejectLandRequest)=> fetchRejectLand(body),
-        onSuccess:()=> {
-            queryClient.invalidateQueries({ queryKey: ['lands'] });
-            console.log("تمت الرفض بنجاح!");
-        },
-        onError: (error) => {
-            console.error("حدث خطأ أثناء الرفض", error);
-        }
-    })
-}
 
 export const useCreateListing = () => {
     return useMutation({
-        mutationFn:(body:CreateListingRequest)=> fetchAddLand(body),
+        mutationFn:(body:CreateListingRequest)=> fetchAddLandAction(body),
         onSuccess:(data:any) => {
-            console.log('✅ Created listing id:', data.data);
         },
         onError: (error) => {
             console.error(' Error:', error);
@@ -61,35 +23,4 @@ export const useCreateListing = () => {
     // }
     //
     // return { handleAddListings, isPending, state }
-}
-
-export const useUpdateListing =  () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn:(body:CreateListingRequest)=> fetchUpdate(body),
-        onSuccess:async(data:any) => {
-            if (data?.data?.id) {
-                await queryClient.invalidateQueries({
-                    queryKey: ["getLand", data?.data?.id],
-                });
-            }
-            const latestListings = await fetchAllListing({});
-            console.log("Latest listings after update:", latestListings);
-
-            console.log('✅ update listing id:', data.data);
-        },
-        onError: (error) => {
-            console.error(' Error:', error);
-        },
-    })
-}
-
-export const useDeleteLand =  (id:string) => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id:string) => fetchDeleteLand(id),
-        onSuccess: ()=> {
-            queryClient.invalidateQueries({queryKey:['getLand']})
-        }
-    })
 }
