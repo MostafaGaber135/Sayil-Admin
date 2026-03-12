@@ -1,12 +1,13 @@
 "use client";
-import { useState, useActionState, useEffect, useTransition } from "react";
+
+import { useState, useTransition } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { ClassificationItem, ListingItem } from "../../types";
 import { ModalFooter } from "./ModalFooter";
 import { ListingInfo } from "./ListingInfo";
-import { BaseModal } from "@/features/listings/ui/modals";
-import { updateClassificationAction } from "../../actions/update-classification.actions";
+import { updateClassificationAction } from "../../actions/price-change.actions";
 import { useLandClassifications } from "@/features/settings/hooks/settings.hooks";
-import { useQueryClient } from "@tanstack/react-query";
+import { BaseModal } from "./BaseModal";
 
 interface Props {
   isOpen: boolean;
@@ -17,32 +18,32 @@ interface Props {
 
 export const ClassificationChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const { data: classifications, isLoading: isLoadingOptions } = useLandClassifications();
   const queryClient = useQueryClient();
-  const [state, dispatch] = useActionState(
-    (_: any, data: { landId: number; classificationId: number }) =>
-      updateClassificationAction(data),
-    null
-  );
-
-  useEffect(() => {
-    if (state?.success) {
-      // queryClient.invalidateQueries({ queryKey: ['getLand', String(listing.id)] });
-      onConfirm(selectedId!);
-      handleClose();
-    }
-  }, [state]);
 
   const handleClose = () => {
     setSelectedId(null);
+    setError(null);
     onClose();
   };
 
   const handleConfirm = () => {
     if (!selectedId) return;
-    startTransition(() => {
-      dispatch({ landId: listing.id, classificationId: selectedId });
+    setError(null);
+    startTransition(async () => {
+      const result = await updateClassificationAction({
+        landId: listing.id,
+        classificationId: selectedId,
+      });
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["getLand", listing.id] });
+        onConfirm(selectedId);
+        handleClose();
+      } else {
+        setError(result.error ?? "حدث خطأ غير متوقع");
+      }
     });
   };
 
@@ -65,7 +66,6 @@ export const ClassificationChangeModal = ({ isOpen, onClose, listing, onConfirm 
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
           New Classification
         </p>
-
         {isLoadingOptions ? (
           <p className="text-sm text-gray-400">Loading...</p>
         ) : (
@@ -77,7 +77,9 @@ export const ClassificationChangeModal = ({ isOpen, onClose, listing, onConfirm 
                   key={cls.id}
                   onClick={() => setSelectedId(cls.id)}
                   className={`w-full px-4 py-3 text-sm font-medium text-left rounded-xl border-2 transition-all flex items-center justify-between ${
-                    selectedId === cls.id ? "border-gray-900 bg-gray-50" : "border-gray-100 hover:border-gray-200"
+                    selectedId === cls.id
+                      ? "border-gray-900 bg-gray-50"
+                      : "border-gray-100 hover:border-gray-200"
                   }`}
                 >
                   <span>{cls.name}</span>
@@ -92,9 +94,7 @@ export const ClassificationChangeModal = ({ isOpen, onClose, listing, onConfirm 
         )}
       </div>
 
-      {state?.error && (
-        <p className="text-red-500 text-sm mt-2">{state.error}</p>
-      )}
+      {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
 
       <ModalFooter
         onClose={handleClose}

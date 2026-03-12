@@ -1,34 +1,35 @@
-// features/listings/api/listings.ts
-import { ListingsRequest, ListingsResponse } from "@/features/listings";
-import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
+import type { AxiosInstance } from "axios";
+import { ListingsRequest, ListingsResponse } from "..";
 import { api } from "@/shared/lib/axios/axios.instance";
+import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
 
-// ── Client ─────────────────────────────────────────────────────────────────────
+const buildCleanBody = (body: ListingsRequest) =>
+  Object.fromEntries(
+    Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "")
+  );
 
-export const fetchAllListing = async (body: ListingsRequest): Promise<ListingsResponse> => {
-    const cleanBody = Object.fromEntries(
-        Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "")
-    );
-    const { data } = await api.post('/api/admin/land/listings', cleanBody);
-    return data;
+// ─── Shared (client + server) ─────────────────────────────────────────────────
+
+export const fetchAllListing = async (
+  body: ListingsRequest,
+  instance: AxiosInstance = api  
+): Promise<ListingsResponse> => {
+  const { data } = await instance.post("/api/admin/land/listings", buildCleanBody(body));
+  return data;
 };
 
-export const fetchGetLand = async (id: number) => {
-    const { data } = await api.get(`/api/admin/land/${id}`);
-    return data;
+export const fetchGetLand = async (
+  id: number,
+  instance: AxiosInstance = api
+) => {
+  const { data } = await instance.get(`/api/admin/land/${id}`);
+  return data;
 };
 
-// ── Server ─────────────────────────────────────────────────────────────────────
+// ─── Server aliases ───────────────────────────────────────────────────────────
 
-export const serverFetchAllListing = async (body: ListingsRequest): Promise<ListingsResponse> => {
-    const cleanBody = Object.fromEntries(
-        Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "")
-    );
-    const { data } = await serverApi.post('/api/admin/land/listings', cleanBody);
-    return data;
-};
+export const serverFetchAllListing = (body: ListingsRequest) =>
+  fetchAllListing(body, serverApi);
 
-export const serverFetchGetLand = async (id: number) => {
-    const { data } = await serverApi.get(`/api/admin/land/${id}`);
-    return data;
-};
+export const serverFetchGetLand = (id: number) =>
+  fetchGetLand(id, serverApi);

@@ -10,5 +10,5 @@ export const fetchRegions = async (cityId: number): Promise<LookupItem[]> => {
     const { data } = await api.get(`/api/admin/lookup/regions`, {
         params: { cityId }
     });
-    return data.data;
+    return data.data?.value;
 };

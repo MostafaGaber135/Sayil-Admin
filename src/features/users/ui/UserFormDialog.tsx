@@ -15,9 +15,6 @@ import { AddExternalForm, EditExternalForm, buildEditExternalDefaults } from "./
 import { AddInternalForm, EditInternalForm } from "./Internaluserform";
 
 
-// ─── The dialog no longer holds any form state.
-//     It just renders the right form and proxies submit via formId.
-// ─────────────────────────────────────────────────────────────────────────────
 
 const FORM_ID = "user-form";
 

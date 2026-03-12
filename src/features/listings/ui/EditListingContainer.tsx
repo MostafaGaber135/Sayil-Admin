@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { ListingForm, useListingById } from "@/features/listings";
 import { useLookups } from "@/features/listings/hooks/useLookups";
 import { mapListingToForm } from "@/shared/lib/utils";
-import { updateListingAction } from "@/features/listings/actions/actions";
+
 import { ListingFormValues } from "@/features/listings/validation";
+import { updateListingAction } from "../actions";
 
 
 export const EditListingContainer = ({ id }: { id: number }) => {

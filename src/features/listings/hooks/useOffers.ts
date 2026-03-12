@@ -2,41 +2,9 @@
 // offers.queries.ts  –  query keys + client hooks
 // ──────────────────────────────────────────────────────────────────────────────
 import { useQuery } from "@tanstack/react-query";
+import { OffersResponse, PriceChangeRequest } from "..";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
-
-export interface Offer {
-  id: number;
-  buyerName: string;
-  buyerEmail: string;
-  buyerPhone: string;
-  message: string;
-  offerAmount: number;
-  submittedAt: string;
-}
-
-export interface OffersResponse {
-  items: Offer[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-export interface PriceChangeRequest {
-  id: number;
-  landId: number;
-  landTitle: string;
-  city: string;
-  region: string;
-  area: number;
-  classification: string;
-  currentPrice: number;
-  suggestedPrice: number;
-  reason: string;
-  status: "Pending" | "Approved" | "Rejected" | "Cancelled";
-  requestedAt: string;
-}
 
 // ── Query Keys ─────────────────────────────────────────────────────────────────
 

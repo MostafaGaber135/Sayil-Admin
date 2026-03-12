@@ -14,8 +14,18 @@ import {
   Calendar,
 } from "lucide-react";
 
-import { AddExternalFormValues, EditExternalFormValues, addExternalSchema, editExternalSchema } from "../validation/user.validation";
-import { FormInput, FormSelect, LabeledField, PasswordToggle } from "./FormPrimitives";
+import {
+  AddExternalFormValues,
+  EditExternalFormValues,
+  addExternalSchema,
+  editExternalSchema,
+} from "../validation/user.validation";
+import {
+  FormInput,
+  FormSelect,
+  LabeledField,
+  PasswordToggle,
+} from "./FormPrimitives";
 import { EXTERNAL_USER_ROLE_OPTIONS } from "../data/users.constants";
 import { ManagedUser, UsersScreenLabels } from "..";
 
@@ -28,7 +38,12 @@ type AddExternalFormProps = {
   formId: string;
 };
 
-export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExternalFormProps) {
+export function AddExternalForm({
+  labels,
+  onSubmit,
+  isPending,
+  formId,
+}: AddExternalFormProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -57,7 +72,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
         control={control}
         name="fullName"
         render={({ field }) => (
-          <LabeledField label={labels.form.fullName} icon={User} error={errors.fullName}>
+          <LabeledField
+            label={labels.form.fullName}
+            icon={User}
+            error={errors.fullName}
+          >
             <FormInput
               value={field.value}
               onChange={field.onChange}
@@ -73,7 +92,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
         control={control}
         name="email"
         render={({ field }) => (
-          <LabeledField label={labels.form.email} icon={Mail} error={errors.email}>
+          <LabeledField
+            label={labels.form.email}
+            icon={Mail}
+            error={errors.email}
+          >
             <FormInput
               value={field.value}
               onChange={field.onChange}
@@ -90,7 +113,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
           control={control}
           name="phoneNumber"
           render={({ field }) => (
-            <LabeledField label={labels.form.phone} icon={Phone} error={errors.phoneNumber}>
+            <LabeledField
+              label={labels.form.phone}
+              icon={Phone}
+              error={errors.phoneNumber}
+            >
               <FormInput
                 value={field.value}
                 onChange={field.onChange}
@@ -104,7 +131,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
           control={control}
           name="nationalId"
           render={({ field }) => (
-            <LabeledField label={labels.form.nationalId} icon={CreditCard} error={errors.nationalId}>
+            <LabeledField
+              label={labels.form.nationalId}
+              icon={CreditCard}
+              error={errors.nationalId}
+            >
               <FormInput
                 value={field.value}
                 onChange={field.onChange}
@@ -122,7 +153,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
           control={control}
           name="role"
           render={({ field }) => (
-            <LabeledField label={labels.form.role} icon={Shield} error={errors.role}>
+            <LabeledField
+              label={labels.form.role}
+              icon={Shield}
+              error={errors.role}
+            >
               <FormSelect
                 value={field.value}
                 onChange={field.onChange}
@@ -136,7 +171,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
           control={control}
           name="location"
           render={({ field }) => (
-            <LabeledField label={labels.form.location} icon={MapPin} error={errors.location}>
+            <LabeledField
+              label={labels.form.location}
+              icon={MapPin}
+              error={errors.location}
+            >
               <FormInput
                 value={field.value ?? ""}
                 onChange={field.onChange}
@@ -152,7 +191,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
         control={control}
         name="dateOfBirth"
         render={({ field }) => (
-          <LabeledField label={labels.form.dateOfBirth} icon={Calendar} error={errors.dateOfBirth}>
+          <LabeledField
+            label={labels.form.dateOfBirth}
+            icon={Calendar}
+            error={errors.dateOfBirth}
+          >
             <FormInput
               value={field.value ?? ""}
               onChange={field.onChange}
@@ -168,7 +211,11 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
           control={control}
           name="password"
           render={({ field }) => (
-            <LabeledField label={labels.form.initialPassword} icon={UserCog} error={errors.password}>
+            <LabeledField
+              label={labels.form.initialPassword}
+              icon={UserCog}
+              error={errors.password}
+            >
               <FormInput
                 value={field.value}
                 onChange={field.onChange}
@@ -185,7 +232,9 @@ export function AddExternalForm({ labels, onSubmit, isPending, formId }: AddExte
             </LabeledField>
           )}
         />
-        <p className="mt-1.5 text-[11px] text-[#667085]">{labels.form.passwordHint}</p>
+        <p className="mt-1.5 text-[11px] text-[#667085]">
+          {labels.form.passwordHint}
+        </p>
       </div>
     </form>
   );
@@ -224,7 +273,11 @@ export function EditExternalForm({
         control={control}
         name="fullName"
         render={({ field }) => (
-          <LabeledField label={labels.form.fullName} icon={User} error={errors.fullName}>
+          <LabeledField
+            label={labels.form.fullName}
+            icon={User}
+            error={errors.fullName}
+          >
             <FormInput
               value={field.value}
               onChange={field.onChange}
@@ -240,7 +293,11 @@ export function EditExternalForm({
         control={control}
         name="email"
         render={({ field }) => (
-          <LabeledField label={labels.form.email} icon={Mail} error={errors.email}>
+          <LabeledField
+            label={labels.form.email}
+            icon={Mail}
+            error={errors.email}
+          >
             <FormInput
               value={field.value}
               onChange={field.onChange}
@@ -257,7 +314,11 @@ export function EditExternalForm({
           control={control}
           name="phoneNumber"
           render={({ field }) => (
-            <LabeledField label={labels.form.phone} icon={Phone} error={errors.phoneNumber}>
+            <LabeledField
+              label={labels.form.phone}
+              icon={Phone}
+              error={errors.phoneNumber}
+            >
               <FormInput
                 value={field.value}
                 onChange={field.onChange}
@@ -271,7 +332,11 @@ export function EditExternalForm({
           control={control}
           name="nationalId"
           render={({ field }) => (
-            <LabeledField label={labels.form.nationalId} icon={CreditCard} error={errors.nationalId}>
+            <LabeledField
+              label={labels.form.nationalId}
+              icon={CreditCard}
+              error={errors.nationalId}
+            >
               <FormInput
                 value={field.value}
                 onChange={field.onChange}
@@ -289,7 +354,11 @@ export function EditExternalForm({
           control={control}
           name="role"
           render={({ field }) => (
-            <LabeledField label={labels.form.role} icon={Shield} error={errors.role}>
+            <LabeledField
+              label={labels.form.role}
+              icon={Shield}
+              error={errors.role}
+            >
               <FormSelect
                 value={field.value}
                 onChange={field.onChange}
@@ -303,7 +372,11 @@ export function EditExternalForm({
           control={control}
           name="location"
           render={({ field }) => (
-            <LabeledField label={labels.form.location} icon={MapPin} error={errors.location}>
+            <LabeledField
+              label={labels.form.location}
+              icon={MapPin}
+              error={errors.location}
+            >
               <FormInput
                 value={field.value ?? ""}
                 onChange={field.onChange}
@@ -319,7 +392,11 @@ export function EditExternalForm({
         control={control}
         name="dateOfBirth"
         render={({ field }) => (
-          <LabeledField label={labels.form.dateOfBirth} icon={Calendar} error={errors.dateOfBirth}>
+          <LabeledField
+            label={labels.form.dateOfBirth}
+            icon={Calendar}
+            error={errors.dateOfBirth}
+          >
             <FormInput
               value={field.value ?? ""}
               onChange={field.onChange}
@@ -334,7 +411,9 @@ export function EditExternalForm({
 
 // ─── Helper: ManagedUser → EditExternalFormValues ─────────────────────────────
 
-export function buildEditExternalDefaults(user: ManagedUser): EditExternalFormValues {
+export function buildEditExternalDefaults(
+  user: ManagedUser,
+): EditExternalFormValues {
   return {
     fullName: user.name,
     email: user.email,

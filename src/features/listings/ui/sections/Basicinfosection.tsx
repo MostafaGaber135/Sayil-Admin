@@ -1,14 +1,11 @@
 'use client';
-import { UseFormRegister, FieldErrors } from "react-hook-form";
-import {ListingFormValues} from "@/features/listings/validation";
+import { useFormContext } from "react-hook-form";
+import { ListingFormValues } from "@/features/listings/validation";
 
+// FIX: No more props drilling — reads form state from context
+export const BasicInfoSection = () => {
+    const { register, formState: { errors } } = useFormContext<ListingFormValues>();
 
-interface Props {
-    register: UseFormRegister<ListingFormValues>;
-    errors: FieldErrors<ListingFormValues>;
-}
-
-export const BasicInfoSection = ({ register, errors }: Props) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -73,7 +70,6 @@ export const BasicInfoSection = ({ register, errors }: Props) => {
         </div>
     );
 };
-
 
 const inputCls = (hasError: boolean) =>
     `w-full bg-gray-50/50 border ${hasError ? "border-red-400" : "border-gray-200"} 

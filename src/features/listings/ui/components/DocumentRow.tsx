@@ -15,7 +15,7 @@ export const DocumentRow = ({ document }: Props) => (
                 </svg>
             </div>
             <div>
-                <p className="text-sm font-medium text-gray-800">{document.name}</p>
+                <p className="text-sm font-medium text-gray-800">{document?.name}</p>
                 <p className={`text-xs font-medium ${document.isAvailable ? "text-green-600" : "text-gray-400"}`}>
                     {document.isAvailable ? "Available" : "Not Available"}
                 </p>

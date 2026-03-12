@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ListingItem } from "../../types";
 import { ModalFooter } from "./ModalFooter";
 import { ListingInfo } from "./ListingInfo";
-import { BaseModal } from "@/features/listings/ui/modals";
+import { BaseModal } from "./BaseModal";
 
 const STATUS_OPTIONS = [
   { id: 1, label: "Pending", color: "bg-amber-100 text-amber-700" },

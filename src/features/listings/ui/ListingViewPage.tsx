@@ -1,6 +1,7 @@
-'use client'
+"use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Section } from "./components/Section";
 import { InfoRow } from "./components/InfoRow";
@@ -12,8 +13,9 @@ import {
   ClassificationChangeModal,
   PriceChangeModal,
   StatusChangeModal,
-} from "@/features/listings/ui/scroll";
+} from "@/features/listings/ui/modals";
 
+// FIX: added "status" — was missing so StatusChangeModal could never open from QuickActions
 type ModalType = "status" | "classification" | "price" | null;
 
 interface Props {
@@ -21,6 +23,7 @@ interface Props {
 }
 
 export const ListingViewPage = ({ listing }: Props) => {
+  const router = useRouter();
   const [openModal, setOpenModal] = useState<ModalType>(null);
   const close = () => setOpenModal(null);
 
@@ -29,11 +32,7 @@ export const ListingViewPage = ({ listing }: Props) => {
   const documents = [
     { id: "deed", label: "Title Deed", url: listing.titleDeedUrl },
     { id: "national-id", label: "National ID", url: listing.nationalIdCopyUrl },
-    {
-      id: "survey",
-      label: "Land Survey Report",
-      url: listing.landSurveyReportUrl,
-    },
+    { id: "survey", label: "Land Survey Report", url: listing.landSurveyReportUrl },
   ].filter((doc) => doc.url);
 
   return (
@@ -45,18 +44,8 @@ export const ListingViewPage = ({ listing }: Props) => {
             href="/listings"
             className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Listings
           </Link>
@@ -70,42 +59,26 @@ export const ListingViewPage = ({ listing }: Props) => {
           href={`/listings/${listing.id}/edit`}
           className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-black transition-colors"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-            />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
           Edit Listing
         </Link>
       </div>
 
-      {/* Page title */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Property Details</h1>
       </div>
 
-      {/* Main layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left column (2/3) */}
+        {/* Left column */}
         <div className="lg:col-span-2 flex flex-col gap-6">
-          {/* Basic Information */}
           <Section title="Basic Information">
             <div className="mb-5 pb-5 border-b border-gray-50">
-              <h3 className="text-base font-semibold text-gray-900">
-                {listing.title}
-              </h3>
+              <h3 className="text-base font-semibold text-gray-900">{listing.title}</h3>
               {listing.description && (
-                <p className="text-sm text-gray-500 mt-1.5">
-                  {listing.description}
-                </p>
+                <p className="text-sm text-gray-500 mt-1.5">{listing.description}</p>
               )}
             </div>
 
@@ -131,39 +104,21 @@ export const ListingViewPage = ({ listing }: Props) => {
             </div>
           </Section>
 
-          {/* Property Details */}
           <Section title="Property Details">
             <InfoRow label="Type" value={listing.landTypeName} />
             <InfoRow label="Facing Direction" value={listing.landFacingName} />
-            <InfoRow
-              label="Ownership Type"
-              value={listing.ownershipStatusName}
-            />
+            <InfoRow label="Ownership Type" value={listing.ownershipStatusName} />
             <InfoRow label="Deed Type" value={listing.deedTypeName} />
             <InfoRow label="Neighbor Type" value={listing.neighborTypeName} />
           </Section>
 
-          {/* Features */}
           {features.length > 0 && (
             <Section title="Property Features">
               <div className="flex flex-wrap gap-2">
                 {features.map((feature) => (
-                  <span
-                    key={feature}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-sm text-gray-600"
-                  >
-                    <svg
-                      className="w-3.5 h-3.5 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M5 13l4 4L19 7"
-                      />
+                  <span key={feature} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-sm text-gray-600">
+                    <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
                     {feature}
                   </span>
@@ -172,7 +127,6 @@ export const ListingViewPage = ({ listing }: Props) => {
             </Section>
           )}
 
-          {/* Location */}
           <Section title="Location Details">
             <InfoRow label="City" value={listing.cityName} />
             <InfoRow label="Region" value={listing.regionName} />
@@ -188,7 +142,6 @@ export const ListingViewPage = ({ listing }: Props) => {
             </div>
           </Section>
 
-          {/* Legal Documents */}
           {documents.length > 0 && (
             <Section title="Legal Documents">
               {documents.map((doc) => (
@@ -196,7 +149,7 @@ export const ListingViewPage = ({ listing }: Props) => {
               ))}
             </Section>
           )}
-          {/* Media */}
+
           {images.length > 0 && (
             <Section title="Property Media">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
@@ -204,81 +157,63 @@ export const ListingViewPage = ({ listing }: Props) => {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {images.map((url, i) => (
-                  <div
-                    key={i}
-                    className="aspect-video rounded-xl overflow-hidden bg-gray-100"
-                  >
-                    <img
-                      src={url}
-                      alt={`Property ${i + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                  <div key={i} className="aspect-video rounded-xl overflow-hidden bg-gray-100">
+                    <img src={url} alt={`Property ${i + 1}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
             </Section>
           )}
 
-          {/* Administrative */}
           <Section title="Administrative Information">
             <InfoRow label="Agent" value={listing.agentName} />
-            <InfoRow
-              label="Classification"
-              value={listing.classificationName}
-            />
+            <InfoRow label="Classification" value={listing.classificationName} />
             <InfoRow label="Status" value={listing.statusName} />
-            <InfoRow
-              label="Verified"
-              value={listing.isVerified ? "Yes" : "No"}
-            />
+            <InfoRow label="Verified" value={listing.isVerified ? "Yes" : "No"} />
             <InfoRow label="Views" value={String(listing.viewCount)} />
             <InfoRow label="Offers" value={String(listing.offerCount)} />
             {listing.publishDate && (
-              <InfoRow
-                label="Published"
-                value={new Date(listing.publishDate).toLocaleDateString()}
-              />
+              <InfoRow label="Published" value={new Date(listing.publishDate).toLocaleDateString()} />
             )}
-            <InfoRow
-              label="Created"
-              value={new Date(listing.createdAt).toLocaleDateString()}
-            />
+            <InfoRow label="Created" value={new Date(listing.createdAt).toLocaleDateString()} />
           </Section>
         </div>
 
-        {/* Right column (1/3) */}
+        {/* Right column */}
         <div className="flex flex-col gap-6">
           <QuickActions
             listing={listing}
-            onEdit={() => {}}
+            // FIX: onEdit navigates to edit page instead of empty function
+            onEdit={() => router.push(`/listings/${listing.id}/edit`)}
+            onStatusChange={() => setOpenModal("status")}
             onClassificationChange={() => setOpenModal("classification")}
             onPriceChange={() => setOpenModal("price")}
-            onViewOffers={() => {}}
+            // FIX: onViewOffers opens offers modal (or navigates — placeholder for now)
+            onViewOffers={() => {
+              // TODO: open OffersManagementModal when it's uncommented
+              router.push(`/listings/${listing.id}?modal=offers`);
+            }}
           />
         </div>
       </div>
 
+      {/* Modals */}
       <StatusChangeModal
-  isOpen={openModal === "status"}
-  onClose={close}
-  onConfirm={() => {
-    close();
-  }}
-  listing={{
-    title: listing.title,
-    city: listing.cityName,
-    region: listing.regionName,
-    statusId: listing.statusId,
-    statusLabel: listing.statusName, 
-  }}
-/>
+        isOpen={openModal === "status"}
+        onClose={close}
+        onConfirm={close}
+        listing={{
+          title: listing.title,
+          city: listing.cityName,
+          region: listing.regionName,
+          statusId: listing.statusId,
+          statusLabel: listing.statusName,
+        }}
+      />
       <ClassificationChangeModal
         isOpen={openModal === "classification"}
         onClose={close}
-        onConfirm={() => {
-          close();
-        }}
-
+        onConfirm={close}
         listing={{
           id: listing.id,
           title: listing.title,
@@ -286,15 +221,12 @@ export const ListingViewPage = ({ listing }: Props) => {
           region: listing.regionName,
           classificationId: listing.classificationId,
           classificationName: listing.classificationName,
-      }}
+        }}
       />
-
       <PriceChangeModal
         isOpen={openModal === "price"}
         onClose={close}
-        onConfirm={() => {
-          close();
-        }}
+        onConfirm={close}
         listing={{
           id: listing.id,
           title: listing.title,
@@ -302,7 +234,7 @@ export const ListingViewPage = ({ listing }: Props) => {
           city: listing.cityName,
           region: listing.regionName,
         }}
-        />
+      />
     </div>
   );
 };

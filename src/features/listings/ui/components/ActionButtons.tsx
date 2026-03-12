@@ -1,81 +1,102 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
-import { ListingItem } from "@/features/listings";
+import { useRouter } from "next/navigation";
+import {
+  ListingItem,
+  PriceChangeRequest,
+  PriceChangeResponse,
+} from "@/features/listings";
 import {
   ClassificationChangeModal,
   PriceChangeModal,
   StatusChangeModal,
-} from "@/features/listings/ui/scroll";
-import { useGetPriceChangeRequests } from "@/features/listings/hooks/usePriceChange";
-import { useRouter } from "next/navigation";
-import { deleteLandAction } from "../../actions/actions";
-import { DeleteModal } from "../scroll/DeleteModal";
+} from "@/features/listings/ui/modals";
+import { DeleteModal } from "../modals/DeleteModal";
+import { useGetPriceChangeRequests } from "@/features/listings/hooks/use-price-change";
+import { useDeleteLand } from "@/features/listings/hooks/use-listing-actions";
 
-type ModalType = "status" | "classification" | "price" | "offers" | "priceDetails" | "delete" | null;
+type ModalType =
+  | "status"
+  | "classification"
+  | "price"
+  | "offers"
+  | "priceDetails"
+  | "delete"
+  | null;
 
 interface Props {
   item: ListingItem;
 }
 
-const PriceButton = ({ item, onOpenDetails }: {
+const PriceButton = ({
+  item,
+  onOpenDetails,
+}: {
   item: ListingItem;
   onOpenDetails: (requestId: number) => void;
 }) => {
-  const { data: priceRequests } = useGetPriceChangeRequests(item.id);
-
-  const latestRequestId =
-    (priceRequests as any)?.[0]?.requestId ??
-    (priceRequests as any)?.value?.[0]?.requestId;
+  const { data: requests = [] } = useGetPriceChangeRequests(item.id);
+  const latestRequestId = requests[0]?.requestId;
   const hasPendingRequest = !!latestRequestId;
 
   return (
     <div className="relative">
       <button
-        onClick={() => {
-          if (hasPendingRequest) {
-            onOpenDetails(latestRequestId);
-          }
-        }}
+        onClick={() => hasPendingRequest && onOpenDetails(latestRequestId!)}
         className={`p-1.5 transition-colors ${
           hasPendingRequest
             ? "text-amber-500 hover:text-amber-600"
             : "text-gray-400 hover:text-amber-500"
         }`}
-        title={hasPendingRequest ? "View Price Change Request" : "Request Price Change"}
+        title={
+          hasPendingRequest
+            ? "View Price Change Request"
+            : "Request Price Change"
+        }
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
       </button>
       {hasPendingRequest && (
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
-          {Array.isArray(priceRequests) ? priceRequests.length : 1}
+          {requests.length}
         </span>
       )}
     </div>
   );
 };
 
-// ── Main ActionButtons ─────────────────────────────────────────────────────────
+// ── ActionButtons ─────────────────────────────────────────────────────────────
 
 export const ActionButtons = ({ item }: Props) => {
   const router = useRouter();
   const [openModal, setOpenModal] = useState<ModalType>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+
+  const { deleteLand, isPending: isDeleting } = useDeleteLand();
 
   const close = () => setOpenModal(null);
 
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    const result = await deleteLandAction(String(item.id));
-    setIsDeleting(false);
-    if (result.success) close();
+  const handleDelete = () => {
+    deleteLand(String(item.id), close);
   };
 
   const openPriceDetails = (requestId: number) => {
-    router.push(`/listings?modal=priceDetails&requestId=${requestId}`, { scroll: false });
+    router.push(`/listings?modal=priceDetails&requestId=${requestId}`, {
+      scroll: false,
+    });
   };
 
   return (
@@ -83,41 +104,88 @@ export const ActionButtons = ({ item }: Props) => {
       <div className="flex items-center gap-1">
         {/* Edit */}
         <Link href={`listings/${item.id}/edit`}>
-          <button className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors" title="Edit">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          <button
+            className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors"
+            title="Edit"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
             </svg>
           </button>
         </Link>
 
         {/* Status change */}
-        <button onClick={() => setOpenModal("status")}
-          className="p-1.5 text-gray-400 hover:text-green-500 transition-colors" title="Change Status">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <button
+          onClick={() => setOpenModal("status")}
+          className="p-1.5 text-gray-400 hover:text-green-500 transition-colors"
+          title="Change Status"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
         </button>
 
         {/* Classification change */}
-        <button onClick={() => setOpenModal("classification")}
-          className="p-1.5 text-gray-400 hover:text-orange-500 transition-colors" title="Change Classification">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M7 7h.01M17 17h.01M7 17L17 7M9.5 9.5a2 2 0 11-4 0 2 2 0 014 0zm9 4a2 2 0 11-4 0 2 2 0 014 0z" />
+        <button
+          onClick={() => setOpenModal("classification")}
+          className="p-1.5 text-gray-400 hover:text-orange-500 transition-colors"
+          title="Change Classification"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 7h.01M17 17h.01M7 17L17 7M9.5 9.5a2 2 0 11-4 0 2 2 0 014 0zm9 4a2 2 0 11-4 0 2 2 0 014 0z"
+            />
           </svg>
         </button>
 
         {/* Offers — only when active */}
         {item.statusId === 2 && (
           <div className="relative">
-            <button onClick={() => setOpenModal("offers")}
+            <button
+              onClick={() => setOpenModal("offers")}
               className={`p-1.5 transition-colors ${item.offersCount > 0 ? "text-blue-500" : "text-gray-400 hover:text-blue-400"}`}
-              title="Offers">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              title="Offers"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                />
               </svg>
             </button>
             {item.offersCount > 0 && (
@@ -128,25 +196,57 @@ export const ActionButtons = ({ item }: Props) => {
           </div>
         )}
 
-        {/* Price requests — lazy, only mounts for statusId === 1 listings */}
+        {/* Price requests — lazy, only mounts for statusId === 1 */}
         {item.statusId === 1 && (
           <PriceButton item={item} onOpenDetails={openPriceDetails} />
         )}
 
         {/* Delete */}
-        <button onClick={() => setOpenModal("delete")}
-          className="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Delete">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <button
+          onClick={() => setOpenModal("delete")}
+          className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+          title="Delete"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
           </svg>
         </button>
       </div>
 
-      <StatusChangeModal isOpen={openModal === "status"} onClose={close} listing={item} onConfirm={close} />
-      <ClassificationChangeModal isOpen={openModal === "classification"} onClose={close} listing={item} onConfirm={close} />
-      <PriceChangeModal isOpen={openModal === "price"} onClose={close} listing={item} onConfirm={close} />
-      <DeleteModal isOpen={openModal === "delete"} onClose={close} onConfirm={handleDelete} isDeleting={isDeleting} />
+      <StatusChangeModal
+        isOpen={openModal === "status"}
+        onClose={close}
+        listing={item}
+        onConfirm={close}
+      />
+      <ClassificationChangeModal
+        isOpen={openModal === "classification"}
+        onClose={close}
+        listing={item}
+        onConfirm={close}
+      />
+      <PriceChangeModal
+        isOpen={openModal === "price"}
+        onClose={close}
+        listing={item}
+        onConfirm={close}
+      />
+      <DeleteModal
+        isOpen={openModal === "delete"}
+        onClose={close}
+        onConfirm={handleDelete}
+        isDeleting={isDeleting}
+      />
     </>
   );
 };

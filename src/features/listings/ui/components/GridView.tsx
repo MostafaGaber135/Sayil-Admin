@@ -16,13 +16,16 @@ export const GridView = ({ listings }: Props) => (
     </div>
 );
 
+// FIX: Card is split — the Link wraps only the visual content,
+// ActionButtons sits OUTSIDE the Link to avoid nested <a> tags.
 const GridCard = ({ item }: { item: ListingItem }) => {
     const statusColor =
         STATUS[item.statusId as StatusKey]?.color ?? "bg-gray-100 text-gray-600";
 
     return (
-        <Link href={`/listings/${item.id}`}>
-            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
+        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+            {/* Clickable area → navigates to listing detail */}
+            <Link href={`/listings/${item.id}`} className="block">
                 {/* Image */}
                 <div className="relative h-48 bg-gray-100">
                     {item.thumbnailUrl ? (
@@ -100,13 +103,14 @@ const GridCard = ({ item }: { item: ListingItem }) => {
                             </span>
                         )}
                     </div>
-
-                    <div className="pt-1 border-t border-gray-50">
-                        <ActionButtons item={item} />
-                    </div>
                 </div>
+            </Link>
+
+            {/* FIX: ActionButtons is OUTSIDE the Link — no more nested <a> tags */}
+            <div className="px-4 pb-4 pt-0 border-t border-gray-50">
+                <ActionButtons item={item} />
             </div>
-        </Link>
+        </div>
     );
 };
 

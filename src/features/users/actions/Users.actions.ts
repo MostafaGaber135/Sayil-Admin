@@ -1,30 +1,18 @@
+
 "use server";
 
-
 import { revalidatePath } from "next/cache";
+import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
 import {
   type AddAdminPayload,
   type AddExternalPayload,
-  type GetUsersPaginatedParams,
-  type GetUsersPaginatedResponse,
   type UpdateAdminPayload,
   type UpdateExternalPayload,
-  UserType,
-} from "..";;
-import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
-import { handleAxiosError } from "../Users.utils";
+  type GetUsersPaginatedParams,
+  type GetUsersPaginatedResponse,
+} from "..";
+import { throwAxiosError } from "@/shared/lib/errors/handle-action-error";
 
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-
-
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
-/**
- * Fetches paginated users — used for initial page load & pagination navigation.
- * userType: 1 = External, 2 = Internal
- */
 export async function getUsersPaginated(
   params: GetUsersPaginatedParams
 ): Promise<GetUsersPaginatedResponse["data"]> {
@@ -40,39 +28,12 @@ export async function getUsersPaginated(
         },
       }
     );
-
     if (!data.succeeded) throw new Error(data.message);
     return data.data;
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   }
 }
-
-/**
- * Fetches flat list for live search — lighter response, no meta.
- */
-// export async function getUsersList(
-//   params: GetUsersListParams
-// ): Promise<GetUsersListResponse["data"]["items"]> {
-//   try {
-//     const { data } = await serverApi.get<GetUsersListResponse>(
-//       "/api/admin/users/list",
-//       {
-//         params: {
-//           searchTerm: params.searchTerm,
-//           userType: params.userType,
-//         },
-//       }
-//     );
-
-//     if (!data.succeeded) throw new Error(data.message);
-//     return data.data.items;
-//   } catch (error) {
-//     handleAxiosError(error);
-//   }
-// }
-
-// ─── Mutations ────────────────────────────────────────────────────────────────
 
 export async function addInternalUser(payload: AddAdminPayload): Promise<void> {
   try {
@@ -82,7 +43,7 @@ export async function addInternalUser(payload: AddAdminPayload): Promise<void> {
     );
     if (!data.succeeded) throw new Error(data.message);
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   } finally {
     revalidatePath("/admin/users");
   }
@@ -96,7 +57,7 @@ export async function addExternalUser(payload: AddExternalPayload): Promise<void
     );
     if (!data.succeeded) throw new Error(data.message);
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   } finally {
     revalidatePath("/admin/users");
   }
@@ -110,7 +71,7 @@ export async function updateInternalUser(payload: UpdateAdminPayload): Promise<v
     );
     if (!data.succeeded) throw new Error(data.message);
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   } finally {
     revalidatePath("/admin/users");
   }
@@ -124,7 +85,7 @@ export async function updateExternalUser(payload: UpdateExternalPayload): Promis
     );
     if (!data.succeeded) throw new Error(data.message);
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   } finally {
     revalidatePath("/admin/users");
   }
@@ -137,7 +98,7 @@ export async function deleteUser(id: number): Promise<void> {
     );
     if (!data.succeeded) throw new Error(data.message);
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   } finally {
     revalidatePath("/admin/users");
   }
@@ -150,7 +111,7 @@ export async function toggleUserStatus(id: number): Promise<void> {
     );
     if (!data.succeeded) throw new Error(data.message);
   } catch (error) {
-    handleAxiosError(error);
+    throwAxiosError(error);
   } finally {
     revalidatePath("/admin/users");
   }

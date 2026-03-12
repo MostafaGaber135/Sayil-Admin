@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useState, useTransition, useEffect } from "react";
 import ConfirmDialog from "@/shared/components/modals/ConfirmDialog";
 import type { ManagedUser, PaginatedMeta, UsersScreenLabels, UserSegment } from "../types";
-import { useUsersScreen } from "../hooks/users.hooks";
+
 import UserFormDialog from "./UserFormDialog";
 import UsersTable from "./UsersTable";
 import UsersToolbar from "./UsersToolbar";
 import UsersPagination from "./Userspagination";
-
+import { useUsersScreen } from "../hooks/use-users-screen";
 
 export type UsersScreenProps = {
   title: string;
@@ -37,7 +37,6 @@ export default function UsersScreen({
   const searchParams = useSearchParams();
   const [, startNavTransition] = useTransition();
 
-  // ── URL helpers ──
   const pushParams = useCallback(
     (updates: Record<string, string | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -53,20 +52,18 @@ export default function UsersScreen({
   const handleTabChange = (tab: UserSegment) => {
     pushParams({ tab, page: "1", search: undefined });
   };
-
   const [searchInput, setSearchInput] = useState(currentSearch);
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchInput(value);
-      const timer = setTimeout(() => {
-        pushParams({ search: value || undefined, page: "1" });
-      }, 400);
-      return () => clearTimeout(timer);
-    },
-    [pushParams]
-  );
 
-  // ── Hook ──
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      pushParams({ search: searchInput || undefined, page: "1" });
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const handleSearchChange = (value: string) => setSearchInput(value);
+
+  // ── Hook ──────────────────────────────────────────────────────────────────
   const {
     formOpen,
     formMode,
@@ -89,10 +86,12 @@ export default function UsersScreen({
   } = useUsersScreen({ initialUsers, initialSegment: currentTab });
 
   const isDeactivateAction = statusUser?.status === "active";
+  const showScreenError = actionError && !formOpen;
 
   return (
     <div className="space-y-4">
-      {actionError && (
+
+      {showScreenError && (
         <div className="rounded-[12px] border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">
           {actionError}
         </div>
@@ -128,7 +127,6 @@ export default function UsersScreen({
       </div>
 
       <UsersPagination meta={pagination} />
-
       <UserFormDialog
         open={formOpen}
         mode={formMode}
@@ -136,7 +134,7 @@ export default function UsersScreen({
         selectedUser={selectedUser}
         labels={labels}
         isPending={isPending}
-        actionError={actionError}
+        actionError={formOpen ? actionError : null}
         onOpenChange={setFormOpen}
         onAddInternal={handleAddInternal}
         onEditInternal={handleEditInternal}
@@ -157,10 +155,22 @@ export default function UsersScreen({
       <ConfirmDialog
         open={!!statusUser}
         onOpenChange={(open) => !open && setStatusUser(null)}
-        title={isDeactivateAction ? labels.deactivateDialog.deactivateTitle : labels.deactivateDialog.activateTitle}
-        description={isDeactivateAction ? labels.deactivateDialog.deactivateDescription : labels.deactivateDialog.activateDescription}
+        title={
+          isDeactivateAction
+            ? labels.deactivateDialog.deactivateTitle
+            : labels.deactivateDialog.activateTitle
+        }
+        description={
+          isDeactivateAction
+            ? labels.deactivateDialog.deactivateDescription
+            : labels.deactivateDialog.activateDescription
+        }
         cancelText={labels.deactivateDialog.cancel}
-        confirmText={isDeactivateAction ? labels.deactivateDialog.confirmDeactivate : labels.deactivateDialog.confirmActivate}
+        confirmText={
+          isDeactivateAction
+            ? labels.deactivateDialog.confirmDeactivate
+            : labels.deactivateDialog.confirmActivate
+        }
         confirmVariant="default"
         onConfirm={handleStatusChange}
       />

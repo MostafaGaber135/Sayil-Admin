@@ -1,7 +1,3 @@
-
-//Generic API Wrappers
-
-
 export interface ListingsRequest {
   pageNumber?: number;
   pageSize?: number;
@@ -26,8 +22,8 @@ export interface PaginatedData<T> {
   pageSize?: number;
 }
 
+// ── Lookup Types ──────────────────────────────────────────────────────────────
 
-//Lookup Types
 export interface RawLookupItem {
   value: number;
   label?: string;
@@ -41,39 +37,35 @@ export interface LookupItem {
   value: number;
   label: string;
 }
+
 export type ClassificationItem = {
   id: number;
   name: string;
   code?: string;
-}
+};
+
 export type regions = {
   value: number;
   label: string;
-}
+};
+
 export type LookupsShape<T> = {
   landTypes: T[];
   cities: T[];
   landStatus: T[];
   ownershipStatus: T[];
   deedTypes: T[];
-  regions: T[]; 
+  regions: T[];
   landFacing: T[];
   neighborTypes: T[];
   genders: T[];
   classifications: ClassificationItem[];
 };
 
-export type AllLookupsResponse = ApiResponse<
-    LookupsShape<RawLookupItem>
->;
+export type AllLookupsResponse = ApiResponse<LookupsShape<RawLookupItem>>;
+export type ListingLookupsResponse = ApiResponse<LookupsShape<LookupItem>>;
 
-export type ListingLookupsResponse = ApiResponse<
-    LookupsShape<LookupItem>
->;
-
-
-// Business Entity
-
+// ── Business Entities ─────────────────────────────────────────────────────────
 
 export interface ListingItem {
   id: number;
@@ -98,11 +90,8 @@ export interface ListingItem {
   discountPercent: number;
 }
 
-export type ListingsResponse =
-    ApiResponse<PaginatedData<ListingItem>>;
+export type ListingsResponse = ApiResponse<PaginatedData<ListingItem>>;
 
-
-// Requests
 export interface ListingDetail {
   id: number;
   userId: number;
@@ -114,7 +103,6 @@ export interface ListingDetail {
   discountedPrice: number;
   discountPercent: number;
 
-  // Location
   cityId: number;
   cityName: string;
   regionId: number;
@@ -124,7 +112,6 @@ export interface ListingDetail {
   longitude?: number;
   googleMapsLink?: string;
 
-  // Property Details
   landTypeId: number;
   landTypeName: string;
   landFacingId: number;
@@ -137,42 +124,38 @@ export interface ListingDetail {
   neighborTypeName: string;
   features: string[];
 
-  // Media
   imageUrls: string[];
   explanatoryVideoUrl?: string;
 
-  // Documents
   titleDeedUrl: string;
   nationalIdCopyUrl: string;
   landSurveyReportUrl: string;
 
-  // Admin
   agentName: string;
   classificationId: number;
   classificationName: string;
 
-  // Status
   statusId: number;
   statusName: string;
   isVerified: boolean;
   isFavorite: boolean;
   publishDate: string | null;
 
-  // Stats
   viewCount: number;
   offerCount: number;
   pendingRequestsCount: number;
 
-  // Timestamps
   createdAt: string;
   updatedAt: string | null;
 }
+
+
 export interface ListingDocument {
   id: number | string;
-  name?: string;    
-  label: string;      
+  label: string;
   url?: string;
-  isAvailable?: boolean; 
+  isAvailable?: boolean;
+  name?:string
 }
 
 export interface ApproveLandRequest {
@@ -191,14 +174,25 @@ export type PriceChangeRequestBody = {
   reason?: string;
 };
 
-// export type PriceChangeRequest = {
-//   id: number;
-//   landId: number;
-//   newPrice: number;
-//   reason?: string;
-//   status: "pending" | "approved" | "rejected";
-//   createdAt: string;
-// };
+export interface Offer {
+  id: number;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
+  message: string;
+  offerAmount: number;
+  submittedAt: string;
+}
+
+export interface OffersResponse {
+  items: Offer[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+// FIX: Was defined twice — removed the duplicate.
 export interface PriceChangeRequest {
   requestId: number;
   landId: number;
@@ -216,8 +210,8 @@ export interface PriceChangeRequest {
 
 export interface PriceChangeResponse {
   value: PriceChangeRequest[];
-
 }
+
 export interface PriceChangeRequestDetails {
   id: number;
   landId: number;

@@ -1,37 +1,34 @@
 "use client";
-import { useState, useActionState, useEffect, useTransition, useRef } from "react";
+import { useState, useTransition } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { ListingItem } from "../../types";
 import { ModalFooter } from "./ModalFooter";
-import { BaseModal } from "@/features/listings/ui/modals";
-import { priceChangeRequestAction } from "../../actions/price-change-request.actions";
-import { useQueryClient } from "@tanstack/react-query";
-
+import { BaseModal } from "./BaseModal";
+import { priceChangeRequestAction } from "../../actions/price-change.actions";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   listing: Pick<ListingItem, "id" | "title" | "city" | "region" | "price">;
   onConfirm: (suggestedPrice: number, reason: string) => void;
-  isLoading?: boolean;
 }
 
-export const PriceChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props) => {
-  const hasSubmitted = useRef(false); 
+export const PriceChangeModal = ({
+  isOpen,
+  onClose,
+  listing,
+  onConfirm,
+}: Props) => {
   const [suggestedPrice, setSuggestedPrice] = useState("");
   const [reason, setReason] = useState("");
-  const [submitCount, setSubmitCount] = useState(0);
-  const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  const [state, dispatch] = useActionState(
-    (_: any, data: { landId: number; suggestedPrice: number; reason: string }) =>
-      priceChangeRequestAction(data),
-    null
-  );
+  const queryClient = useQueryClient();
 
   const handleClose = () => {
     setSuggestedPrice("");
     setReason("");
+    setError(null);
     onClose();
   };
 
@@ -42,27 +39,29 @@ export const PriceChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props)
 
   const handleConfirm = () => {
     if (!isValid) return;
-    setSubmitCount(c => c + 1); 
-    hasSubmitted.current = true;
-    startTransition(() => {
-      dispatch({
+    setError(null);
+    startTransition(async () => {
+      const result = await priceChangeRequestAction({
         landId: listing.id,
         suggestedPrice: Number(suggestedPrice),
         reason,
       });
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["getLand", listing.id] });
+        onConfirm(Number(suggestedPrice), reason);
+        handleClose();
+      } else {
+        setError(result.error ?? "حدث خطأ غير متوقع");
+      }
     });
   };
 
-  useEffect(() => {
-    if (submitCount === 0) return; 
-    if (state?.success) {
-      queryClient.invalidateQueries({ queryKey: ['getLand', listing.id] });
-      onConfirm(Number(suggestedPrice), reason);
-      handleClose();
-    }
-  }, [state, submitCount]);
   return (
-    <BaseModal isOpen={isOpen} onClose={handleClose} title="Price Change Request">
+    <BaseModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Price Change Request"
+    >
       {/* Current price banner */}
       <div className="mb-5 p-4 bg-gray-50 rounded-xl flex items-center justify-between">
         <div>
@@ -74,8 +73,16 @@ export const PriceChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props)
           </p>
         </div>
         <div className="w-10 h-10 bg-white rounded-full border border-gray-200 flex items-center justify-center text-gray-400">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
               d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
@@ -99,11 +106,14 @@ export const PriceChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props)
             SAR
           </span>
         </div>
-
         {suggestedPrice && Number(suggestedPrice) > 0 && (
-          <p className={`text-xs mt-1.5 font-medium ${
-            Number(suggestedPrice) < listing.price ? "text-green-600" : "text-red-500"
-          }`}>
+          <p
+            className={`text-xs mt-1.5 font-medium ${
+              Number(suggestedPrice) < listing.price
+                ? "text-green-600"
+                : "text-red-500"
+            }`}
+          >
             {Number(suggestedPrice) < listing.price
               ? `↓ ${((1 - Number(suggestedPrice) / listing.price) * 100).toFixed(1)}% decrease`
               : `↑ ${((Number(suggestedPrice) / listing.price - 1) * 100).toFixed(1)}% increase`}
@@ -124,15 +134,15 @@ export const PriceChangeModal = ({ isOpen, onClose, listing, onConfirm }: Props)
           className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/10 resize-none"
         />
       </div>
-      {state?.error && (
-        <p className="text-red-500 text-sm mt-2">{state.error}</p>
-      )}
+
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
       <ModalFooter
         onClose={handleClose}
         onConfirm={handleConfirm}
         confirmLabel="Submit Request"
-        isDisabled={!isValid}
-        isLoading={isPending} 
+        isDisabled={!isValid || isPending}
+        isLoading={isPending}
       />
     </BaseModal>
   );

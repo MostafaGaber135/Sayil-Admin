@@ -1,12 +1,11 @@
 import {useMutation} from "@tanstack/react-query";
-import {
-    fetchAddLand,
-} from "@/features/listings/api";
+;
 import {CreateListingRequest} from "@/features/listings/validation";
+import { fetchAddLandAction } from "@/server-actions/listings/create-land.action";
 
 export const useCreateListing = () => {
     return useMutation({
-        mutationFn:(body:CreateListingRequest)=> fetchAddLand(body),
+        mutationFn:(body:CreateListingRequest)=> fetchAddLandAction(body),
         onSuccess:(data:any) => {
         },
         onError: (error) => {

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,9 +11,10 @@ import {
   TableView,
 } from "@/features/listings/ui/components";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PriceRequestDetailsModal } from "./scroll";
-import { priceChangeKeys } from "../hooks/usePriceChange";
+import { PriceRequestDetailsModal } from "./modals";
+
 import type { PriceChangeRequestDetails } from "..";
+import { priceChangeKeys } from "../api";
 
 type Props = {
   initialRequestId: number | null;
@@ -33,26 +34,33 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
     router.replace("/listings", { scroll: false });
   };
 
-  const { filters, viewMode, setViewMode, handleFilterChange, handleSearch, handleKeyDown } =
-    useListingsFilters();
+  const {
+    filters,
+    viewMode,
+    setViewMode,
+    handleFilterChange,
+    handleSearch,
+    handleKeyDown,
+  } = useListingsFilters();
 
   const { data, isPending } = useListings(filters);
   const listings = data?.data?.items ?? [];
 
   // Read from cache directly — no extra useQuery call needed
   // The server already prefetched this into the queryClient via HydrationBoundary
-  const cachedPriceRequest =
-    initialRequestId
-      ? queryClient.getQueryData<PriceChangeRequestDetails>(
-          priceChangeKeys.details(initialRequestId)
-        )
-      : undefined;
+  const cachedPriceRequest = initialRequestId
+    ? queryClient.getQueryData<PriceChangeRequestDetails>(
+        priceChangeKeys.details(initialRequestId),
+      )
+    : undefined;
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Listings Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Listings Management
+          </h1>
           <p className="text-sm text-gray-400 mt-0.5">
             Manage property listings and approvals
           </p>
@@ -76,7 +84,11 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
       />
 
       {isPending ? (
-        viewMode === "grid" ? <GridSkeleton /> : <TableSkeleton />
+        viewMode === "grid" ? (
+          <GridSkeleton />
+        ) : (
+          <TableSkeleton />
+        )
       ) : listings.length === 0 ? (
         <EmptyState />
       ) : viewMode === "grid" ? (
@@ -90,7 +102,7 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
           isOpen={openModal === "priceDetails"}
           onClose={close}
           requestId={requestId}
-          // Pass cached server data → modal won't fire a client fetch if data exists
+
           initialData={
             requestId === initialRequestId ? (cachedPriceRequest ?? null) : null
           }

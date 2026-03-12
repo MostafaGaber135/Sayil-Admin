@@ -1,7 +1,7 @@
 // "use client";
 // import { useState, useTransition } from "react";
 // import { useQueryClient } from "@tanstack/react-query";
-// import { BaseModal } from "@/features/listings/ui/modals";
+// import { BaseModal } from "./BaseModal";
 // import { ListingItem } from "../../types";
 // import { useOffers, Offer } from "./offers.queries";
 // import { acceptOfferAction, rejectOfferAction } from "./offers.actions";
