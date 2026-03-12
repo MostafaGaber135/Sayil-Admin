@@ -176,8 +176,8 @@ export default function FaqManagementTab() {
             <div className="space-y-3 mt-5">
               {faqs.map((faq: any, index: number) => (
                 <SortableFaqItem key={faq.id} faq={faq}>
-                  <div className="bg-white rounded-lg border p-6 hover:shadow cursor-move">
-                    <div className="flex items-start gap-4">
+                  <div className="bg-white rounded-lg border p-3 sm:p-6 hover:shadow cursor-move">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                       <span className="text-xs bg-gray-100 px-2 py-1 rounded">
                         #{faq.displayOrder}
                       </span>
@@ -189,7 +189,7 @@ export default function FaqManagementTab() {
                         </p>
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 shrink-0 self-end sm:self-auto">
                         <button
                           onClick={() => moveUp(index)}
                           disabled={index === 0}

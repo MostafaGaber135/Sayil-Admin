@@ -3,6 +3,7 @@ import CommunicationsTab from "@/features/settings/ui/CommunicationsTab";
 import FaqManagementTab from "@/features/settings/ui/FaqManagementTab";
 import LandClassificationsTab from "@/features/settings/ui/LandClassificationsTab";
 import { Card } from "@/shared/components/ui/card";
+import DragScroll from "@/shared/components/ui/drag-scroll";
 import {
   Tabs,
   TabsContent,
@@ -15,17 +16,17 @@ export default function Page() {
   const t = useTranslations();
   return (
     <>
-      <div className="p-4 space-y-4">
-        <h1 className="text-2xl font-bold text-sayil-dark-blue">
+      <div className="p-2 sm:p-4 space-y-3 sm:space-y-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-sayil-dark-blue">
           {t("pages.settings.title")}
         </h1>
 
-        <h2 className="text-gray-600">{t("pages.settings.desc")}</h2>
+        <h2 className="text-sm sm:text-base text-gray-600">{t("pages.settings.desc")}</h2>
 
-        <Card className="p-2">
+        <Card className="p-1 sm:p-2">
           <Tabs defaultValue="land" className="">
-            <div className="  border-b border-border p-2">
-              <TabsList className=" bg-transparent" variant="line">
+            <DragScroll className="border-b border-border p-1 sm:p-2">
+              <TabsList className="bg-transparent w-max sm:w-auto" variant="line">
                 <TabsTrigger
                   className="data-[state=active]:text-primary
     data-[state=active]:after:absolute
@@ -66,7 +67,7 @@ data-[state=active]:after:bg-primary cursor-pointer"
                   {t("pages.settings.FAQ")}
                 </TabsTrigger>
               </TabsList>
-            </div>
+            </DragScroll>
 
             <TabsContent value="land">
               <LandClassificationsTab />

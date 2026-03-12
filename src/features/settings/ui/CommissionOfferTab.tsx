@@ -126,7 +126,7 @@ export default function CommissionOfferTab() {
 
         {/* ===== Global Commission ===== */}
         <Card className="p-4 sm:p-6">
-          <div className="flex gap-4 items-end">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-end">
             <Input
               className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent border-gray-300 focus:ring-sayil-bright-blue"
               type="number"
@@ -135,7 +135,7 @@ export default function CommissionOfferTab() {
               onChange={(e) => setGlobalRate(e.target.value)}
             />
 
-            <Button className="cursor-pointer" disabled={isPendingGlobal} onClick={handleGlobalSave}>
+            <Button className="cursor-pointer w-full sm:w-auto" disabled={isPendingGlobal} onClick={handleGlobalSave}>
               {isPendingGlobal ? t("Saving") : t("Save Changes")}
             </Button>
           </div>
@@ -145,7 +145,7 @@ export default function CommissionOfferTab() {
         <Card className="p-4 sm:p-6">
           <h2 className="text-lg font-medium mb-4">{t("Offer")}</h2>
 
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             {/* Minimum */}
             <div className="flex-1 space-y-4">
               <Input
@@ -158,7 +158,7 @@ export default function CommissionOfferTab() {
               <p className="text-sm text-gray-500 mt-2">
                 {t("Represents")}(e.g. {minOffer}%)
               </p>
-              <Button className="cursor-pointer" disabled={isPendingMin} onClick={handleMinSave}>
+              <Button className="cursor-pointer w-full sm:w-auto" disabled={isPendingMin} onClick={handleMinSave}>
                 {isPendingMin ? t("Saving") : t("Save Changes")}
               </Button>
             </div>
@@ -175,7 +175,7 @@ export default function CommissionOfferTab() {
               <p className="text-sm text-gray-500 mt-2">
                 {t("Represents maximum")} (e.g. {maxOffer}%)
               </p>
-              <Button className="cursor-pointer" disabled={isPendingMax} onClick={handleMaxSave}>
+              <Button className="cursor-pointer w-full sm:w-auto" disabled={isPendingMax} onClick={handleMaxSave}>
                 {isPendingMax ? t("Saving") : t("Save Changes")}
               </Button>
             </div>
