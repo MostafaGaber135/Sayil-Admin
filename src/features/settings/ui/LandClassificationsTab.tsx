@@ -70,7 +70,7 @@ export default function LandClassificationsTab() {
 
       {/* TABLE CARD */}
       <Card className="mt-5 overflow-hidden p-0">
-        <Table className="w-full table-fixed">
+        <Table className="w-full">
           {/* HEADER */}
           <TableHeader className="bg-background">
             <TableRow>
@@ -98,19 +98,19 @@ export default function LandClassificationsTab() {
               data.map((item: Data) => (
                 <TableRow key={item.id}>
                   <TableCell>
-                    <div className="flex items-center gap-2 ps-2">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white font-bold">
+                    <div className="flex items-center gap-1.5 sm:gap-2 ps-1 sm:ps-2">
+                      <span className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-primary text-white font-bold text-xs sm:text-sm shrink-0">
                         {item.code}
                       </span>
 
-                      <span className="font-semibold">{item.nameEn}</span>
+                      <span className="font-semibold text-sm sm:text-base truncate">{item.nameEn}</span>
                     </div>
                   </TableCell>
 
-                  <TableCell>{item.discountPercent}%</TableCell>
+                  <TableCell className="text-sm sm:text-base">{item.discountPercent}%</TableCell>
 
                   <TableCell className="text-center">
-                    <div className="flex justify-center gap-3">
+                    <div className="flex justify-center gap-1.5 sm:gap-3">
                       {/* EDIT */}
                       <button
                         onClick={() => handleEdit(item)}
