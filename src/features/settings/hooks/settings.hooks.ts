@@ -81,13 +81,4 @@ export const useFaqs = () => {
   });
 };
 
-// Patch
-
-
-
-//Delete
-
-
-
-// Put
 

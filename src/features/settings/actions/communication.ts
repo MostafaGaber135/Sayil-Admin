@@ -4,11 +4,13 @@ import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/shared/lib/auth/nextauth.options";
 import { updateCommunicationSettings } from "../services/settings.services";
+import { getTranslations } from "next-intl/server";
 
 export async function updateCommunicationSettingsAction(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -26,7 +28,7 @@ export async function updateCommunicationSettingsAction(
 
     return {
       success: true,
-      message: "Communication settings updated successfully",
+      message: t("Communication settings updated successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
@@ -35,7 +37,7 @@ export async function updateCommunicationSettingsAction(
       success: false,
       message:
         error?.response?.data?.message ||
-        "Failed to update communication settings",
+        t("Failed to update communication settings"),
     };
   }
 }

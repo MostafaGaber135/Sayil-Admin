@@ -1,33 +1,94 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition, useActionState, useEffect } from "react";
 import { Bell, CheckCircle2, Info, Clock } from "lucide-react";
 import {
-  useMarkAllNotificationsAsRead,
-  useMarkNotificationAsRead,
   useNotifications,
   useUnreadNotificationsCount,
 } from "../hooks/notifications.hooks";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useTranslations } from "next-intl";
 import LoadingState from "@/shared/ui/LoadingState";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { markAllNotificationsAsReadAction, markNotificationAsReadAction } from "../actions/notification.actions";
+
+
 
 dayjs.extend(relativeTime);
 
 export default function NotificationDropdown() {
-  const { mutate: markAsRead } = useMarkNotificationAsRead();
+  const t = useTranslations();
+  const queryClient = useQueryClient();
+
   const { data: unreadCount = 0 } = useUnreadNotificationsCount();
+  const { data: notifications = [], isLoading } = useNotifications();
+
   const [open, setOpen] = useState(false);
 
-  const { data: notifications = [], isLoading } = useNotifications();
-  const { mutate: markAll, isPending: isMarkingAll } =
-    useMarkAllNotificationsAsRead();
-    const t = useTranslations()
+  const [isPending, startTransition] = useTransition();
+  const [isPendingAll, startTransitionAll] = useTransition();
+
+  const initialState = { success: false, message: "" };
+
+  const [state, formAction] = useActionState(
+    markNotificationAsReadAction,
+    initialState
+  );
+
+  const [stateAll, formActionAll] = useActionState(
+    markAllNotificationsAsReadAction,
+    initialState
+  );
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message);
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications-unread-count"],
+      });
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (stateAll?.success) {
+      toast.success(stateAll.message);
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications-unread-count"],
+      });
+    }
+  }, [stateAll]);
+
+  const handleMarkAsRead = (id: number) => {
+    const formData = new FormData();
+    formData.set("id", String(id));
+
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
+  const handleMarkAll = () => {
+    startTransitionAll(() => {
+      formActionAll();
+    });
+  };
+
   return (
     <div className="relative">
-      {/* 🔔 Bell */}
-
+      {/* Bell */}
       <button
         onClick={() => setOpen(!open)}
         className="relative p-2 rounded-lg hover:bg-gray-100"
@@ -41,38 +102,38 @@ export default function NotificationDropdown() {
         )}
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div className="absolute right-0 mt-3 w-[360px] bg-white rounded-xl shadow-xl border z-50">
           {/* HEADER */}
           <div className="flex justify-between items-center p-4 border-b">
-            <h3 className="font-semibold text-lg">{t("pages.notification.Notifications")}</h3>
+            <h3 className="font-semibold text-lg">
+              {t("pages.notification.Notifications")}
+            </h3>
 
             <button
-              disabled={isMarkingAll}
-              onClick={() => markAll()}
+              disabled={isPendingAll}
+              onClick={handleMarkAll}
               className="text-blue-600 text-sm hover:underline"
             >
-              {isMarkingAll ? t("pages.notification.Marking") : t("pages.notification.Mark")}
+              {isPendingAll
+                ? t("pages.notification.Marking")
+                : t("pages.notification.Mark")}
             </button>
           </div>
 
           {/* LIST */}
           <div className="max-h-[400px] overflow-y-auto">
             {isLoading ? (
-              <LoadingState/>
+              <LoadingState />
             ) : notifications.length > 0 ? (
               notifications.map((n: any) => (
                 <div
                   key={n.id}
                   onClick={() => {
-                    if (!n.isRead) {
-                      markAsRead(n.id);
-                    }
+                    if (!n.isRead) handleMarkAsRead(n.id);
                   }}
                   className="flex gap-3 p-4 hover:bg-gray-50 border-b cursor-pointer"
                 >
-                  {/* ICON */}
                   <div className="mt-1">
                     {n.type === "success" ? (
                       <CheckCircle2 className="text-green-500" />
@@ -81,7 +142,6 @@ export default function NotificationDropdown() {
                     )}
                   </div>
 
-                  {/* CONTENT */}
                   <div className="flex-1">
                     <p className="font-medium text-sm">{n.title}</p>
 
@@ -93,7 +153,6 @@ export default function NotificationDropdown() {
                     </div>
                   </div>
 
-                  {/* UNREAD DOT */}
                   {!n.isRead && (
                     <span className="w-2 h-2 bg-blue-500 rounded-full mt-2" />
                   )}
@@ -106,7 +165,6 @@ export default function NotificationDropdown() {
             )}
           </div>
 
-          {/* FOOTER */}
           <div className="text-center p-3 border-t">
             <button className="text-blue-600 text-sm hover:underline">
               {t("pages.notification.View all")}

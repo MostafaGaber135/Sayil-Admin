@@ -179,7 +179,28 @@
         "deleteSuccess": "تم حذف الدور بنجاح",
         "deleteError": "فشل حذف الدور",
         "AddedLand": " تمت العمليه بنجاح",
-        "Failed": "لم تتم العمليه بنجاح"
+        "Failed": "لم تتم العمليه بنجاح",
+        "Added successfully":"تمت الاضافة بنجاح",
+        "Something went wrong":"حدث خطأ ما",
+        "Failed to delete":"فشل الحذف",
+        "FAQ added successfully":"تمت إضافة الأسئلة الشائعة بنجاح",
+        "Failed to add FAQ":"فشل إضافة الأسئلة الشائعة",
+        "FAQ order updated successfully":"تم تحديث طلب الأسئلة الشائعة بنجاح",
+        "Failed to reorder FAQs":"فشل إعادة ترتيب الأسئلة الشائعة",
+        "FAQ deleted successfully":"تم حذف الأسئلة الشائعة بنجاح",
+        "Failed to delete FAQ":"فشل حذف الأسئلة الشائعة",
+        "FAQ updated successfully":"تم تحديث الأسئلة الشائعة بنجاح",
+        "Failed to update FAQ":"فشل تحديث الأسئلة الشائعة",
+        "Communication settings updated successfully":"تم تحديث إعدادات الاتصال بنجاح",
+        "Failed to update communication settings":"فشل تحديث إعدادات الاتصال",
+        "Commission updated successfully":"تم تحديث اللجنة بنجاح",
+        "Failed to update commission":"فشل تحديث العمولة",
+        "Minimum offer updated successfully":"تم تحديث الحد الأدنى للعرض بنجاح",
+        "Failed to update minimum offer":"فشل تحديث الحد الأدنى للعرض",
+        "Maximum offer updated successfully":"تم تحديث الحد الأقصى للعرض بنجاح",
+        "Failed to update maximum offer":"فشل تحديث الحد الأقصى للعرض",
+        "All notifications marked as read":"جميع الإشعارات التي تم وضع علامة عليها كمقروءة",
+        "Notification marked as read":"تم وضع علامة مقروء على الإشعار."
       }
     },
     "settings": {
@@ -206,7 +227,7 @@
       "Mobile": "اتصالات تطبيقات الهاتف المحمول",
       "Configure": "قم بتكوين معلومات الاتصال لتطبيق الهاتف المحمول",
       "WhatsApp Number": "رقم واتساب",
-      "Enter WhatsApp number": "ادخل رقم الواتساب",
+      "Enter WhatsApp number": "أدخل رقم واتساب (مثال: +966501234567)",
       "This number": "سيتم استخدام هذا الرقم للتواصل عبر واتساب في تطبيق الهاتف المحمول",
       "Contact Us Email": "تواصل معنا عبر البريد الإلكتروني",
       "Enter contact email address": "أدخل عنوان البريد الإلكتروني للتواصل",
@@ -215,7 +236,7 @@
       "Enter support": "أدخل عنوان البريد الإلكتروني للدعم",
       "This email will": "سيتم استخدام هذا البريد الإلكتروني للاستفسارات المتعلقة بالدعم الفني",
       "Business Hours": "ساعات العمل",
-      "Enter business hours": "ادخل ساعات العمل",
+      "Enter business hours": "أدخل ساعات العمل (على سبيل المثال، من 9:00 صباحًا إلى 6:00 مساءً)",
       "Display": "اعرض ساعات العمل في تطبيق الهاتف المحمول",
       "Time Zone": "المنطقة الزمنية",
       "Display business": "اعرض ساعات العمل في تطبيق الهاتف المحمول",
@@ -239,7 +260,14 @@
       "Answer AR": "الاجابة بالعربي",
       "Add FAQ": "إضافة الأسئلة الشائعة",
       "Edit FAQ": "تعديل الأسئلة الشائعة",
-      "Delete FAQ": "هل أنت متأكد من رغبتك في حذف هذه الأسئلة الشائعة؟"
+      "Delete FAQ": "هل أنت متأكد من رغبتك في حذف هذه الأسئلة الشائعة؟",
+      "WhatsApp required":"رقم واتساب مطلوب",
+      "Invalid email":"عنوان بريد إلكتروني غير صالح",
+      "Email required":"عنوان البريد الإلكتروني مطلوب",
+      "Business required":"ساعات العمل مطلوبة",
+      "Time zone required":"المنطقة الزمنية مطلوبة",
+      "English Name":"الاسم بالانجليزي"
+      
     },
     "notification": {
       "Notifications": "الاشعارات",

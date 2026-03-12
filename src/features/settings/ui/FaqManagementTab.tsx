@@ -10,7 +10,7 @@ import React, {
 import AddFaqModal from "./AddFaqModal";
 import DeleteFaqModal from "./DeleteFaqModal";
 import { useFaqs } from "../hooks/settings.hooks";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import LoadingState from "@/shared/ui/LoadingState";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
@@ -141,7 +141,7 @@ export default function FaqManagementTab() {
 
     sendReorder(updated);
   };
-
+  const locale = useLocale();
   return (
     <div className="p-3 sm:p-4">
       {" "}
@@ -149,14 +149,13 @@ export default function FaqManagementTab() {
         {" "}
         <div>
           {" "}
-          <h3 className="text-base sm:text-lg font-medium">
-            {t("FAQ")}{" "}
-          </h3>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            {t("Drag")}
-          </p>
+          <h3 className="text-base sm:text-lg font-medium">{t("FAQ")} </h3>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">{t("Drag")}</p>
         </div>
-        <Button className="cursor-pointer" onClick={() => setOpenAddModal(true)}>
+        <Button
+          className="cursor-pointer"
+          onClick={() => setOpenAddModal(true)}
+        >
           {t("+ Add FAQ")}
         </Button>
       </div>
@@ -177,18 +176,20 @@ export default function FaqManagementTab() {
             <div className="space-y-3 mt-5">
               {faqs.map((faq: any, index: number) => (
                 <SortableFaqItem key={faq.id} faq={faq}>
-                  <div className="bg-white rounded-lg border p-6 hover:shadow cursor-move">
-                    <div className="flex items-start gap-4">
+                  <div className="bg-white rounded-lg border p-3 sm:p-6 hover:shadow cursor-move">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                       <span className="text-xs bg-gray-100 px-2 py-1 rounded">
                         #{faq.displayOrder}
                       </span>
 
                       <div className="flex-1">
-                        <h4 className="font-medium">{faq.questionEn}</h4>
-                        <p className="text-sm text-gray-600">{faq.answerEn}</p>
+                        <h4 className="font-medium">{locale === "ar" ? faq.questionAr : faq.questionEn}</h4>
+                        <p className="text-sm text-gray-600">
+                          {locale === "ar" ? faq.answerAr : faq.answerEn}
+                        </p>
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 shrink-0 self-end sm:self-auto">
                         <button
                           onClick={() => moveUp(index)}
                           disabled={index === 0}
@@ -229,7 +230,7 @@ export default function FaqManagementTab() {
                             fill="none"
                             stroke="currentColor"
                             strokeWidth="2"
-                           strokeLinecap="round"
+                            strokeLinecap="round"
                             strokeLinejoin="round"
                             className="h-4 w-4 cursor-pointer"
                           >

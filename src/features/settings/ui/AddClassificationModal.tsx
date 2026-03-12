@@ -133,7 +133,7 @@ export default function AddClassificationModal({
         if (!v) resetForm();
       }}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md gap-0">
         <DialogHeader className="border-b pb-3">
           <DialogTitle>
             {isEditMode ? "Edit Classification" : "Add Classification"}
@@ -146,7 +146,7 @@ export default function AddClassificationModal({
             const formData = new FormData(e.currentTarget);
             handleSubmit(formData);
           }}
-          className="space-y-4 mt-4"
+          className="space-y-3 sm:space-y-4 mt-3 sm:mt-4"
         >
           {/* CODE */}
           <Input
@@ -163,7 +163,7 @@ export default function AddClassificationModal({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
             value={nameEn}
             onChange={(e) => setNameEn(e.target.value)}
-            label={t("Name")}
+            label={t("English Name")}
             placeholder={t("Enter classification name")}
           />
 
@@ -186,20 +186,12 @@ export default function AddClassificationModal({
             placeholder={t("Enter discount percentage")}
           />
 
-          <p className="text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500">
             {t("Enter discount percentage")} (0-100)
           </p>
 
           {/* ACTIONS */}
-          <div className="flex gap-3 pt-2">
-            <Button className="cursor-pointer" type="submit" disabled={isPending}>
-              {isPending
-                ? t("Saving")
-                : isEditMode
-                  ? t("Update")
-                  : t("Save Changes")}
-            </Button>
-
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 pt-2">
             <Button
             className="cursor-pointer"
               type="button"
@@ -207,6 +199,14 @@ export default function AddClassificationModal({
               onClick={() => onOpenChange(false)}
             >
               {t("Cancel")}
+            </Button>
+
+            <Button className="cursor-pointer w-full sm:w-auto" type="submit" disabled={isPending}>
+              {isPending
+                ? t("Saving")
+                : isEditMode
+                  ? t("Update")
+                  : t("Save Changes")}
             </Button>
           </div>
         </form>

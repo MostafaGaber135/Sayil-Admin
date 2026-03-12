@@ -31,41 +31,6 @@ export const useUnreadNotificationsCount = () => {
   });
 };
 
-export const useMarkNotificationAsRead = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (id: number) => markNotificationAsRead(id),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["notifications"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["notifications-unread-count"],
-      });
-    },
-  });
-};
 
 
-export const useMarkAllNotificationsAsRead = () => {
-  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: markAllNotificationsAsRead,
-
-    onSuccess: () => {
-      // تحديث قائمة الإشعارات
-      queryClient.invalidateQueries({
-        queryKey: ["notifications"],
-      });
-
-      // تحديث رقم الـ unread
-      queryClient.invalidateQueries({
-        queryKey: ["notifications-unread-count"],
-      });
-    },
-  });
-};
