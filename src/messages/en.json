@@ -179,7 +179,29 @@
         "deleteSuccess": "Role deleted successfully",
         "deleteError": "Failed to delete role",
         "AddedLand": "The operation was successful.",
-        "Failed": "The operation was not successful."
+        "Failed": "The operation was not successful.",
+        "Added successfully": "Added successfully",
+        "Something went wrong": "Something went wrong",
+        "Failed to delete": "Failed to delete",
+        "FAQ added successfully": "FAQ added successfully",
+        "Failed to add FAQ": "Failed to add FAQ",
+        "FAQ order updated successfully": "FAQ order updated successfully",
+        "Failed to reorder FAQs": "Failed to reorder FAQs",
+        "FAQ deleted successfully": "FAQ deleted successfully",
+        "Failed to delete FAQ": "Failed to delete FAQ",
+        "FAQ updated successfully": "FAQ updated successfully",
+        "Failed to update FAQ": "Failed to update FAQ",
+        "Communication settings updated successfully": "Communication settings updated successfully",
+        "Failed to update communication settings": "Failed to update communication settings",
+        "Commission updated successfully": "Commission updated successfully",
+        "Failed to update commission": "Failed to update commission",
+        "Minimum offer updated successfully": "Minimum offer updated successfully",
+        "Failed to update minimum offer": "Failed to update minimum offer",
+        "Maximum offer updated successfully":"Maximum offer updated successfully",
+        "Failed to update maximum offer":"Failed to update maximum offer",
+        "All notifications marked as read":"All notifications marked as read",
+        "Notification marked as read":"Notification marked as read"
+        
       }
     },
     "settings": {
@@ -206,7 +228,7 @@
       "Mobile": "Mobile App Communications",
       "Configure": "Configure contact information for the mobile application",
       "WhatsApp Number": "WhatsApp Number",
-      "Enter WhatsApp number": "Enter WhatsApp number",
+      "Enter WhatsApp number": "Enter WhatsApp number (e.g., +966501234567)",
       "This number": "This number will be used for WhatsApp contact in the mobile app",
       "Contact Us Email": "Contact Us Email",
       "Enter contact email address": "Enter contact email address",
@@ -215,7 +237,7 @@
       "Enter support": "Enter support email",
       "This email will": "This email will be used for technical support inquiries",
       "Business Hours": "Business Hours",
-      "Enter business hours": "Enter business hours",
+      "Enter business hours": "Enter business hours (e.g., 9:00 AM - 6:00 PM)",
       "Display": "Display business hours in the mobile app",
       "Time Zone": "Timezone",
       "Display business": "Select the timezone for business operations",
@@ -239,7 +261,13 @@
       "Answer AR": "Answer AR",
       "Add FAQ": "Add FAQ",
       "Edit FAQ": "Edit FAQ",
-      "Delete FAQ": " Are you sure you want to delete this FAQ?"
+      "Delete FAQ": " Are you sure you want to delete this FAQ?",
+      "WhatsApp required": "WhatsApp number is required",
+      "Invalid email": "Invalid email address",
+      "Email required": "Email address is required",
+      "Business required": "Business hours are required",
+      "Time zone required": "Time zone is required",
+      "English Name": "English Name"
     },
     "notification": {
       "Notifications": "Notifications",

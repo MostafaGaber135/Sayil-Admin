@@ -3,13 +3,19 @@
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/shared/lib/auth/nextauth.options";
-import { updateGlobalCommissionRate, updateMaxOfferPercent, updateMinOfferPercent } from "../services/settings.services";
+import {
+  updateGlobalCommissionRate,
+  updateMaxOfferPercent,
+  updateMinOfferPercent,
+} from "../services/settings.services";
+import { getTranslations } from "next-intl/server";
 
 //Put
 export async function updateGlobalCommissionAction(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
 ) {
+  const t = await getTranslations("pages.roles.toasts");
   try {
     const session = await getServerSession(authOptions);
 
@@ -17,23 +23,21 @@ export async function updateGlobalCommissionAction(
       globalCommissionRate: Number(formData.get("globalCommissionRate")),
     };
 
-    await updateGlobalCommissionRate(
-      payload,
-      session?.accessToken as string
-    );
+    await updateGlobalCommissionRate(payload, session?.accessToken as string);
 
     revalidatePath("/settings");
 
     return {
       success: true,
-      message: "Commission updated successfully",
+      message: t("Commission updated successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to update commission",
+      message:
+        error?.response?.data?.message || t("Failed to update commission"),
     };
   }
 }
@@ -41,8 +45,10 @@ export async function updateGlobalCommissionAction(
 //Put
 export async function updateMinOfferAction(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
 ) {
+  const t = await getTranslations("pages.roles.toasts");
+
   try {
     const session = await getServerSession(authOptions);
 
@@ -56,14 +62,15 @@ export async function updateMinOfferAction(
 
     return {
       success: true,
-      message: "Minimum offer updated successfully",
+      message: t("Minimum offer updated successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to update minimum offer",
+      message:
+        error?.response?.data?.message || t("Failed to update minimum offer"),
     };
   }
 }
@@ -72,8 +79,10 @@ export async function updateMinOfferAction(
 
 export async function updateMaxOfferAction(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
 ) {
+  const t = await getTranslations("pages.roles.toasts");
+
   try {
     const session = await getServerSession(authOptions);
 
@@ -87,14 +96,15 @@ export async function updateMaxOfferAction(
 
     return {
       success: true,
-      message: "Maximum offer updated successfully",
+      message: t("Maximum offer updated successfully"),
     };
   } catch (error: any) {
     console.log("SERVER ACTION ERROR:", error?.response?.data);
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to update maximum offer",
+      message:
+        error?.response?.data?.message || t("Failed to update maximum offer"),
     };
   }
 }

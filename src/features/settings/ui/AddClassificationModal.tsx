@@ -163,7 +163,7 @@ export default function AddClassificationModal({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
             value={nameEn}
             onChange={(e) => setNameEn(e.target.value)}
-            label={t("Name")}
+            label={t("English Name")}
             placeholder={t("Enter classification name")}
           />
 

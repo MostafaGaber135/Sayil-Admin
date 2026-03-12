@@ -10,7 +10,7 @@ import React, {
 import AddFaqModal from "./AddFaqModal";
 import DeleteFaqModal from "./DeleteFaqModal";
 import { useFaqs } from "../hooks/settings.hooks";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import LoadingState from "@/shared/ui/LoadingState";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
@@ -141,7 +141,7 @@ export default function FaqManagementTab() {
 
     sendReorder(updated);
   };
-
+  const locale = useLocale();
   return (
     <div className="p-3 sm:p-4">
       {" "}
@@ -149,14 +149,13 @@ export default function FaqManagementTab() {
         {" "}
         <div>
           {" "}
-          <h3 className="text-base sm:text-lg font-medium">
-            {t("FAQ")}{" "}
-          </h3>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            {t("Drag")}
-          </p>
+          <h3 className="text-base sm:text-lg font-medium">{t("FAQ")} </h3>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">{t("Drag")}</p>
         </div>
-        <Button className="cursor-pointer" onClick={() => setOpenAddModal(true)}>
+        <Button
+          className="cursor-pointer"
+          onClick={() => setOpenAddModal(true)}
+        >
           {t("+ Add FAQ")}
         </Button>
       </div>
@@ -184,8 +183,10 @@ export default function FaqManagementTab() {
                       </span>
 
                       <div className="flex-1">
-                        <h4 className="font-medium">{faq.questionEn}</h4>
-                        <p className="text-sm text-gray-600">{faq.answerEn}</p>
+                        <h4 className="font-medium">{locale === "ar" ? faq.questionAr : faq.questionEn}</h4>
+                        <p className="text-sm text-gray-600">
+                          {locale === "ar" ? faq.answerAr : faq.answerEn}
+                        </p>
                       </div>
 
                       <div className="flex gap-2 shrink-0 self-end sm:self-auto">
@@ -229,7 +230,7 @@ export default function FaqManagementTab() {
                             fill="none"
                             stroke="currentColor"
                             strokeWidth="2"
-                           strokeLinecap="round"
+                            strokeLinecap="round"
                             strokeLinejoin="round"
                             className="h-4 w-4 cursor-pointer"
                           >
