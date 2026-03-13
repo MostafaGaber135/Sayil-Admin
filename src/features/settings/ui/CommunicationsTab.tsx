@@ -166,7 +166,7 @@ export default function CommunicationsTab() {
           </div>
 
           <div className="flex justify-end pt-4 border-t">
-            <Button disabled={isPending} type="submit">
+            <Button className=" cursor-pointer" disabled={isPending} type="submit">
               {isPending ? t("Saving") : t("Save Changes")}
             </Button>
           </div>

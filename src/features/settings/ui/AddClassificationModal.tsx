@@ -21,13 +21,10 @@ import {
   createLandClassificationAction,
   updateLandClassificationAction,
 } from "../actions/land-classification.actions";
-import { useTranslations } from "next-intl";
 
-type Props = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  editData?: any;
-};
+import { useTranslations } from "next-intl";
+import { Props } from "../types";
+import { classificationFormSchema } from "../validation/land-class.validation";
 
 const initialState = {
   success: false,
@@ -46,6 +43,13 @@ export default function AddClassificationModal({
   const [nameEn, setNameEn] = useState("");
   const [discount, setDiscount] = useState("");
 
+  const [errors, setErrors] = useState<{
+    code?: string;
+    nameEn?: string;
+    nameAr?: string;
+    discount?: string;
+  }>({});
+
   const [isPending, startTransition] = useTransition();
 
   const isEditMode = !!editData;
@@ -55,6 +59,8 @@ export default function AddClassificationModal({
     : createLandClassificationAction;
 
   const [state, formAction] = useActionState(action, initialState);
+
+  const t = useTranslations("pages.settings");
 
   /* ================= Fill Edit Data ================= */
 
@@ -76,6 +82,7 @@ export default function AddClassificationModal({
     setNameAr("");
     setNameEn("");
     setDiscount("");
+    setErrors({});
   };
 
   /* ================= Toast + Refresh ================= */
@@ -103,16 +110,34 @@ export default function AddClassificationModal({
     const finalNameAr = nameAr || nameEn;
     const finalNameEn = nameEn || nameAr;
 
-    if (!code || !finalNameAr || !finalNameEn || !discount) {
-      toast.error("All fields are required");
+    const validation = classificationFormSchema(t).safeParse({
+      code,
+      nameEn: finalNameEn,
+      nameAr: finalNameAr,
+      discount,
+    });
+
+    if (!validation.success) {
+      const fieldErrors: any = {};
+
+      validation.error.issues.forEach((err) => {
+        const field = err.path[0] as string;
+        fieldErrors[field] = err.message;
+      });
+
+      setErrors(fieldErrors);
       return;
     }
 
-    formData.set("code", code.toUpperCase());
-    formData.set("nameAr", finalNameAr);
-    formData.set("nameEn", finalNameEn);
-    formData.set("name", finalNameEn);
-    formData.set("discountPercent", discount);
+    setErrors({});
+
+    const data = validation.data;
+
+    formData.set("code", data.code);
+    formData.set("nameAr", data.nameAr);
+    formData.set("nameEn", data.nameEn);
+    formData.set("name", data.nameEn);
+    formData.set("discountPercent", String(data.discount));
 
     if (isEditMode) {
       formData.set("id", editData.id);
@@ -122,7 +147,7 @@ export default function AddClassificationModal({
       formAction(formData);
     });
   };
-  const t = useTranslations("pages.settings");
+
   /* ================= UI ================= */
 
   return (
@@ -146,54 +171,86 @@ export default function AddClassificationModal({
             const formData = new FormData(e.currentTarget);
             handleSubmit(formData);
           }}
-          className="space-y-3 sm:space-y-4 mt-3 sm:mt-4"
+          className="space-y-4 mt-4"
         >
           {/* CODE */}
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            maxLength={1}
-            label={t("Classification Code")}
-            placeholder={t("Enter code (A, B, C)")}
-          />
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              value={code}
+              onChange={(e) => {
+                setCode(e.target.value.toUpperCase());
+                setErrors((prev) => ({ ...prev, code: undefined }));
+              }}
+              maxLength={1}
+              label={t("Classification Code")}
+              placeholder={t("Enter code (A, B, C)")}
+            />
+            {errors.code && (
+              <p className="text-red-500 text-sm mt-1">{errors.code}</p>
+            )}
+          </div>
 
           {/* NAME EN */}
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            value={nameEn}
-            onChange={(e) => setNameEn(e.target.value)}
-            label={t("English Name")}
-            placeholder={t("Enter classification name")}
-          />
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              value={nameEn}
+              onChange={(e) => {
+                setNameEn(e.target.value);
+                setErrors((prev) => ({ ...prev, nameEn: undefined }));
+              }}
+              label={t("English Name")}
+              placeholder={t("Enter classification name")}
+            />
+            {errors.nameEn && (
+              <p className="text-red-500 text-sm mt-1">{errors.nameEn}</p>
+            )}
+          </div>
 
           {/* NAME AR */}
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            value={nameAr}
-            onChange={(e) => setNameAr(e.target.value)}
-            label={t("Arabic Name")}
-            placeholder={t("Enter Arabic name")}
-          />
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              value={nameAr}
+              onChange={(e) => {
+                setNameAr(e.target.value);
+                setErrors((prev) => ({ ...prev, nameAr: undefined }));
+              }}
+              label={t("Arabic Name")}
+              placeholder={t("Enter Arabic name")}
+            />
+            {errors.nameAr && (
+              <p className="text-red-500 text-sm mt-1">{errors.nameAr}</p>
+            )}
+          </div>
 
           {/* DISCOUNT */}
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            value={discount}
-            onChange={(e) => setDiscount(e.target.value)}
-            type="number"
-            label={t("Discount")}
-            placeholder={t("Enter discount percentage")}
-          />
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              value={discount}
+              onChange={(e) => {
+                setDiscount(e.target.value);
+                setErrors((prev) => ({ ...prev, discount: undefined }));
+              }}
+              type="number"
+              label={t("Discount")}
+              placeholder={t("Enter discount percentage")}
+            />
+            {errors.discount && (
+              <p className="text-red-500 text-sm mt-1">{errors.discount}</p>
+            )}
+          </div>
 
-          <p className="text-xs sm:text-sm text-gray-500">
-            {t("Enter discount percentage")} (0-100)
+          <p className="text-sm text-gray-500">
+            {t("Enter discount percentage")} (1-100)
           </p>
 
           {/* ACTIONS */}
-          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 pt-2">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
             <Button
-            className="cursor-pointer"
+              className=" cursor-pointer"
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
@@ -201,7 +258,11 @@ export default function AddClassificationModal({
               {t("Cancel")}
             </Button>
 
-            <Button className="cursor-pointer w-full sm:w-auto" type="submit" disabled={isPending}>
+            <Button
+              className=" cursor-pointer"
+              type="submit"
+              disabled={isPending}
+            >
               {isPending
                 ? t("Saving")
                 : isEditMode

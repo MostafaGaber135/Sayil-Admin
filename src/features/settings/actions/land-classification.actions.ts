@@ -9,29 +9,39 @@ import {
   updateLandClassification,
 } from "../services/settings.services";
 import { getTranslations } from "next-intl/server";
-
+import { ActionState } from "../types";
+import { AxiosError } from "axios";
+import { classificationFormSchema } from "../validation/land-class.validation";
 
 //Post
 
 export async function createLandClassificationAction(
-  _prevState: any,
+  _prevState: ActionState,
   formData: FormData,
-) {
+): Promise<ActionState> {
   const t = await getTranslations("pages.roles.toasts");
+
   try {
-     
     const session = await getServerSession(authOptions);
 
-const payload = {
-  id: Number(formData.get("id")),
-  code: String(formData.get("code")),
-  name: String(formData.get("name")),
-  nameAr: String(formData.get("nameAr")),
-  nameEn: String(formData.get("nameEn")),
-  discountPercent: Number(formData.get("discountPercent")),
-};
+    if (!session?.accessToken) {
+      return {
+        success: false,
+        message: t("Unauthorized"),
+      };
+    }
 
-    await createLandClassification(payload, session?.accessToken as string);
+    const rawData = {
+      code: String(formData.get("code") ?? ""),
+      name: String(formData.get("name") ?? ""),
+      nameAr: String(formData.get("nameAr") ?? ""),
+      nameEn: String(formData.get("nameEn") ?? ""),
+      discountPercent: String(formData.get("discountPercent") ?? ""),
+    };
+
+    const payload = classificationFormSchema(t).parse(rawData);
+
+    await createLandClassification(payload, session.accessToken);
 
     revalidatePath("/settings");
 
@@ -39,12 +49,29 @@ const payload = {
       success: true,
       message: t("Added successfully"),
     };
-  } catch (error: any) {
-    console.log("SERVER ACTION ERROR:", error?.response?.data || error);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      console.error("SERVER ACTION AXIOS ERROR:", error.response?.data);
+
+      return {
+        success: false,
+        message:
+          (error.response?.data as any)?.message || t("Something went wrong"),
+      };
+    }
+
+    if (error instanceof Error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+
+    console.error("SERVER ACTION ERROR:", error);
 
     return {
       success: false,
-      message: error?.response?.data?.message || t("Something went wrong"),
+      message: t("Something went wrong"),
     };
   }
 }
@@ -52,7 +79,7 @@ const payload = {
 //Put
 export async function updateLandClassificationAction(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const session = await getServerSession(authOptions);
