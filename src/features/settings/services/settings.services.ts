@@ -1,5 +1,7 @@
 import { api } from "@/shared/lib/axios/axios.instance";
 import { AddFaqPayload, Data } from "../types";
+import { LandClassificationPayload } from "../validation/land-class.validation";
+import { AxiosResponse } from "axios";
 
 //Add LandClassification
 
@@ -7,12 +9,20 @@ import { AddFaqPayload, Data } from "../types";
 
 
 
-export const createLandClassification = (data: Data, token: string) => {
-  return api.post("/api/admin/land-classifications", data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const createLandClassification = async (
+  data: LandClassificationPayload,
+  token: string
+): Promise<AxiosResponse> => {
+
+  return await api.post(
+    "/api/admin/land-classifications",
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 //Get LandClassification

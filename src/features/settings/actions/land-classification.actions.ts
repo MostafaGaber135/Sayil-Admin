@@ -9,28 +9,40 @@ import {
   updateLandClassification,
 } from "../services/settings.services";
 import { getTranslations } from "next-intl/server";
+import { ActionState } from "../types";
+import { AxiosError } from "axios";
+import { landClassificationSchema } from "../validation/land-class.validation";
 
 
 //Post
 
 export async function createLandClassificationAction(
-  _prevState: any,
-  formData: FormData,
-) {
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
   const t = await getTranslations("pages.roles.toasts");
+
   try {
-     
     const session = await getServerSession(authOptions);
 
-const payload = {
-  code: String(formData.get("code")),
-  name: String(formData.get("name")),
-  nameAr: String(formData.get("nameAr")),
-  nameEn: String(formData.get("nameEn")),
-  discountPercent: Number(formData.get("discountPercent")),
-};
+    if (!session?.accessToken) {
+      return {
+        success: false,
+        message: "Unauthorized",
+      };
+    }
 
-    await createLandClassification(payload, session?.accessToken as string);
+    const rawData = {
+      code: formData.get("code"),
+      name: formData.get("name"),
+      nameAr: formData.get("nameAr"),
+      nameEn: formData.get("nameEn"),
+      discountPercent: formData.get("discountPercent"),
+    };
+
+    const payload = landClassificationSchema.parse(rawData);
+
+    await createLandClassification(payload, session.accessToken);
 
     revalidatePath("/settings");
 
@@ -38,12 +50,32 @@ const payload = {
       success: true,
       message: t("Added successfully"),
     };
-  } catch (error: any) {
-    console.log("SERVER ACTION ERROR:", error?.response?.data || error);
+
+  } catch (error: unknown) {
+
+    if (error instanceof AxiosError) {
+      console.error("SERVER ACTION AXIOS ERROR:", error.response?.data);
+
+      return {
+        success: false,
+        message:
+          (error.response?.data as any)?.message ||
+          t("Something went wrong"),
+      };
+    }
+
+    if (error instanceof Error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+
+    console.error("SERVER ACTION ERROR:", error);
 
     return {
       success: false,
-      message: error?.response?.data?.message || t("Something went wrong"),
+      message: t("Something went wrong"),
     };
   }
 }

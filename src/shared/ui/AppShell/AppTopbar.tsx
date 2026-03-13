@@ -121,7 +121,7 @@ export default function AppTopbar() {
   const ControlsLTR = (
     <div className="flex items-center gap-3 ">
       <LocaleSwitch />
-      <NotificationDropdown/>
+      <NotificationDropdown />
       {Divider}
       {UserDropdown}
     </div>

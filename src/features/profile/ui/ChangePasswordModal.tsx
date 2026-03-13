@@ -12,6 +12,8 @@ import {
 import { toast } from "react-toastify";
 import { changePasswordAction } from "../actions/profile.actions";
 import { useTranslations } from "next-intl";
+import { z } from "zod";
+import { passwordSchema } from "../validation/profile.validation";
 
 type Props = {
   open: boolean;
@@ -23,7 +25,11 @@ const initialState = {
   message: "",
 };
 
+/* ================= ZOD SCHEMA ================= */
+
 export default function ChangePasswordModal({ open, onOpenChange }: Props) {
+  const t = useTranslations("pages.profile");
+
   const [isPending, startTransition] = useTransition();
 
   const [state, formAction] = useActionState(
@@ -35,25 +41,46 @@ export default function ChangePasswordModal({ open, onOpenChange }: Props) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
+  const [errors, setErrors] = useState<any>({});
+
   useEffect(() => {
     if (!state) return;
 
     if (state.success) {
       onOpenChange(false);
-      toast.success(state.message)
+      toast.success(state.message);
+
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
+      setErrors({});
     } else if (state.message) {
       toast.error(state.message);
     }
   }, [state]);
 
+  /* ================= SUBMIT ================= */
+
   const handleSubmit = (formData: FormData) => {
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      toast.error(t("All fields are required"));
+    const validation = passwordSchema.safeParse({
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+    });
+
+    if (!validation.success) {
+      const fieldErrors: any = {};
+
+      validation.error.issues.forEach((err) => {
+        const field = err.path[0];
+        fieldErrors[field] = err.message;
+      });
+
+      setErrors(fieldErrors);
       return;
     }
+
+    setErrors({});
 
     formData.set("currentPassword", currentPassword);
     formData.set("newPassword", newPassword);
@@ -63,44 +90,82 @@ export default function ChangePasswordModal({ open, onOpenChange }: Props) {
       formAction(formData);
     });
   };
-const t = useTranslations("pages.profile")
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {" "}
       <DialogContent className="sm:max-w-md">
-        {" "}
         <DialogHeader className="border-b pb-3">
-          {" "}
-          <DialogTitle>{t("Change Password")}</DialogTitle>{" "}
+          <DialogTitle>{t("Change Password")}</DialogTitle>
         </DialogHeader>
+
         <form action={handleSubmit} className="space-y-4 mt-4">
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            type="password"
-            label={t("Current Password")}
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
+          {/* CURRENT PASSWORD */}
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              type="password"
+              label={t("Current Password")}
+              value={currentPassword}
+              onChange={(e) => {
+                setCurrentPassword(e.target.value);
+                setErrors((prev: any) => ({
+                  ...prev,
+                  currentPassword: undefined,
+                }));
+              }}
+            />
+            {errors.currentPassword && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.currentPassword}
+              </p>
+            )}
+          </div>
 
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            type="password"
-            label={t("New Password")}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
+          {/* NEW PASSWORD */}
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              type="password"
+              label={t("New Password")}
+              value={newPassword}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setErrors((prev: any) => ({
+                  ...prev,
+                  newPassword: undefined,
+                }));
+              }}
+            />
+            {errors.newPassword && (
+              <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+            )}
+          </div>
 
-          <Input
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
-            type="password"
-            label={t("Confirm")}
-            value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-          />
+          {/* CONFIRM PASSWORD */}
+          <div>
+            <Input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sayil-bright-blue focus:border-transparent"
+              type="password"
+              label={t("Confirm")}
+              value={confirmNewPassword}
+              onChange={(e) => {
+                setConfirmNewPassword(e.target.value);
+                setErrors((prev: any) => ({
+                  ...prev,
+                  confirmNewPassword: undefined,
+                }));
+              }}
+            />
+            {errors.confirmNewPassword && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.confirmNewPassword}
+              </p>
+            )}
+          </div>
 
           <div className="flex justify-end gap-3 pt-3">
             <Button
-            className="cursor-pointer"
+              className=" cursor-pointer"
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
@@ -108,7 +173,11 @@ const t = useTranslations("pages.profile")
               {t("Cancel")}
             </Button>
 
-            <Button className="cursor-pointer" type="submit" disabled={isPending}>
+            <Button
+              className=" cursor-pointer"
+              type="submit"
+              disabled={isPending}
+            >
               {isPending ? t("Saving") : t("Change Password")}
             </Button>
           </div>
