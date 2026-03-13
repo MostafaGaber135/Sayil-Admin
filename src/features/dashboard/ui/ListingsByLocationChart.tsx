@@ -51,8 +51,12 @@ export default function ListingsByLocationChart({
     [labels, values]
   );
 
-  const options = useMemo<ChartOptions<"bar">>(
-    () => ({
+  const options = useMemo<ChartOptions<"bar">>(() => {
+    const maxValue = values.length ? Math.max(...values) : 100;
+    const yMax = maxValue <= 0 ? 100 : maxValue;
+    const stepSize = Math.max(1, Math.ceil(yMax / 4));
+
+    return {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -68,16 +72,15 @@ export default function ListingsByLocationChart({
       scales: {
         y: {
           beginAtZero: true,
-          max: 600,
-          ticks: { stepSize: 150 },
+          max: yMax,
+          ticks: { stepSize },
         },
         x: {
           grid: { display: false },
         },
       },
-    }),
-    [title]
-  );
+    };
+  }, [title, values]);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md h-[360px]">
