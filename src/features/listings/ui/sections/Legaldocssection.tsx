@@ -61,7 +61,6 @@ const DocUploader = ({ label, required, currentUrl, error, onUpload }: DocUpload
         // const { data } = await axios.post("/api/upload", formData);
         // onUpload(data.url);
 
-        console.log("🔧 TODO: upload doc", file.name);
     };
 
     const isUploaded = !!currentUrl;

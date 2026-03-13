@@ -1,28 +1,44 @@
-import PageHeader from "@/shared/ui/PageHeader";
-import { useTranslations } from "next-intl";
-import {ListingsPage} from "@/features/listings";
-import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
-import {getQueryClient} from "@/shared/lib/react-query/server";
-import {getListingLookupsService} from "@/features/listings/services";
-import {fetchAllListing} from "@/features/listings/api";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/shared/lib/react-query/server";
+import { DEFAULT_FILTERS } from "@/features/listings/constants";
+import { prefetchPriceChangeRequestDetails, serverFetchAllListing } from "@/features/listings/api";
 
-export default async function Page() {
-  // const t = useTranslations();
-    const queryClient = getQueryClient();
+import { ListingsPage } from "@/features/listings";
 
-    await queryClient.prefetchQuery({
-        queryKey: ['listings'],
-        queryFn: fetchAllListing,
-    });
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ modal?: string; requestId?: string }>;
+}) {
+  const { requestId: requestIdParam } = await searchParams;
+  const requestId = requestIdParam ? Number(requestIdParam) : null;
+  const queryClient = getQueryClient();
+  //* (void) for ux 
+  // void Promise.all([
+  //   queryClient.prefetchQuery({
+  //     queryKey: ["listings", DEFAULT_FILTERS],
+  //     queryFn: () => serverFetchAllListing(DEFAULT_FILTERS),
+  //   }),
+  //   requestId
+  //     ? prefetchPriceChangeRequestDetails(queryClient, requestId)
+  //     : Promise.resolve(),
+  // ]);
 
-    return (
-    <div>
-      {/*<PageHeader title={t("pages.listings.title")} description={t("pages.listings.desc")} />*/}
-      <div className="text-sm text-muted-foreground">
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <ListingsPage/>
-          </HydrationBoundary>
-      </div>
-    </div>
+
+  //* (await) for SEO
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["listings", DEFAULT_FILTERS],
+      queryFn: () => serverFetchAllListing(DEFAULT_FILTERS),
+    }),
+    requestId
+      ? prefetchPriceChangeRequestDetails(queryClient, requestId)
+      : Promise.resolve(),
+  ]);
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ListingsPage initialRequestId={requestId} />
+    </HydrationBoundary>
   );
 }

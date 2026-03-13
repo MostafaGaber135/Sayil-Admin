@@ -4,7 +4,7 @@
 import { getServerSession } from "next-auth";
 
 import { revalidatePath } from "next/cache";
-import { changePassword, getProfile } from './../services/profile.services';
+import { changePassword, getProfile, updateProfile } from './../services/profile.services';
 import { authOptions } from "@/shared/lib/auth/nextauth.options";
 
 export async function getProfileAction() {
@@ -29,39 +29,35 @@ return {
 }
 }
 
+
 export async function updateProfileAction(
-_prevState: any,
-formData: FormData
+  _prevState: any,
+  formData: FormData
 ) {
-try {
-const session = await getServerSession(authOptions);
+  try {
+    const session = await getServerSession(authOptions);
 
+    const payload = {
+      fullName: String(formData.get("fullName")),
+      phoneNumber: String(formData.get("phoneNumber")),
+    };
 
-const payload = {
-  fullName: String(formData.get("fullName")),
-  phoneNumber: String(formData.get("phoneNumber")),
-};
+    await updateProfile(payload, session?.accessToken as string);
 
-await updateProfileAction(payload, session?.accessToken as string);
+    revalidatePath("/profile");
 
-revalidatePath("/profile");
+    return {
+      success: true,
+      message: "Profile updated successfully",
+    };
 
-return {
-  success: true,
-  message: "Profile updated successfully",
-};
-
-} catch (error: any) {
-console.log("UPDATE PROFILE ERROR:", error?.response?.data || error);
-
-return {
-  success: false,
-  message: error?.response?.data?.message || "Something went wrong",
-};
-
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Something went wrong",
+    };
+  }
 }
-}
-
 
 
 export async function changePasswordAction(

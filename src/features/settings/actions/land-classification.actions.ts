@@ -11,14 +11,13 @@ import {
 import { getTranslations } from "next-intl/server";
 import { ActionState } from "../types";
 import { AxiosError } from "axios";
-import { landClassificationSchema } from "../validation/land-class.validation";
-
+import { classificationFormSchema } from "../validation/land-class.validation";
 
 //Post
 
 export async function createLandClassificationAction(
   _prevState: ActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionState> {
   const t = await getTranslations("pages.roles.toasts");
 
@@ -28,19 +27,19 @@ export async function createLandClassificationAction(
     if (!session?.accessToken) {
       return {
         success: false,
-        message: "Unauthorized",
+        message: t("Unauthorized"),
       };
     }
 
     const rawData = {
-      code: formData.get("code"),
-      name: formData.get("name"),
-      nameAr: formData.get("nameAr"),
-      nameEn: formData.get("nameEn"),
-      discountPercent: formData.get("discountPercent"),
+      code: String(formData.get("code") ?? ""),
+      name: String(formData.get("name") ?? ""),
+      nameAr: String(formData.get("nameAr") ?? ""),
+      nameEn: String(formData.get("nameEn") ?? ""),
+      discountPercent: String(formData.get("discountPercent") ?? ""),
     };
 
-    const payload = landClassificationSchema.parse(rawData);
+    const payload = classificationFormSchema(t).parse(rawData);
 
     await createLandClassification(payload, session.accessToken);
 
@@ -50,17 +49,14 @@ export async function createLandClassificationAction(
       success: true,
       message: t("Added successfully"),
     };
-
   } catch (error: unknown) {
-
     if (error instanceof AxiosError) {
       console.error("SERVER ACTION AXIOS ERROR:", error.response?.data);
 
       return {
         success: false,
         message:
-          (error.response?.data as any)?.message ||
-          t("Something went wrong"),
+          (error.response?.data as any)?.message || t("Something went wrong"),
       };
     }
 
@@ -83,7 +79,7 @@ export async function createLandClassificationAction(
 //Put
 export async function updateLandClassificationAction(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const session = await getServerSession(authOptions);
