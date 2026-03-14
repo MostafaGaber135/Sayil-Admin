@@ -1,13 +1,21 @@
 import { Suspense } from "react";
-import {  ListingsPage } from "@/features/listings";
+import { ListingsPage } from "@/features/listings";
 import { ListingsPageSkeleton } from "@/features/listings/ui/components";
 import { getQueryClient } from "@/shared/lib/react-query/server";
-import { prefetchPriceChangeRequestDetails, serverFetchAllListing } from "@/features/listings/api";
+import {
+  prefetchPriceChangeRequestDetails,
+  serverFetchAllListing,
+} from "@/features/listings/api";
 import { DEFAULT_FILTERS } from "@/features/listings/constants";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
-export async function ListingsDataFetcher({ requestId }: { requestId: number | null }) {
+async function ListingsDataFetcher({
+  requestId,
+}: {
+  requestId: number | null;
+}) {
   const queryClient = getQueryClient();
+
   await queryClient.prefetchQuery({
     queryKey: ["listings", DEFAULT_FILTERS],
     queryFn: () => serverFetchAllListing(DEFAULT_FILTERS),
