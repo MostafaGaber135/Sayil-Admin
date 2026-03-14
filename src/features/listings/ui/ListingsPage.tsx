@@ -15,25 +15,26 @@ import { PriceRequestDetailsModal } from "./modals";
 
 import type { PriceChangeRequestDetails } from "..";
 import { priceChangeKeys } from "../api";
-
+import { Pagination } from "./components/Pagination";
+import { startTransition } from "react";
+import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 type Props = {
   initialRequestId: number | null;
 };
 
 export const ListingsPage = ({ initialRequestId }: Props) => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
   const queryClient = useQueryClient();
-
-  const openModal = searchParams.get("modal");
-  const requestId = searchParams.get("requestId")
-    ? Number(searchParams.get("requestId"))
-    : null;
-
+  const [{ modal: openModal, requestId }, setModalParams] = useQueryStates({
+    modal: parseAsString,
+    requestId: parseAsInteger,
+  });
+  
   const close = () => {
-    router.replace("/listings", { scroll: false });
+    startTransition(() => {
+      setModalParams({ modal: null, requestId: null });
+    });
   };
-
+  
   const {
     filters,
     viewMode,
@@ -41,13 +42,17 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
     handleFilterChange,
     handleSearch,
     handleKeyDown,
+    handlePageChange,
+    searchTerm,
+    setSearchTerm,
   } = useListingsFilters();
 
   const { data, isPending } = useListings(filters);
-  const listings = data?.data?.items ?? [];
+  console.log(data);
 
-  // Read from cache directly — no extra useQuery call needed
-  // The server already prefetched this into the queryClient via HydrationBoundary
+  const listings = data?.data?.items ?? [];
+const totalPages = (data?.data as any)?.meta?.totalPages ?? 0;
+
   const cachedPriceRequest = initialRequestId
     ? queryClient.getQueryData<PriceChangeRequestDetails>(
         priceChangeKeys.details(initialRequestId),
@@ -56,6 +61,7 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-6 space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -73,8 +79,11 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
         </Link>
       </div>
 
+      {/* Filters */}
       <ListingsFilters
         filters={filters}
+        searchTerm={searchTerm}
+        onSearchTermChange={setSearchTerm}
         viewMode={viewMode}
         isPending={isPending}
         onFilterChange={handleFilterChange}
@@ -83,6 +92,7 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
         onViewChange={setViewMode}
       />
 
+      {/* Content */}
       {isPending ? (
         viewMode === "grid" ? (
           <GridSkeleton />
@@ -97,12 +107,22 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
         <TableView listings={listings} />
       )}
 
+      {/* Pagination */}
+      {!isPending && totalPages > 1 && (
+        <Pagination
+          currentPage={filters.pageNumber ?? 1}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          isPending={isPending}
+        />
+      )}
+
+      {/* Modal */}
       {requestId && (
         <PriceRequestDetailsModal
           isOpen={openModal === "priceDetails"}
           onClose={close}
           requestId={requestId}
-
           initialData={
             requestId === initialRequestId ? (cachedPriceRequest ?? null) : null
           }

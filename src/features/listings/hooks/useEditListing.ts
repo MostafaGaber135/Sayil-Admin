@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { useListingById, useLookups } from ".";
 import { useActionState, useEffect, useTransition } from "react";

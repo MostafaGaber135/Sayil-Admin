@@ -1,3 +1,4 @@
+'use client'
 import { ListingForm } from ".";
 import { useEditListing } from "../hooks/useEditListing";
 

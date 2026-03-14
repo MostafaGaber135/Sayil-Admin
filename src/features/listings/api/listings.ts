@@ -5,9 +5,8 @@ import { serverApi } from "@/shared/lib/auth/server-sesstion-token";
 
 const buildCleanBody = (body: ListingsRequest) =>
   Object.fromEntries(
-    Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "")
-  );
-
+    Object.entries(body).filter(([_, v]) => v !== undefined && v !== null && v !== "" && v !== 0)
+);
 // ─── Shared (client + server) ─────────────────────────────────────────────────
 
 export const fetchAllListing = async (

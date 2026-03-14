@@ -45,7 +45,6 @@ export const PriceRequestDetailsModal = ({
 }: Props) => {
   const queryClient = useQueryClient();
 
-  // ✅ hook بدل useTransition مباشر
   const { cancel, isPending } = useCancelPriceRequest();
 
   const { data, isLoading, error } = useGetPriceChangeRequestDetails(
@@ -125,7 +124,7 @@ export const PriceRequestDetailsModal = ({
                 className="w-3.5 h-3.5 shrink-0"
                 fill="none"
                 stroke="currentColor"
-                viewBox="0 0 24 24"
+                viewBox="0 0 24 24" 
               >
                 <path
                   strokeLinecap="round"

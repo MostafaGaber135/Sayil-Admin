@@ -2,7 +2,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -18,7 +18,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-screen">
-        {children}
+      <NuqsAdapter>{children}</NuqsAdapter>
       </div>
     </NextIntlClientProvider>
   );
