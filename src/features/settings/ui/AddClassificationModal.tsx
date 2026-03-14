@@ -136,7 +136,6 @@ export default function AddClassificationModal({
     formData.set("code", data.code);
     formData.set("nameAr", data.nameAr);
     formData.set("nameEn", data.nameEn);
-    formData.set("name", data.nameEn);
     formData.set("discountPercent", String(data.discountPercent));
 
     if (isEditMode) {

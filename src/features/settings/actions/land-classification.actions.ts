@@ -46,7 +46,6 @@ export async function createLandClassificationAction(
     await createLandClassification(
       {
         code: payload.code,
-        name: payload.nameEn,
         nameAr: payload.nameAr,
         nameEn: payload.nameEn,
         discountPercent: payload.discountPercent,
@@ -127,7 +126,6 @@ export async function updateLandClassificationAction(
       id,
       {
         code: payload.code,
-        name: payload.nameEn,
         nameAr: payload.nameAr,
         nameEn: payload.nameEn,
         discountPercent: payload.discountPercent,
