@@ -39,7 +39,7 @@ export default function StatusDistributionChart({
       datasets: [
         {
           data: values,
-          backgroundColor: ["#f59e0b", "#3b82f6", "#14b8a6", "#ef4444", "#666666"],
+          backgroundColor: ["#f59e0b", "#3b82f6", "#14b8a6", "#ef4444", "#666666", "#7F00FF"],
           borderWidth: 2,
         },
       ],
