@@ -1,11 +1,9 @@
+"use client";
 // ──────────────────────────────────────────────────────────────────────────────
 // offers.queries.ts  –  query keys + client hooks
 // ──────────────────────────────────────────────────────────────────────────────
 import { useQuery } from "@tanstack/react-query";
 import { OffersResponse, PriceChangeRequest } from "..";
-
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 // ── Query Keys ─────────────────────────────────────────────────────────────────
 
 export const offerKeys = {

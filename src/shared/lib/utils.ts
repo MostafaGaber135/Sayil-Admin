@@ -34,7 +34,7 @@ export const mapListingToForm = (data: any): ListingFormValues => ({
     nationalIdCopyUrl: data.nationalIdCopyUrl ?? "",
     landSurveyReportUrl: data.landSurveyReportUrl ?? "",
 
-    userId: data.userId ?? data.ownerId,   // ← أضفناها + fallback لو الـ API بيبعتها بـ ownerId
+    userId: data.userId ?? data.ownerId,  
     agentId: data.agentId,
     buyerId: data.buyerId ?? null,
     purchasedPrice: data.purchasedPrice ?? null,

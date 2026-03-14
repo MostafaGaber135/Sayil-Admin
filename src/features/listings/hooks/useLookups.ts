@@ -1,3 +1,4 @@
+"use client";
 import { useQuery } from '@tanstack/react-query';
 import {fetchRegions} from "@/features/listings/api";
 import {getListingLookupsService} from "@/features/listings/services";

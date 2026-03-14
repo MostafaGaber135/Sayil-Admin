@@ -15,7 +15,6 @@ import {
   StatusChangeModal,
 } from "@/features/listings/ui/modals";
 
-// FIX: added "status" — was missing so StatusChangeModal could never open from QuickActions
 type ModalType = "status" | "classification" | "price" | null;
 
 interface Props {
@@ -183,19 +182,17 @@ export const ListingViewPage = ({ listing }: Props) => {
         <div className="flex flex-col gap-6">
           <QuickActions
             listing={listing}
-            // FIX: onEdit navigates to edit page instead of empty function
             onEdit={() => router.push(`/listings/${listing.id}/edit`)}
             onStatusChange={() => setOpenModal("status")}
             onClassificationChange={() => setOpenModal("classification")}
             onPriceChange={() => setOpenModal("price")}
-            // FIX: onViewOffers opens offers modal (or navigates — placeholder for now)
             onViewOffers={() => {
-              // TODO: open OffersManagementModal when it's uncommented
               router.push(`/listings/${listing.id}?modal=offers`);
             }}
           />
         </div>
       </div>
+
 
       {/* Modals */}
       <StatusChangeModal

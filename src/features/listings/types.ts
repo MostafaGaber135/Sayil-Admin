@@ -14,13 +14,16 @@ export interface ApiResponse<T> {
   errors: string[];
   data: T;
 }
-
 export interface PaginatedData<T> {
   items: T[];
-  totalCount?: number;
-  pageNumber?: number;
-  pageSize?: number;
+  meta: {
+    pageNumber: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+  };
 }
+export type ListingsResponse = ApiResponse<PaginatedData<ListingItem>>;
 
 // ── Lookup Types ──────────────────────────────────────────────────────────────
 
@@ -90,7 +93,7 @@ export interface ListingItem {
   discountPercent: number;
 }
 
-export type ListingsResponse = ApiResponse<PaginatedData<ListingItem>>;
+
 
 export interface ListingDetail {
   id: number;

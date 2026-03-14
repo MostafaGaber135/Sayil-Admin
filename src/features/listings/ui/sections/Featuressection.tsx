@@ -3,10 +3,6 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ListingFormValues } from "@/features/listings/validation";
 
-// FIX: Replaced useFieldArray with watch + setValue.
-// useFieldArray only works with arrays of OBJECTS. Our schema has
-// features: z.array(z.string()), so useFieldArray was wrapping each
-// string in an object {0,1,2,...,id} causing the React child error.
 export const FeaturesSection = () => {
   const { watch, setValue } = useFormContext<ListingFormValues>();
   const features: string[] = watch("features") ?? [];

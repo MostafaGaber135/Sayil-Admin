@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ListingItem,
-  PriceChangeRequest,
-  PriceChangeResponse,
 } from "@/features/listings";
 import {
   ClassificationChangeModal,
@@ -16,7 +14,7 @@ import {
 import { DeleteModal } from "../modals/DeleteModal";
 import { useGetPriceChangeRequests } from "@/features/listings/hooks/use-price-change";
 import { useDeleteLand } from "@/features/listings/hooks/use-listing-actions";
-
+import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
 type ModalType =
   | "status"
   | "classification"
@@ -33,9 +31,11 @@ interface Props {
 const PriceButton = ({
   item,
   onOpenDetails,
+  onOpenPriceChange,
 }: {
   item: ListingItem;
   onOpenDetails: (requestId: number) => void;
+  onOpenPriceChange: () => void; 
 }) => {
   const { data: requests = [] } = useGetPriceChangeRequests(item.id);
   const latestRequestId = requests[0]?.requestId;
@@ -43,8 +43,13 @@ const PriceButton = ({
 
   return (
     <div className="relative">
-      <button
-        onClick={() => hasPendingRequest && onOpenDetails(latestRequestId!)}
+      <button onClick={() => {
+            if (hasPendingRequest) {
+                onOpenDetails(latestRequestId!);
+            } else {
+                onOpenPriceChange();
+            }
+        }}
         className={`p-1.5 transition-colors ${
           hasPendingRequest
             ? "text-amber-500 hover:text-amber-600"
@@ -84,18 +89,18 @@ const PriceButton = ({
 export const ActionButtons = ({ item }: Props) => {
   const router = useRouter();
   const [openModal, setOpenModal] = useState<ModalType>(null);
-
+  const [, setModalParams] = useQueryStates({modal: parseAsString,requestId: parseAsInteger});
   const { deleteLand, isPending: isDeleting } = useDeleteLand();
 
   const close = () => setOpenModal(null);
-
+  const closeLocalModal = () => setOpenModal(null);
   const handleDelete = () => {
-    deleteLand(String(item.id), close);
+    deleteLand(String(item.id), closeLocalModal);
   };
-
+  
   const openPriceDetails = (requestId: number) => {
-    router.push(`/listings?modal=priceDetails&requestId=${requestId}`, {
-      scroll: false,
+    startTransition(() => {
+      setModalParams({ modal: "priceDetails", requestId });
     });
   };
 
@@ -198,8 +203,12 @@ export const ActionButtons = ({ item }: Props) => {
 
         {/* Price requests — lazy, only mounts for statusId === 1 */}
         {item.statusId === 1 && (
-          <PriceButton item={item} onOpenDetails={openPriceDetails} />
-        )}
+            <PriceButton
+              item={item}
+              onOpenDetails={openPriceDetails}
+              onOpenPriceChange={() => setOpenModal("price")}
+            />
+          )}
 
         {/* Delete */}
         <button

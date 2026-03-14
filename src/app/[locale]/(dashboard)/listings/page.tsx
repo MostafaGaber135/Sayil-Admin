@@ -1,9 +1,28 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Suspense } from "react";
+import {  ListingsPage } from "@/features/listings";
+import { ListingsPageSkeleton } from "@/features/listings/ui/components";
 import { getQueryClient } from "@/shared/lib/react-query/server";
-import { DEFAULT_FILTERS } from "@/features/listings/constants";
 import { prefetchPriceChangeRequestDetails, serverFetchAllListing } from "@/features/listings/api";
+import { DEFAULT_FILTERS } from "@/features/listings/constants";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
-import { ListingsPage } from "@/features/listings";
+export async function ListingsDataFetcher({ requestId }: { requestId: number | null }) {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["listings", DEFAULT_FILTERS],
+    queryFn: () => serverFetchAllListing(DEFAULT_FILTERS),
+  });
+
+  if (requestId) {
+    void prefetchPriceChangeRequestDetails(queryClient, requestId);
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ListingsPage initialRequestId={requestId} />
+    </HydrationBoundary>
+  );
+}
 
 export default async function Page({
   searchParams,
@@ -12,33 +31,10 @@ export default async function Page({
 }) {
   const { requestId: requestIdParam } = await searchParams;
   const requestId = requestIdParam ? Number(requestIdParam) : null;
-  const queryClient = getQueryClient();
-  //* (void) for ux 
-  // void Promise.all([
-  //   queryClient.prefetchQuery({
-  //     queryKey: ["listings", DEFAULT_FILTERS],
-  //     queryFn: () => serverFetchAllListing(DEFAULT_FILTERS),
-  //   }),
-  //   requestId
-  //     ? prefetchPriceChangeRequestDetails(queryClient, requestId)
-  //     : Promise.resolve(),
-  // ]);
-
-
-  //* (await) for SEO
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["listings", DEFAULT_FILTERS],
-      queryFn: () => serverFetchAllListing(DEFAULT_FILTERS),
-    }),
-    requestId
-      ? prefetchPriceChangeRequestDetails(queryClient, requestId)
-      : Promise.resolve(),
-  ]);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ListingsPage initialRequestId={requestId} />
-    </HydrationBoundary>
+    <Suspense fallback={<ListingsPageSkeleton />}>
+      <ListingsDataFetcher requestId={requestId} />
+    </Suspense>
   );
 }

@@ -3,12 +3,11 @@ import { ListingsRequest, ViewMode } from "@/features/listings";
 
 interface Props {
   filters: ListingsRequest;
+  searchTerm: string;          
+  onSearchTermChange: (value: string) => void; 
   viewMode: ViewMode;
   isPending: boolean;
-  onFilterChange: <K extends keyof ListingsRequest>(
-    key: K,
-    value: ListingsRequest[K],
-  ) => void;
+  onFilterChange: <K extends keyof ListingsRequest>(key: K, value: ListingsRequest[K]) => void;
   onSearch: () => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onViewChange: (mode: ViewMode) => void;
@@ -18,6 +17,8 @@ export const ListingsFilters = ({
   filters,
   viewMode,
   isPending,
+  searchTerm,           
+  onSearchTermChange, 
   onFilterChange,
   onSearch,
   onKeyDown,
@@ -43,8 +44,8 @@ export const ListingsFilters = ({
         <input
           type="text"
           placeholder="Search listings..."
-          value={filters.search ?? ""}
-          onChange={(e) => onFilterChange("search", e.target.value)}
+          value={searchTerm}
+          onChange={(e) => onSearchTermChange(e.target.value)}  
           onKeyDown={onKeyDown}
           className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/10 bg-gray-50/50"
         />
