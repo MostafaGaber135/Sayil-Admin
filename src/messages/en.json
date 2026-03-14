@@ -288,7 +288,7 @@
       "Arabic answer must be less than 500 characters":"Arabic answer must be less than 500 characters",
       "Enter question English":"Enter question English",
       "Enter question with Arabic":"Enter question with Arabic",
-      "Enter Answer with English":"Enter Answer with English",
+      "Enter answer with English":"Enter Answer with English",
       "Enter Answer with Arabic":"Enter Answer with Arabic"
     },
     "notification": {
@@ -296,7 +296,15 @@
       "Mark": "Mark all as read",
       "Marking": "Marking",
       "View all": "View all notifications",
-      "No notifications": "No notifications"
+      "No notifications": "No notifications",
+      "Loading":"Loading",
+      "Unread Notifications":"Unread Notifications",
+      "Deleting":"Deleting",
+      "Delete All":"Delete All",
+      "Search notifications":"Search notifications",
+      "Unauthorized":"Unauthorized",
+      "All notifications deleted":"All notifications deleted",
+      "Something went wrong":"Something went wrong"
     },
     "login": {
       "title": "Login",

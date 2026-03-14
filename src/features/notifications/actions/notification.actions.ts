@@ -3,8 +3,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/shared/lib/auth/nextauth.options";
 import { revalidatePath } from "next/cache";
-import axios from "axios";
-import { markAllNotificationsAsRead } from "../services/notifications.services";
+import axios, { AxiosError } from "axios";
+import { deleteAllNotifications, markAllNotificationsAsRead } from "../services/notifications.services";
 import { getTranslations } from "next-intl/server";
 import { api } from "@/shared/lib/axios/axios.instance";
 
@@ -58,6 +58,48 @@ export async function markAllNotificationsAsReadAction(_prevState: any) {
     };
   } catch (error) {
     console.log("SERVER ACTION ERROR:", error);
+
+    return {
+      success: false,
+      message: t("Something went wrong"),
+    };
+  }
+}
+
+//Delete All
+
+export async function deleteAllNotificationsAction() {
+ const t = await getTranslations("pages.notification");
+  try {
+
+    const session = await getServerSession(authOptions);
+
+    if (!session?.accessToken) {
+      return {
+        success: false,
+        message: t("Unauthorized"),
+      };
+    }
+
+    await deleteAllNotifications(session.accessToken);
+
+    revalidatePath("/notifications");
+
+    return {
+      success: true,
+      message: t("All notifications deleted"),
+    };
+
+  } catch (error: unknown) {
+
+    if (error instanceof AxiosError) {
+      return {
+        success: false,
+        message:
+          (error.response?.data as any)?.message ||
+          t("Something went wrong"),
+      };
+    }
 
     return {
       success: false,

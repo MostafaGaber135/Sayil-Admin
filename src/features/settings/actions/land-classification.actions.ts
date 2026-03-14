@@ -13,15 +13,18 @@ import { ActionState } from "../types";
 import { AxiosError } from "axios";
 import { classificationFormSchema } from "../validation/land-class.validation";
 
-//Post
+
+// ================= CREATE =================
 
 export async function createLandClassificationAction(
   _prevState: ActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<ActionState> {
+
   const t = await getTranslations("pages.roles.toasts");
 
   try {
+
     const session = await getServerSession(authOptions);
 
     if (!session?.accessToken) {
@@ -33,15 +36,23 @@ export async function createLandClassificationAction(
 
     const rawData = {
       code: String(formData.get("code") ?? ""),
-      name: String(formData.get("name") ?? ""),
-      nameAr: String(formData.get("nameAr") ?? ""),
       nameEn: String(formData.get("nameEn") ?? ""),
-      discountPercent: String(formData.get("discountPercent") ?? ""),
+      nameAr: String(formData.get("nameAr") ?? ""),
+      discountPercent: formData.get("discountPercent"),
     };
 
     const payload = classificationFormSchema(t).parse(rawData);
 
-    await createLandClassification(payload, session.accessToken);
+    await createLandClassification(
+      {
+        code: payload.code,
+        name: payload.nameEn,
+        nameAr: payload.nameAr,
+        nameEn: payload.nameEn,
+        discountPercent: payload.discountPercent,
+      },
+      session.accessToken
+    );
 
     revalidatePath("/settings");
 
@@ -49,14 +60,17 @@ export async function createLandClassificationAction(
       success: true,
       message: t("Added successfully"),
     };
+
   } catch (error: unknown) {
+
     if (error instanceof AxiosError) {
       console.error("SERVER ACTION AXIOS ERROR:", error.response?.data);
 
       return {
         success: false,
         message:
-          (error.response?.data as any)?.message || t("Something went wrong"),
+          (error.response?.data as any)?.message ||
+          t("Something went wrong"),
       };
     }
 
@@ -76,63 +90,114 @@ export async function createLandClassificationAction(
   }
 }
 
-//Put
+
+
+// ================= UPDATE =================
+
 export async function updateLandClassificationAction(
-  _prevState: any,
-  formData: FormData,
-) {
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+
+  const t = await getTranslations("pages.roles.toasts");
+
   try {
+
     const session = await getServerSession(authOptions);
+
+    if (!session?.accessToken) {
+      return {
+        success: false,
+        message: t("Unauthorized"),
+      };
+    }
 
     const id = Number(formData.get("id"));
 
-    const payload = {
-      code: String(formData.get("code")),
-      name: String(formData.get("nameEn")),
-      nameAr: String(formData.get("nameAr")),
-      nameEn: String(formData.get("nameEn")),
-      discountPercent: Number(formData.get("discountPercent")),
+    const rawData = {
+      code: String(formData.get("code") ?? ""),
+      nameEn: String(formData.get("nameEn") ?? ""),
+      nameAr: String(formData.get("nameAr") ?? ""),
+      discountPercent: formData.get("discountPercent"),
     };
 
-    await updateLandClassification(id, payload, session?.accessToken as string);
+    const payload = classificationFormSchema(t).parse(rawData);
+
+    await updateLandClassification(
+      id,
+      {
+        code: payload.code,
+        name: payload.nameEn,
+        nameAr: payload.nameAr,
+        nameEn: payload.nameEn,
+        discountPercent: payload.discountPercent,
+      },
+      session.accessToken
+    );
 
     revalidatePath("/settings");
 
     return {
       success: true,
-      message: "Updated successfully",
+      message: t("Updated successfully"),
     };
-  } catch (error: any) {
-    console.log("SERVER ACTION ERROR:", error?.response?.data);
+
+  } catch (error: unknown) {
+
+    if (error instanceof AxiosError) {
+      console.error("SERVER ACTION AXIOS ERROR:", error.response?.data);
+
+      return {
+        success: false,
+        message:
+          (error.response?.data as any)?.message ||
+          t("Something went wrong"),
+      };
+    }
 
     return {
       success: false,
-      message: error?.response?.data?.message || "Failed to update",
+      message: t("Something went wrong"),
     };
   }
 }
 
-//Delete
+
+
+// ================= DELETE =================
+
 export async function deleteLandClassificationAction(
-  _prevState: any,
-  formData: FormData,
-) {
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+
   const t = await getTranslations("pages.roles.toasts");
+
   try {
+
     const session = await getServerSession(authOptions);
+
+    if (!session?.accessToken) {
+      return {
+        success: false,
+        message: t("Unauthorized"),
+      };
+    }
 
     const id = Number(formData.get("id"));
 
-    await deleteLandClassification(id, session?.accessToken as string);
+    await deleteLandClassification(id, session.accessToken);
 
     revalidatePath("/settings");
 
     return {
       success: true,
-      message: "Deleted successfully",
+      message: t("Deleted successfully"),
     };
+
   } catch (error) {
-    console.log("SERVER ACTION ERROR:", error);
+
+    console.error("SERVER ACTION ERROR:", error);
 
     return {
       success: false,
