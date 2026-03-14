@@ -15,7 +15,7 @@ import {
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import LoadingState from "@/shared/ui/LoadingState";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -30,6 +30,8 @@ dayjs.extend(relativeTime);
 export default function NotificationDropdown() {
   const router = useRouter()
   const t = useTranslations();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const queryClient = useQueryClient();
 
   const { data: unreadCount = 0 } = useUnreadNotificationsCount();
@@ -130,14 +132,14 @@ export default function NotificationDropdown() {
         <Bell className="w-6 h-6" />
 
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+          <span className="absolute -top-1 -inset-e-1 bg-red-500 text-white text-xs rounded-full px-1.5">
             {unreadCount}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-3 w-[360px] bg-white rounded-xl shadow-xl border z-50">
+        <div dir={isRTL ? "rtl" : "ltr"} className={`absolute mt-3 w-[360px] bg-white rounded-xl shadow-xl border z-50 ${isRTL ? "left-0" : "right-0"}`}>
           {/* HEADER */}
           <div className="flex justify-between items-center p-4 border-b">
             <h3 className="font-semibold text-lg">
