@@ -8,7 +8,6 @@ interface Props {
   lookups?: ListingLookupsResponse;
 }
 
-// FIX: Removed register/errors props — now uses useFormContext.
 export const PropertyDetailsSection = ({ lookups }: Props) => {
   const { register, formState: { errors } } = useFormContext<ListingFormValues>();
 

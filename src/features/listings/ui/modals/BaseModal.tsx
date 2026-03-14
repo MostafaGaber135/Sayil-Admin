@@ -8,7 +8,6 @@ interface Props {
 }
 
 export const BaseModal = ({ isOpen, onClose, title, children }: Props) => {
-    // Close on Escape
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();
@@ -16,8 +15,6 @@ export const BaseModal = ({ isOpen, onClose, title, children }: Props) => {
         if (isOpen) document.addEventListener("keydown", handleKey);
         return () => document.removeEventListener("keydown", handleKey);
     }, [isOpen, onClose]);
-
-    // Prevent body scroll
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
@@ -37,8 +34,6 @@ export const BaseModal = ({ isOpen, onClose, title, children }: Props) => {
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 onClick={onClose}
             />
-
-            {/* Panel — FIX: max-h + flex-col so body can scroll independently */}
             <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl flex flex-col max-h-[90vh]">
                 {/* Header — always visible */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
@@ -55,8 +50,6 @@ export const BaseModal = ({ isOpen, onClose, title, children }: Props) => {
                         </svg>
                     </button>
                 </div>
-
-                {/* Body — FIX: scrollable when content overflows */}
                 <div className="px-6 py-5 overflow-y-auto flex-1">{children}</div>
             </div>
         </div>
