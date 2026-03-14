@@ -85,8 +85,12 @@ export default function CommissionByLocationChart({
     [labels, values]
   );
 
-  const options = useMemo<ChartOptions<"bar">>(
-    () => ({
+  const options = useMemo<ChartOptions<"bar">>(() => {
+    const maxValue = values.length ? Math.max(...values) : 100;
+    const yMax = maxValue <= 0 ? 100 : maxValue;
+    const stepSize = Math.max(1, Math.ceil(yMax / 4));
+
+    return {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -102,7 +106,9 @@ export default function CommissionByLocationChart({
           callbacks: {
             label: (ctx: TooltipItem<"bar">) => {
               const v = ctx.parsed.y ?? 0;
-              return `Commission: ${Math.round(v / 1000)}K`;
+              if (v >= 1_000_000) return `Commission: ${(v / 1_000_000).toFixed(1)}M`;
+              if (v >= 1_000) return `Commission: ${Math.round(v / 1_000)}K`;
+              return `Commission: ${v}`;
             },
           },
         },
@@ -110,19 +116,23 @@ export default function CommissionByLocationChart({
       scales: {
         y: {
           beginAtZero: true,
-          max: 1000000,
+          max: yMax,
           ticks: {
-            stepSize: 250000,
-            callback: (value) => `${Number(value) / 1000}K`,
+            stepSize,
+            callback: (value) => {
+              const n = Number(value);
+              if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+              if (n >= 1_000) return `${Math.round(n / 1_000)}K`;
+              return `${n}`;
+            },
           },
         },
         x: {
           grid: { display: false },
         },
       },
-    }),
-    [title]
-  );
+    };
+  }, [title, values]);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md h-[420px]">

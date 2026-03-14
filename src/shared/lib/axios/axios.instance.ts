@@ -2,28 +2,30 @@ import axios from "axios";
 import { getClientAccessToken } from "@/shared/lib/auth/client-session-token";
 
 function resolveApiBaseUrl(): string {
-   
-    const publicBase = process.env.NEXT_PUBLIC_API_BASE_URL;
-    if (publicBase) return publicBase;
 
-    if (typeof window !== "undefined") {
-        const runtimeBase = (window as unknown as { __API_BASE_URL__?: string }).__API_BASE_URL__;
-        if (runtimeBase) return runtimeBase;
-    }
+  if (typeof window !== "undefined") {
+    return "";
+  }
 
-    const serverBase = (process.env.API_BASE_URL as string | undefined) || "";
-    return serverBase;
+  const runtimeBase =
+    (globalThis as typeof globalThis & { __API_BASE_URL__?: string }).__API_BASE_URL__;
+  if (runtimeBase) return runtimeBase;
+
+  const serverBase =
+    (process.env.API_BASE_URL as string | undefined) ||
+    (process.env.NEXT_PUBLIC_API_BASE_URL as string | undefined) ||
+    "";
+  return serverBase;
 }
 
 export const api = axios.create({
-    baseURL: resolveApiBaseUrl(),
-    timeout: 20000
+  baseURL: resolveApiBaseUrl(),
+  timeout: 20000
 });
 
 api.interceptors.request.use((config) => {
   return (async () => {
 
-    // لو الكود يعمل في السيرفر
     if (typeof window === "undefined") {
       return config;
     }
@@ -40,8 +42,8 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-    (res) => res,
-    (error) => {
-        return Promise.reject(error);
-    }
+  (res) => res,
+  (error) => {
+    return Promise.reject(error);
+  }
 );

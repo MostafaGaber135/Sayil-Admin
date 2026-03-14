@@ -27,3 +27,7 @@ export const classificationFormSchema = (t: (key: string) => string) =>
       .min(1, t("Discount must be between 1 and 100"))
       .max(100, t("Discount must be between 1 and 100")),
   });
+
+export type LandClassificationPayload = z.infer<
+  ReturnType<typeof classificationFormSchema>
+>;
