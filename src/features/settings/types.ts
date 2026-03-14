@@ -21,3 +21,12 @@ export type UpdateCommunicate = {
   businessHours: string;
   timeZone: string;
 }
+export type ActionState = {
+  success: boolean;
+  message: string;
+};
+export type Props = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  editData?: any;
+};

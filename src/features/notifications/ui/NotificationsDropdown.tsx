@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useTransition, useActionState, useEffect } from "react";
+import {
+  useState,
+  useTransition,
+  useActionState,
+  useEffect,
+  useRef,
+} from "react";
 import { Bell, CheckCircle2, Info, Clock } from "lucide-react";
 import {
   useNotifications,
@@ -13,9 +19,10 @@ import { useTranslations } from "next-intl";
 import LoadingState from "@/shared/ui/LoadingState";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { markAllNotificationsAsReadAction, markNotificationAsReadAction } from "../actions/notification.actions";
-
-
+import {
+  markAllNotificationsAsReadAction,
+  markNotificationAsReadAction,
+} from "../actions/notification.actions";
 
 dayjs.extend(relativeTime);
 
@@ -27,6 +34,8 @@ export default function NotificationDropdown() {
   const { data: notifications = [], isLoading } = useNotifications();
 
   const [open, setOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [isPending, startTransition] = useTransition();
   const [isPendingAll, startTransitionAll] = useTransition();
@@ -42,6 +51,27 @@ export default function NotificationDropdown() {
     markAllNotificationsAsReadAction,
     initialState
   );
+
+  /* ================= CLOSE ON CLICK OUTSIDE ================= */
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  /* ================= ACTION RESPONSES ================= */
 
   useEffect(() => {
     if (state?.success) {
@@ -71,6 +101,8 @@ export default function NotificationDropdown() {
     }
   }, [stateAll]);
 
+  /* ================= ACTIONS ================= */
+
   const handleMarkAsRead = (id: number) => {
     const formData = new FormData();
     formData.set("id", String(id));
@@ -87,11 +119,11 @@ export default function NotificationDropdown() {
   };
 
   return (
-    <div className="relative">
+    <div ref={dropdownRef} className="relative">
       {/* Bell */}
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 rounded-lg hover:bg-gray-100"
+        className="relative p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
       >
         <Bell className="w-6 h-6" />
 

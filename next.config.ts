@@ -1,11 +1,11 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
   turbopack: {},
   images: {
-    
+
     deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 400],
     remotePatterns: [
@@ -14,6 +14,26 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
+  },
+  async rewrites() {
+    const apiBaseUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+
+    if (!apiBaseUrl) {
+      return [];
+    }
+
+    const normalizedApiBaseUrl = apiBaseUrl.replace(/\/$/, "");
+
+    return {
+      beforeFiles: [
+        {
+          source: "/api/admin/:path*",
+          destination: `${normalizedApiBaseUrl}/api/admin/:path*`,
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
 };
 

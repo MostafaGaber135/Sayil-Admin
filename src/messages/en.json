@@ -197,11 +197,10 @@
         "Failed to update commission": "Failed to update commission",
         "Minimum offer updated successfully": "Minimum offer updated successfully",
         "Failed to update minimum offer": "Failed to update minimum offer",
-        "Maximum offer updated successfully":"Maximum offer updated successfully",
-        "Failed to update maximum offer":"Failed to update maximum offer",
-        "All notifications marked as read":"All notifications marked as read",
-        "Notification marked as read":"Notification marked as read"
-        
+        "Maximum offer updated successfully": "Maximum offer updated successfully",
+        "Failed to update maximum offer": "Failed to update maximum offer",
+        "All notifications marked as read": "All notifications marked as read",
+        "Notification marked as read": "Notification marked as read"
       }
     },
     "settings": {
@@ -267,7 +266,30 @@
       "Email required": "Email address is required",
       "Business required": "Business hours are required",
       "Time zone required": "Time zone is required",
-      "English Name": "English Name"
+      "English Name": "English Name",
+      "Code": "Code must start with a capital English letter",
+      "English name must be at least 3 letters": "English name must be at least 3 letters",
+      "English name must be at most 8 letters": "English name must be at most 8 letters",
+      "English name must contain only English letters": "English name must contain only English letters",
+      "Arabic name must be at least 3 letters": "Arabic name must be at least 3 letters",
+      "Arabic name must be at most 8 letters": "Arabic name must be at most 8 letters",
+      "Arabic name must contain only Arabic letters": "Arabic name must contain only Arabic letters",
+      "Discount must be between 1 and 100": "Discount must be between 1 and 100",
+      "Enter a valid Saudi WhatsApp number":"Enter a valid Saudi WhatsApp number",
+      "Business hours must be numbers only":"Business hours must be numbers only",
+      "Time zone must be numbers only":"Time zone must be numbers only",
+      "English question must be at least 5 characters":"English question must be at least 5 characters",
+      "English question must be less than 100 characters":"English question must be less than 100 characters",
+      "Arabic question must be at least 5 characters":"Arabic question must be at least 5 characters",
+      "Arabic question must be less than 100 characters":"Arabic question must be less than 100 characters",
+      "English answer must be at least 10 characters":"English answer must be at least 10 characters",
+      "English answer must be less than 500 characters":"English answer must be less than 500 characters",
+      "Arabic answer must be at least 10 characters":"Arabic answer must be at least 10 characters",
+      "Arabic answer must be less than 500 characters":"Arabic answer must be less than 500 characters",
+      "Enter question English":"Enter question English",
+      "Enter question with Arabic":"Enter question with Arabic",
+      "Enter Answer with English":"Enter Answer with English",
+      "Enter Answer with Arabic":"Enter Answer with Arabic"
     },
     "notification": {
       "Notifications": "Notifications",
