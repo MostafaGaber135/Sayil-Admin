@@ -54,7 +54,7 @@ export async function updateProfileAction(
   } catch (error: any) {
     return {
       success: false,
-      message: error?.response?.data?.message || "Something went wrong",
+      message: error?.response?.data?.message,
     };
   }
 }

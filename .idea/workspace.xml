@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="edfcffbd-0ee4-4ab6-ade6-85ebb608267a" name="Changes" comment="feat(listings): setup feature structure&#10;feat(listings): implement listing view&#10;feat(listings): implement add listing form&#10;feat(listings): implement edit listing&#10;feat(listings): add validation schema&#10;feat(listings): integrate server actions">
+      <change afterPath="$PROJECT_DIR$/src/features/settings/ui/AddFaqModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/settings/ui/DeleteFaqModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/listings/[id]/edit/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/listings/[id]/edit/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/listings/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/listings/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/listings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/[locale]/(dashboard)/listings/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/ui/AdminLoginScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/ui/AdminLoginScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/ui/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/dashboard/hooks/dashboard.hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/dashboard/hooks/dashboard.hooks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/dashboard/ui/CommissionByLocationChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/dashboard/ui/CommissionByLocationChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/dashboard/ui/DashboardScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/dashboard/ui/DashboardScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/dashboard/ui/ListingsByLocationChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/dashboard/ui/ListingsByLocationChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/dashboard/ui/StatsCards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/dashboard/ui/StatsCards.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/dashboard/ui/StatusDistributionChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/dashboard/ui/StatusDistributionChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/api/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/api/actions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/api/listings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/api/listings.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/hooks/useActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/hooks/useActions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/hooks/useListings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/hooks/useListings.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/services/getAllListingService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/services/getAllListingService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/services/getListingLookupsService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/services/getListingLookupsService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/EditListingContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/EditListingContainer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/ListingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/ListingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/ListingViewPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/ListingViewPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/components/GridView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/components/GridView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/components/QuickActions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/components/QuickActions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/components/TableView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/components/TableView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/scroll/ClassificationChangeModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/scroll/ClassificationChangeModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/scroll/PriceChangeModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/scroll/PriceChangeModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/scroll/StatusChangeModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/scroll/StatusChangeModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/listings/ui/sections/Adminsection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/listings/ui/sections/Adminsection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/notifications/hooks/notifications.hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/notifications/hooks/notifications.hooks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/notifications/services/notifications.services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/notifications/services/notifications.services.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/notifications/ui/NotificationsDropdown.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/notifications/ui/NotificationsDropdown.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/roles-permissions/hooks/roles.hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/roles-permissions/hooks/roles.hooks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/roles-permissions/ui/RoleFormDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/roles-permissions/ui/RoleFormDialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/roles-permissions/ui/RolesPermissionsClient.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/roles-permissions/ui/RolesPermissionsClient.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/settings/hooks/settings.hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/settings/hooks/settings.hooks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/settings/services/settings.services.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/settings/services/settings.services.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/settings/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/settings/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/settings/ui/CommunicationsTab.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/settings/ui/CommunicationsTab.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/settings/ui/FaqManagementTab.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/settings/ui/FaqManagementTab.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/settings/ui/LandClassificationsTab.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/settings/ui/LandClassificationsTab.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/messages/ar.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/messages/ar.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/messages/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/messages/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shared/lib/auth/client-session-token.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/shared/lib/auth/client-session-token.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shared/lib/axios/axios.instance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/shared/lib/axios/axios.instance.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shared/providers/Providers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/shared/providers/Providers.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shared/ui/AppShell/AppShell.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/shared/ui/AppShell/AppShell.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shared/ui/AppShell/AppTopbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/shared/ui/AppShell/AppTopbar.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="31534" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;moeamd&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/MostafaGaber135/Sayil-Admin.git&quot;,
+    &quot;accountId&quot;: &quot;4591edf9-22b4-4191-b43d-b20d03f81ab9&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="39tO9h9E8GfXUQ8m1I56HrS4hGQ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.Next.js: debug client-side.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging feature/listings&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/Sayil-Admin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;F:\\Sayil-Admin\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\Sayil-Admin\src\shared\lib" />
+      <recent name="F:\Sayil-Admin\src\features\listings\hooks" />
+      <recent name="F:\Sayil-Admin\src\features\listings\ui" />
+      <recent name="F:\Sayil-Admin\src\features\listings\ui\sections" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.Next.js: debug client-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.30387.83" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="edfcffbd-0ee4-4ab6-ade6-85ebb608267a" name="Changes" comment="" />
+      <created>1771511751016</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1771511751016</updated>
+      <workItem from="1771630576411" duration="7801000" />
+      <workItem from="1771712102967" duration="190000" />
+      <workItem from="1771712319267" duration="12628000" />
+      <workItem from="1771789610157" duration="19130000" />
+      <workItem from="1771851881420" duration="10021000" />
+      <workItem from="1772029337369" duration="178000" />
+      <workItem from="1772049445686" duration="1382000" />
+      <workItem from="1772053209472" duration="17619000" />
+      <workItem from="1772238806225" duration="3143000" />
+      <workItem from="1772250455514" duration="2054000" />
+      <workItem from="1772460496581" duration="4743000" />
+      <workItem from="1772617549834" duration="78000" />
+    </task>
+    <task id="LOCAL؜-٠٠٠٠١" summary="feat(listings): setup feature structure&#10;feat(listings): implement listing view&#10;feat(listings): implement add listing form&#10;feat(listings): implement edit listing&#10;feat(listings): add validation schema&#10;feat(listings): integrate server actions">
+      <option name="closed" value="true" />
+      <created>1771855292503</created>
+      <option name="number" value="٠٠٠٠١" />
+      <option name="presentableId" value="LOCAL؜-٠٠٠٠١" />
+      <option name="project" value="LOCAL؜" />
+      <updated>1771855292503</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat(listings): setup feature structure&#10;feat(listings): implement listing view&#10;feat(listings): implement add listing form&#10;feat(listings): implement edit listing&#10;feat(listings): add validation schema&#10;feat(listings): integrate server actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(listings): setup feature structure&#10;feat(listings): implement listing view&#10;feat(listings): implement add listing form&#10;feat(listings): implement edit listing&#10;feat(listings): add validation schema&#10;feat(listings): integrate server actions" />
+  </component>
+</project>

@@ -296,7 +296,15 @@
       "Mark": "ضع علامة على الكل كقراءة",
       "Marking": "وضع العلامات",
       "View all": "عرض جميع الإشعارات",
-      "No notifications": "لا توجد اشعارات"
+      "No notifications": "لا توجد اشعارات",
+      "Loading":"جاري التحميل",
+      "Unread Notifications":"الاشعارات الغير مقروءة",
+      "Deleting":"جاري المسح",
+      "Delete All":"مسح الكل",
+      "Search notifications":"البحث في الاشعارات",
+      "Unauthorized":"غير مصرح به",
+      "All notifications deleted":"كل الاشعارات تم مسحها",
+      "Something went wrong":"حدث خطأ ما"
     },
     "login": {
       "title": "تسجيل الدخول",

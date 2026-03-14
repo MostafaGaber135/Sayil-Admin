@@ -47,7 +47,7 @@ export default function AddClassificationModal({
     code?: string;
     nameEn?: string;
     nameAr?: string;
-    discount?: string;
+    discountPercent?: string;
   }>({});
 
   const [isPending, startTransition] = useTransition();
@@ -114,7 +114,7 @@ export default function AddClassificationModal({
       code,
       nameEn: finalNameEn,
       nameAr: finalNameAr,
-      discount,
+      discountPercent: discount,
     });
 
     if (!validation.success) {
@@ -136,8 +136,7 @@ export default function AddClassificationModal({
     formData.set("code", data.code);
     formData.set("nameAr", data.nameAr);
     formData.set("nameEn", data.nameEn);
-    formData.set("name", data.nameEn);
-    formData.set("discountPercent", String(data.discount));
+    formData.set("discountPercent", String(data.discountPercent));
 
     if (isEditMode) {
       formData.set("id", editData.id);
@@ -238,8 +237,8 @@ export default function AddClassificationModal({
               label={t("Discount")}
               placeholder={t("Enter discount percentage")}
             />
-            {errors.discount && (
-              <p className="text-red-500 text-sm mt-1">{errors.discount}</p>
+            {errors.discountPercent && (
+              <p className="text-red-500 text-sm mt-1">{errors.discountPercent}</p>
             )}
           </div>
 

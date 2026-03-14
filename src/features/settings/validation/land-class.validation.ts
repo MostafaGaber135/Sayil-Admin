@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const classificationFormSchema = (t: any) =>
+export const classificationFormSchema = (t: (key: string) => string) =>
   z.object({
     code: z.string().regex(/^[A-Z]$/, t("Code")),
 
@@ -22,7 +22,7 @@ export const classificationFormSchema = (t: any) =>
         t("Arabic name must contain only Arabic letters")
       ),
 
-    discount: z.coerce
+    discountPercent: z.coerce
       .number()
       .min(1, t("Discount must be between 1 and 100"))
       .max(100, t("Discount must be between 1 and 100")),
