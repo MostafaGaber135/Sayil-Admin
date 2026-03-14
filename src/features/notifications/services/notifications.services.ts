@@ -33,3 +33,12 @@ export const markAllNotificationsAsRead = (token: string) => {
     }
   );
 };
+
+//Delete All
+export const deleteAllNotifications = (token: string) => {
+  return api.delete("/api/admin/notifications/delete-all", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

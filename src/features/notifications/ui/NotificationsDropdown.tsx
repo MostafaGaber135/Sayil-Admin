@@ -23,10 +23,12 @@ import {
   markAllNotificationsAsReadAction,
   markNotificationAsReadAction,
 } from "../actions/notification.actions";
+import { useRouter } from "next/navigation";
 
 dayjs.extend(relativeTime);
 
 export default function NotificationDropdown() {
+  const router = useRouter()
   const t = useTranslations();
   const queryClient = useQueryClient();
 
@@ -143,9 +145,10 @@ export default function NotificationDropdown() {
             </h3>
 
             <button
+
               disabled={isPendingAll}
               onClick={handleMarkAll}
-              className="text-blue-600 text-sm hover:underline"
+              className="text-blue-600 text-sm hover:underline cursor-pointer"
             >
               {isPendingAll
                 ? t("pages.notification.Marking")
@@ -198,7 +201,7 @@ export default function NotificationDropdown() {
           </div>
 
           <div className="text-center p-3 border-t">
-            <button className="text-blue-600 text-sm hover:underline">
+            <button onClick={()=>{router.push("/notifications")}} className="text-blue-600 text-sm hover:underline cursor-pointer">
               {t("pages.notification.View all")}
             </button>
           </div>
