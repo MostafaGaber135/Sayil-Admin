@@ -38,13 +38,9 @@ serverApi.interceptors.response.use(
             error.response?.status === 502;
 
         if (!isRetryable) return Promise.reject(error);
-
         config._retryCount = config._retryCount ?? 0;
-
         if (config._retryCount >= MAX_RETRIES) return Promise.reject(error);
-
         config._retryCount += 1;
-
         const delay = 500 * config._retryCount;
         await new Promise((resolve) => setTimeout(resolve, delay));
 

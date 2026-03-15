@@ -36,7 +36,7 @@ export const QuickActions = ({
       label: "Change Status",
       description: "Update property status",
       icon: <StatusIcon />,
-      onClick: onStatusChange,   // FIX: wired up
+      onClick: onStatusChange,   
     },
     {
       label: "Change Classification",
