@@ -2,6 +2,8 @@ import { mapApiUserToManaged, segmentToUserType } from "@/features/users/Users.u
 import { getUsersPaginated } from "@/features/users/actions";
 import { usersScreenLabels } from "@/features/users/data/users.constants";
 import UsersScreen from "@/features/users/ui/UsersScreen";
+import { getQueryClient } from "@/shared/lib/react-query/server";
+import { UserType } from "..";
 
 const PAGE_SIZE = 5;
 

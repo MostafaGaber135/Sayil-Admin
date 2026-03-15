@@ -3,6 +3,8 @@ import { getQueryClient } from "@/shared/lib/react-query/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getListingLookupsService } from "@/features/listings/services";
 import { AddListingContainer } from "@/features/listings/ui/AddListingContainer";
+import { UserType } from "@/features/users";
+import { getUsersPaginated } from "@/features/users/actions";
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 
@@ -29,10 +31,20 @@ const AddListingSkeleton = () => (
 async function AddListingFetcher() {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["listings-lookups"],
-    queryFn: getListingLookupsService,
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["listings-lookups"],
+      queryFn: getListingLookupsService,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["users", UserType.Internal],
+      queryFn: () => getUsersPaginated({ userType: UserType.Internal, pageSize: 100 }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["users", UserType.External],
+      queryFn: () => getUsersPaginated({ userType: UserType.External, pageSize: 100 }),
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -40,7 +52,6 @@ async function AddListingFetcher() {
     </HydrationBoundary>
   );
 }
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function AddListingPage() {

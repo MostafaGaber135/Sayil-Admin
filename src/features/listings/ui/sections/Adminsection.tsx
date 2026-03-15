@@ -3,16 +3,23 @@ import { useFormContext } from "react-hook-form";
 import { ListingFormValues } from "../../validation";
 import { ListingLookupsResponse } from "../..";
 import { useLandClassifications } from "@/features/settings/hooks/settings.hooks";
+import { useListingAgents, useListingOwners } from "@/features/users/hooks/use-listing-users";
+
 
 interface Props {
   lookups?: ListingLookupsResponse;
 }
 
-// FIX: Removed register/errors/watch props — now uses useFormContext.
 export const AdminSection = ({ lookups }: Props) => {
   const { register, watch, formState: { errors } } = useFormContext<ListingFormValues>();
   const statusId = watch("statusId");
+
   const { data: classifications } = useLandClassifications();
+  const { data: ownersData } = useListingOwners();
+  const { data: agentsData } = useListingAgents();
+
+  const owners = ownersData?.items ?? [];
+  const agents = agentsData?.items ?? [];
 
   const statusConfig: Record<number, { label: string; color: string; bg: string }> = {
     1: { label: "Property is pending approval", color: "text-yellow-700", bg: "bg-yellow-50 border-yellow-200" },
@@ -26,28 +33,36 @@ export const AdminSection = ({ lookups }: Props) => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Owner */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Owner</label>
           <select {...register("userId")} className={selectCls(!!errors.userId)}>
             <option value="">No Owner Selected</option>
-            <option value="1">Khalid Al-Otaibi (khalid.otaibi@gmail.com)</option>
-            <option value="2">Fatima Al-Dosari (fatima.dosari@gmail.com)</option>
-            <option value="3">Mohammed Al-Harbi (mohammed.harbi@gmail.com)</option>
+            {owners.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.fullName} ({u.email})
+              </option>
+            ))}
           </select>
           <FieldError message={errors.userId?.message} />
         </div>
 
+        {/* Agent */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Assigned Agent</label>
           <select {...register("agentId")} className={selectCls(!!errors.agentId)}>
             <option value="">No Agent Selected</option>
-            <option value="1">Ahmed Al-Mansouri (ahmed.mansouri@sayil.com)</option>
-            <option value="2">Sara Al-Mahmoud (sara.mahmoud@sayil.com)</option>
-            <option value="5">Omar Al-Zahrani (omar.zahrani@sayil.com)</option>
+            {agents.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.fullName} ({a.email})
+              </option>
+            ))}
           </select>
           <FieldError message={errors.agentId?.message} />
         </div>
 
+        {/* Classification */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Land Classification</label>
           <select {...register("classificationId")} className={selectCls(!!errors.classificationId)}>
@@ -59,6 +74,7 @@ export const AdminSection = ({ lookups }: Props) => {
           <FieldError message={errors.classificationId?.message} />
         </div>
 
+        {/* Status */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Status</label>
           <select {...register("statusId")} className={selectCls(!!errors.statusId)}>

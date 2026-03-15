@@ -7,6 +7,7 @@ import {
   BasicInfoSection,
   FeaturesSection,
   LocationSection,
+  MediaSection,
   PropertyDetailsSection,
 } from "@/features/listings";
 import { useEffect } from "react";
@@ -80,6 +81,9 @@ export const ListingForm = ({
 
             <Section title="Property Features">
               <FeaturesSection />
+            </Section>
+            <Section title="Property MediaSection">
+              <MediaSection  />
             </Section>
 
             <Section title="Location Details">

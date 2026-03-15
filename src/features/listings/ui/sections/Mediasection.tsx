@@ -1,5 +1,5 @@
 'use client';
-import { UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormSetValue, UseFormWatch, useFormContext } from "react-hook-form";
 import { useState } from "react";
 import {useUploadImages} from "@/features/listings";
 import {ListingFormValues} from "@/features/listings/validation";
@@ -10,11 +10,11 @@ interface Props {
     watch: UseFormWatch<ListingFormValues>;
 }
 
-export const MediaSection = ({ setValue, watch }: Props) => {
+export const MediaSection = () => {
+    const { setValue, watch } = useFormContext<ListingFormValues>();
     const imageUrls = watch("imageUrls") ?? [];
     const videoUrl  = watch("explanatoryVideoUrl");
     const [isDragging, setIsDragging] = useState(false);
-
     const { mutate: uploadImages, isPending: isUploading } = useUploadImages();
 
     const handleUpload = (files: File[]) => {
