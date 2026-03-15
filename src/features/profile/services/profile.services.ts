@@ -11,7 +11,7 @@ Authorization: `Bearer ${token}`,
 export const changePassword = (data: any, token: string) => {
 return api.post("/api/admin/account/change-password", data, {
 headers: {
-Authorization:` Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
 },
 });
 };
