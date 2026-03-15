@@ -9,11 +9,7 @@ import {
 import { DEFAULT_FILTERS } from "@/features/listings/constants";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
-async function ListingsDataFetcher({
-  requestId,
-}: {
-  requestId: number | null;
-}) {
+async function ListingsDataFetcher({ requestId }: { requestId: number | null }) {
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({

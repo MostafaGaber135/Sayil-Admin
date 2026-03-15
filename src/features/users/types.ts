@@ -108,7 +108,7 @@ export enum UserRoleId {
 
 // ─── Role Mapping Helpers ─────────────────────────────────────────────────────
 
-export const                             ROLE_NAME_TO_ID: Record<string, number> = {
+export const ROLE_NAME_TO_ID: Record<string, number> = {
   User: UserRoleId.User,
   Agent: UserRoleId.Agent,
   Administrator: UserRoleId.Administrator,
