@@ -6,7 +6,7 @@ import { prefetchPriceChangeRequestDetails, serverFetchAllListing } from "@/feat
 import { DEFAULT_FILTERS } from "@/features/listings/constants";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
-export async function ListingsDataFetcher({ requestId }: { requestId: number | null }) {
+async function ListingsDataFetcher({ requestId }: { requestId: number | null }) {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["listings", DEFAULT_FILTERS],
