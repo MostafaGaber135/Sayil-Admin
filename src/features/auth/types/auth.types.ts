@@ -47,4 +47,5 @@ export type AuthState = {
   refreshToken: string | null;
   isFirstTimeLogin: boolean;
   user: AdminUser | null;
+
 };

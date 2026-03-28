@@ -23,4 +23,5 @@ export const updateProfile = (data: { fullName: string; phoneNumber: string }, t
         Authorization: `Bearer ${token}`,
       },
     });
+
   };
