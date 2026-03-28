@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -7,7 +8,6 @@ import {
   GridSkeleton,
   GridView,
   ListingsFilters,
-  TableSkeleton,
   TableView,
 } from "@/features/listings/ui/components";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -17,6 +17,7 @@ import type { PriceChangeRequestDetails } from "..";
 import { priceChangeKeys } from "../api";
 import { Pagination } from "./components/Pagination";
 import { startTransition } from "react";
+import { TableSkeleton } from "@/shared/components/ui/TableSkeleton";
 type Props = {
   initialRequestId: number | null;
 };
@@ -177,4 +178,5 @@ const EmptyState = () => (
       Try adjusting your filters or search term
     </p>
   </div>
+
 );

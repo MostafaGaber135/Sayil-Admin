@@ -5,26 +5,8 @@ import { getListingLookupsService } from "@/features/listings/services";
 import { AddListingContainer } from "@/features/listings/ui/AddListingContainer";
 import { UserType } from "@/features/users";
 import { getUsersPaginated } from "@/features/users/actions";
+import { FormSkeleton } from "@/shared/ui/FormSkeleton";
 
-// ── Skeleton ──────────────────────────────────────────────────────────────────
-
-const AddListingSkeleton = () => (
-  <div className="p-6 space-y-6 animate-pulse">
-    <div className="h-7 w-36 bg-gray-200 rounded-lg" />
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 space-y-5">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="space-y-2">
-          <div className="h-3 w-28 bg-gray-200 rounded" />
-          <div className="h-10 w-full bg-gray-100 rounded-xl" />
-        </div>
-      ))}
-      <div className="flex gap-3 pt-2">
-        <div className="h-10 w-28 bg-gray-200 rounded-xl" />
-        <div className="h-10 w-28 bg-gray-100 rounded-xl" />
-      </div>
-    </div>
-  </div>
-);
 
 // ── Data Fetcher ──────────────────────────────────────────────────────────────
 
@@ -56,7 +38,7 @@ async function AddListingFetcher() {
 
 export default async function AddListingPage() {
   return (
-    <Suspense fallback={<AddListingSkeleton />}>
+    <Suspense fallback={<FormSkeleton rows={6} />}>
       <AddListingFetcher />
     </Suspense>
   );

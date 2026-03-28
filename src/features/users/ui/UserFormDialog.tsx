@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { UserPlus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -8,13 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
-import { UserPlus } from "lucide-react";
+
 import type { ManagedUser, UserFormMode, UserSegment, UsersScreenLabels } from "../types";
-import { AddExternalFormValues, AddInternalFormValues, EditExternalFormValues, EditInternalFormValues } from "../validation/user.validation";
-import { AddExternalForm, EditExternalForm, buildEditExternalDefaults } from "./Externaluserform";
-import { AddInternalForm, EditInternalForm } from "./Internaluserform";
-
-
+import { 
+  addInternalSchema, editInternalSchema, 
+  addExternalSchema, editExternalSchema 
+} from "../validation/user.validation";
+import { UnifiedUserForm } from "./UnifiedUserForm"; 
 
 const FORM_ID = "user-form";
 
@@ -27,92 +28,57 @@ export type UserFormDialogProps = {
   isPending: boolean;
   actionError: string | null;
   onOpenChange: (open: boolean) => void;
-  onAddInternal: (values: AddInternalFormValues) => void;
-  onEditInternal: (values: EditInternalFormValues) => void;
-  onAddExternal: (values: AddExternalFormValues) => void;
-  onEditExternal: (values: EditExternalFormValues) => void;
+  onAddInternal: (values: any) => void;
+  onEditInternal: (values: any) => void;
+  onAddExternal: (values: any) => void;
+  onEditExternal: (values: any) => void;
 };
 
 export default function UserFormDialog({
-  open,
-  mode,
-  segment,
-  selectedUser,
-  labels,
-  isPending,
-  actionError,
-  onOpenChange,
-  onAddInternal,
-  onEditInternal,
-  onAddExternal,
-  onEditExternal,
+  open, mode, segment, selectedUser, labels, isPending, actionError,
+  onOpenChange, onAddInternal, onEditInternal, onAddExternal, onEditExternal,
 }: UserFormDialogProps) {
-  const dialogTitle = useMemo(
-    () => (mode === "add" ? labels.form.addTitle : labels.form.editTitle),
-    [labels.form.addTitle, labels.form.editTitle, mode]
-  );
+  
+  const isEdit = mode === "edit";
 
-  // Build edit defaults from selectedUser
-  const editInternalDefaults = useMemo<EditInternalFormValues>(() => ({
-    fullName: selectedUser?.name ?? "",
-    email: selectedUser?.email ?? "",
-    phoneNumber: selectedUser?.phone ?? "",
-    nationalId: selectedUser?.nationalId ?? "",
-    role: selectedUser?.role ?? "Agent",
-    department: selectedUser?.department ?? "",
-    resetPassword: false,
-    password: "",
-  }), [selectedUser]);
+  const schema = useMemo(() => {
+    if (segment === "internal") return isEdit ? editInternalSchema : addInternalSchema;
+    return isEdit ? editExternalSchema : addExternalSchema;
+  }, [segment, isEdit]);
 
-  const editExternalDefaults = useMemo(
-    () => selectedUser ? buildEditExternalDefaults(selectedUser) : undefined,
-    [selectedUser]
-  );
-
-  function renderForm() {
+  const handleSubmit = (values: any) => {
     if (segment === "internal") {
-      if (mode === "add") {
-        return (
-          <AddInternalForm
-            labels={labels}
-            onSubmit={onAddInternal}
-            isPending={isPending}
-            formId={FORM_ID}
-          />
-        );
-      }
-      return (
-        <EditInternalForm
-          labels={labels}
-          defaultValues={editInternalDefaults}
-          onSubmit={onEditInternal}
-          isPending={isPending}
-          formId={FORM_ID}
-        />
-      );
+      isEdit ? onEditInternal(values) : onAddInternal(values);
+    } else {
+      isEdit ? onEditExternal(values) : onAddExternal(values);
     }
+  };
 
-    // external
-    if (mode === "add") {
-      return (
-        <AddExternalForm
-          labels={labels}
-          onSubmit={onAddExternal}
-          isPending={isPending}
-          formId={FORM_ID}
-        />
-      );
+  const formDefaults = useMemo(() => {
+    if (!isEdit || !selectedUser) return undefined;
+    const baseDefaults = {
+      fullName: selectedUser.name ?? "",
+      email: selectedUser.email ?? "",
+      phoneNumber: selectedUser.phone ?? "",
+      nationalId: selectedUser.nationalId ?? "",
+      role: selectedUser.role,
+    };
+
+    if (segment === "internal") {
+      return {
+        ...baseDefaults,
+        department: selectedUser.department ?? "",
+        resetPassword: false,
+        password: "",
+      };
     }
-    return editExternalDefaults ? (
-      <EditExternalForm
-        labels={labels}
-        defaultValues={editExternalDefaults}
-        onSubmit={onEditExternal}
-        isPending={isPending}
-        formId={FORM_ID}
-      />
-    ) : null;
-  }
+    return {
+      ...baseDefaults,
+      location: selectedUser.location ?? "",
+      dateOfBirth: selectedUser.dateOfBirth ? selectedUser.dateOfBirth.split("T")[0] : "",
+      genderId: String(selectedUser.genderId ?? "1"),
+    };
+  }, [selectedUser, segment, isEdit]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -125,7 +91,7 @@ export default function UserFormDialog({
             <UserPlus className="size-5" />
           </div>
           <DialogTitle className="text-[20px] font-semibold text-[#2A3558]">
-            {dialogTitle}
+            {isEdit ? labels.form.editTitle : labels.form.addTitle}
           </DialogTitle>
         </DialogHeader>
 
@@ -140,7 +106,15 @@ export default function UserFormDialog({
             </div>
           )}
 
-          {renderForm()}
+          <UnifiedUserForm
+            type={segment}
+            labels={labels}
+            onSubmit={handleSubmit}
+            formId={FORM_ID}
+            defaultValues={formDefaults}
+            schema={schema}
+            isPending={isPending} 
+          />
 
           <div className="mt-6 border-t border-[#E4E7EC] pt-5">
             <div className="flex justify-end gap-3">
@@ -149,17 +123,16 @@ export default function UserFormDialog({
                 variant="secondary"
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
-                className="h-11 cursor-pointer rounded-[12px] bg-[#F2F4F7] px-5 text-[12px] font-medium text-[#344054] hover:bg-[#EAECEF]"
+                className="h-11 rounded-[12px] bg-[#F2F4F7] px-5 text-[12px] font-medium text-[#344054] hover:bg-[#EAECEF]"
               >
                 {labels.form.cancel}
               </Button>
 
-              {/* Submits the form via formId — no onClick needed */}
               <Button
                 type="submit"
-                form={FORM_ID}
+                form={FORM_ID} 
                 disabled={isPending}
-                className="h-11 min-w-[90px] cursor-pointer rounded-[12px] bg-[#3C71FF] px-5 text-[12px] font-medium text-white hover:bg-[#3364E6] disabled:opacity-60"
+                className="h-11 min-w-[90px] rounded-[12px] bg-[#3C71FF] px-5 text-[12px] font-medium text-white hover:bg-[#3364E6] disabled:opacity-60"
               >
                 {isPending ? (
                   <span className="flex items-center gap-2">

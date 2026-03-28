@@ -1,7 +1,17 @@
 "use client";
+
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ListingFormValues } from "@/features/listings/validation";
+
+const PLACEHOLDER_FEATURES = [
+  "Near main road",
+  "Utilities ready",
+  "Corner plot",
+  "Flat terrain",
+  "Paved street",
+  "Near mosque",
+];
 
 export const FeaturesSection = () => {
   const { watch, setValue } = useFormContext<ListingFormValues>();
@@ -22,7 +32,6 @@ export const FeaturesSection = () => {
 
   return (
     <div className="space-y-4">
-      {/* Quick-add chips */}
       <div>
         <p className="text-xs text-gray-500 mb-2">Quick add:</p>
         <div className="flex flex-wrap gap-2">
@@ -40,7 +49,6 @@ export const FeaturesSection = () => {
         </div>
       </div>
 
-      {/* Added features list */}
       {features.length > 0 ? (
         <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
           {features.map((feature, index) => (
@@ -111,12 +119,3 @@ const CustomFeatureInput = ({ onAdd }: { onAdd: (val: string) => void }) => {
     </div>
   );
 };
-
-const PLACEHOLDER_FEATURES = [
-  "Near main road",
-  "Utilities ready",
-  "Corner plot",
-  "Flat terrain",
-  "Paved street",
-  "Near mosque",
-];

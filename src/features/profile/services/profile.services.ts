@@ -1,3 +1,4 @@
+
 import { api } from "@/shared/lib/axios/axios.instance";
 
 export const getProfile = (token: string) => {
@@ -22,4 +23,5 @@ export const updateProfile = (data: { fullName: string; phoneNumber: string }, t
         Authorization: `Bearer ${token}`,
       },
     });
+
   };
