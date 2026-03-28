@@ -1,17 +1,18 @@
 "use client";
 import { useFormContext } from "react-hook-form";
+import { User, UserCheck, Map, Activity } from "lucide-react";
 import { ListingFormValues } from "../../validation";
 import { ListingLookupsResponse } from "../..";
 import { useLandClassifications } from "@/features/settings/hooks/settings.hooks";
 import { useListingAgents, useListingOwners } from "@/features/users/hooks/use-listing-users";
-
+import { ControlledSelect } from "@/shared/components/ui/ControlledInput";
 
 interface Props {
   lookups?: ListingLookupsResponse;
 }
 
 export const AdminSection = ({ lookups }: Props) => {
-  const { register, watch, formState: { errors } } = useFormContext<ListingFormValues>();
+  const { control, watch } = useFormContext<ListingFormValues>();
   const statusId = watch("statusId");
 
   const { data: classifications } = useLandClassifications();
@@ -23,69 +24,61 @@ export const AdminSection = ({ lookups }: Props) => {
 
   const statusConfig: Record<number, { label: string; color: string; bg: string }> = {
     1: { label: "Property is pending approval", color: "text-yellow-700", bg: "bg-yellow-50 border-yellow-200" },
-    2: { label: "Property has been rejected",   color: "text-red-700",    bg: "bg-red-50 border-red-200"       },
-    3: { label: "Property is active and visible", color: "text-green-700", bg: "bg-green-50 border-green-200"  },
-    4: { label: "Property has been sold",        color: "text-gray-700",   bg: "bg-gray-50 border-gray-200"    },
+    2: { label: "Property has been rejected", color: "text-red-700", bg: "bg-red-50 border-red-200" },
+    3: { label: "Property is active and visible", color: "text-green-700", bg: "bg-green-50 border-green-200" },
+    4: { label: "Property has been sold", color: "text-gray-700", bg: "bg-gray-50 border-gray-200" },
   };
 
-  const currentStatus = statusConfig[statusId];
+  const currentStatus = statusConfig[Number(statusId)];
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ControlledSelect
+          control={control}
+          name="userId"
+          label="Owner"
+          icon={User}
+          options={owners.map((u) => ({
+            label: `${u.fullName} (${u.email})`,
+            value: String(u.id),
+          }))}
+        />
 
-        {/* Owner */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Owner</label>
-          <select {...register("userId")} className={selectCls(!!errors.userId)}>
-            <option value="">No Owner Selected</option>
-            {owners.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.fullName} ({u.email})
-              </option>
-            ))}
-          </select>
-          <FieldError message={errors.userId?.message} />
-        </div>
+        <ControlledSelect
+          control={control}
+          name="agentId"
+          label="Assigned Agent"
+          icon={UserCheck}
+          options={agents.map((a) => ({
+            label: `${a.fullName} (${a.email})`,
+            value: String(a.id),
+          }))}
+        />
 
-        {/* Agent */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Assigned Agent</label>
-          <select {...register("agentId")} className={selectCls(!!errors.agentId)}>
-            <option value="">No Agent Selected</option>
-            {agents.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.fullName} ({a.email})
-              </option>
-            ))}
-          </select>
-          <FieldError message={errors.agentId?.message} />
-        </div>
+        <ControlledSelect
+          control={control}
+          name="classificationId"
+          label="Land Classification"
+          icon={Map}
+          options={(classifications ?? []).map((c: any) => ({
+            label: c.name,
+            value: String(c.id),
+          }))}
+        />
 
-        {/* Classification */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Land Classification</label>
-          <select {...register("classificationId")} className={selectCls(!!errors.classificationId)}>
-            <option value="">Select Classification</option>
-            {classifications?.map((c: any) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-          <FieldError message={errors.classificationId?.message} />
-        </div>
-
-        {/* Status */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Status</label>
-          <select {...register("statusId")} className={selectCls(!!errors.statusId)}>
-            <option value="">Select Status</option>
-            <option value="1">Pending</option>
-            <option value="2">Rejected</option>
-            <option value="3">Active</option>
-            <option value="4">Sold</option>
-          </select>
-          <FieldError message={errors.statusId?.message} />
-        </div>
+        <ControlledSelect
+          control={control}
+          name="statusId"
+          label="Status"
+          icon={Activity}
+          options={[
+            { label: "Pending", value: "1" },
+            { label: "Rejected", value: "2" },
+            { label: "Active", value: "3" },
+            { label: "Sold", value: "4" },
+          ]}
+        />
       </div>
 
       {currentStatus && (
@@ -99,11 +92,3 @@ export const AdminSection = ({ lookups }: Props) => {
     </div>
   );
 };
-
-const selectCls = (hasError: boolean) =>
-  `w-full bg-gray-50/50 border ${hasError ? "border-red-400" : "border-gray-200"} 
-   text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/20 
-   focus:border-blue-500 block p-3 outline-none transition-all`;
-
-const FieldError = ({ message }: { message?: string }) =>
-  message ? <p className="text-red-500 text-xs">{message}</p> : null;

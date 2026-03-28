@@ -54,8 +54,6 @@ export function usePriceChangeRequest() {
 export function useCancelPriceRequest() {
   const { isPending, error, execute } = useAction();
 
-  // cancelPriceRequestAction بتاخد number مش object
-  // useAction بيتوقع T — هنا T = number
   const cancel = (requestId: number, onSuccess?: () => void) =>
     execute(cancelPriceRequestAction, requestId, onSuccess);
 

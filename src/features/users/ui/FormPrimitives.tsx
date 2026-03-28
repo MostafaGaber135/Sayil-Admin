@@ -4,13 +4,13 @@ import type { ReactNode } from "react";
 import type { FieldError } from "react-hook-form";
 import { Input } from "@/shared/components/ui/input";
 import { cn } from "@/shared/lib/utils";
-import type { LucideIcon } from "lucide-react";
+import { LucideIcon, Eye, EyeOff } from "lucide-react";
 
 // ─── LabeledField ─────────────────────────────────────────────────────────────
 
 type LabeledFieldProps = {
   label: string;
-  icon: LucideIcon;
+  icon?: LucideIcon; 
   error?: FieldError;
   children: ReactNode;
 };
@@ -19,7 +19,8 @@ export function LabeledField({ label, icon: Icon, error, children }: LabeledFiel
   return (
     <div className="space-y-1.5">
       <label className="flex items-center gap-2 text-[13px] font-medium text-[#3A4258]">
-        <Icon className="size-4 text-[#3A4258]" />
+
+        {Icon && <Icon className="size-4 text-[#3A4258]" />}
         {label}
       </label>
       {children}
@@ -66,7 +67,7 @@ export function FormInput({
         )}
       />
       {suffix && (
-        <div className="absolute inset-e-4 top-1/2 -translate-y-1/2">{suffix}</div>
+        <div className="absolute inset-inline-end-4 top-1/2 -translate-y-1/2">{suffix}</div>
       )}
     </div>
   );
@@ -77,7 +78,7 @@ export function FormInput({
 type FormSelectProps = {
   value: string;
   onChange: (value: string) => void;
-  options: string[];
+  options: { label: string; value: string }[]
   hasError?: boolean;
 };
 
@@ -93,15 +94,15 @@ export function FormSelect({ value, onChange, options, hasError }: FormSelectPro
     >
       <option value="" disabled>Select...</option>
       {options.map((opt) => (
-        <option key={opt} value={opt}>{opt}</option>
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
       ))}
     </select>
   );
 }
 
-// ─── PasswordVisibilityButton ─────────────────────────────────────────────────
-
-import { Eye, EyeOff } from "lucide-react";
+// ─── PasswordToggle ─────────────────────────────────────────────────
 
 export function PasswordToggle({
   visible,
@@ -114,7 +115,7 @@ export function PasswordToggle({
     <button
       type="button"
       onClick={onClick}
-      className="cursor-pointer text-[#98A2B3] transition-colors hover:text-[#667085]"
+      className="cursor-pointer text-[#98A2B3] transition-colors hover:text-[#667085] flex items-center justify-center"
       aria-label={visible ? "Hide password" : "Show password"}
     >
       {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

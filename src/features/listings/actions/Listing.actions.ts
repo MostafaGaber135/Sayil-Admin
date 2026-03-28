@@ -50,7 +50,7 @@ export async function deleteLandAction(id: string): Promise<ActionState> {
 }
 
 // ─── addLandAction ────────────────────────────────────────────────────────────
-export async function addLandAction(data: CreateListingRequest): Promise<ActionState> {
+export async function addLandAction(_: ActionState | null, data: CreateListingRequest): Promise<ActionState>{
   return withActionError("فشل إضافة العقار", async () => {
     await serverApi.post("/api/admin/land/add", data);
     revalidateTag("listings");

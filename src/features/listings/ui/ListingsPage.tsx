@@ -7,7 +7,6 @@ import {
   GridSkeleton,
   GridView,
   ListingsFilters,
-  TableSkeleton,
   TableView,
 } from "@/features/listings/ui/components";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,6 +17,7 @@ import { priceChangeKeys } from "../api";
 import { Pagination } from "./components/Pagination";
 import { startTransition } from "react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import { TableSkeleton } from "@/shared/components/ui/TableSkeleton";
 type Props = {
   initialRequestId: number | null;
 };
