@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { signIn, signOut, type SignInResponse } from "next-auth/react";
-import type { AdminLoginRequest } from "../types/auth.types";
+import { signOut, type SignInResponse } from "next-auth/react";
+import type { AdminLoginRequest, AdminLoginResponse } from "../types/auth.types";
 
 type MutateOptions<TData = unknown> = {
   onSuccess?: (data: TData) => void;
@@ -10,22 +10,41 @@ type MutateOptions<TData = unknown> = {
   onSettled?: () => void;
 };
 
-type SignInResult = SignInResponse | undefined;
-
 export function useAdminLogin() {
   const [isPending, setIsPending] = useState(false);
 
-  const mutateAsync = async (payload: AdminLoginRequest, options?: MutateOptions<SignInResult>) => {
+  const mutateAsync = async (
+    payload: AdminLoginRequest,
+    options?: MutateOptions<AdminLoginResponse>
+  ) => {
     setIsPending(true);
     try {
-      const res = await signIn("credentials", {
-        phoneNumber: payload.phoneNumber,
-        password: payload.password,
-        redirect: false,
+      const res = await fetch("/api/admin/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json, text/plain, */*",
+        },
+        body: JSON.stringify(payload),
+        cache: "no-store",
       });
 
-      options?.onSuccess?.(res);
-      return res;
+      const data = (await res.json().catch(() => null)) as AdminLoginResponse | null;
+
+      if (!res.ok || !data) {
+        const error = {
+          status: res.status,
+          message:
+            data?.message ||
+            (res.status === 401 ? "Unauthorized" : "Login request failed"),
+          data,
+        };
+        options?.onError?.(error);
+        throw error;
+      }
+
+      options?.onSuccess?.(data);
+      return data;
     } catch (error) {
       options?.onError?.(error);
       throw error;
@@ -35,7 +54,7 @@ export function useAdminLogin() {
     }
   };
 
-  const mutate = (payload: AdminLoginRequest, options?: MutateOptions<SignInResult>) => {
+  const mutate = (payload: AdminLoginRequest, options?: MutateOptions<AdminLoginResponse>) => {
     void mutateAsync(payload, options);
   };
 
@@ -65,3 +84,5 @@ export function useLogout() {
 
   return { mutateAsync, mutate, isPending };
 }
+
+export type AdminSessionSignInResult = SignInResponse | undefined;

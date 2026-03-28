@@ -1,8 +1,9 @@
+
 "use client";
 
 import { startTransition, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ListingItem,
 } from "@/features/listings";
@@ -14,7 +15,6 @@ import {
 import { DeleteModal } from "../modals/DeleteModal";
 import { useGetPriceChangeRequests } from "@/features/listings/hooks/use-price-change";
 import { useDeleteLand } from "@/features/listings/hooks/use-listing-actions";
-import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
 type ModalType =
   | "status"
   | "classification"
@@ -88,9 +88,29 @@ const PriceButton = ({
 
 export const ActionButtons = ({ item }: Props) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [openModal, setOpenModal] = useState<ModalType>(null);
-  const [, setModalParams] = useQueryStates({modal: parseAsString,requestId: parseAsInteger});
   const { deleteLand, isPending: isDeleting } = useDeleteLand();
+
+  const updateModalParams = (params: { modal?: string | null; requestId?: number | null }) => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (params.modal == null) {
+      nextSearchParams.delete("modal");
+    } else {
+      nextSearchParams.set("modal", params.modal);
+    }
+
+    if (params.requestId == null) {
+      nextSearchParams.delete("requestId");
+    } else {
+      nextSearchParams.set("requestId", String(params.requestId));
+    }
+
+    const nextQuery = nextSearchParams.toString();
+    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, { scroll: false });
+  };
 
   const close = () => setOpenModal(null);
   const closeLocalModal = () => setOpenModal(null);
@@ -100,7 +120,7 @@ export const ActionButtons = ({ item }: Props) => {
   
   const openPriceDetails = (requestId: number) => {
     startTransition(() => {
-      setModalParams({ modal: "priceDetails", requestId });
+      updateModalParams({ modal: "priceDetails", requestId });
     });
   };
 

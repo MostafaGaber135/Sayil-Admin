@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -9,14 +10,13 @@ import {
   ListingsFilters,
   TableView,
 } from "@/features/listings/ui/components";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PriceRequestDetailsModal } from "./modals";
 
 import type { PriceChangeRequestDetails } from "..";
 import { priceChangeKeys } from "../api";
 import { Pagination } from "./components/Pagination";
 import { startTransition } from "react";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { TableSkeleton } from "@/shared/components/ui/TableSkeleton";
 type Props = {
   initialRequestId: number | null;
@@ -24,14 +24,36 @@ type Props = {
 
 export const ListingsPage = ({ initialRequestId }: Props) => {
   const queryClient = useQueryClient();
-  const [{ modal: openModal, requestId }, setModalParams] = useQueryStates({
-    modal: parseAsString,
-    requestId: parseAsInteger,
-  });
-  
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const openModal = searchParams.get("modal");
+  const requestIdParam = searchParams.get("requestId");
+  const requestId = requestIdParam ? Number(requestIdParam) : null;
+
+  const updateModalParams = (params: { modal?: string | null; requestId?: number | null }) => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (params.modal == null) {
+      nextSearchParams.delete("modal");
+    } else {
+      nextSearchParams.set("modal", params.modal);
+    }
+
+    if (params.requestId == null) {
+      nextSearchParams.delete("requestId");
+    } else {
+      nextSearchParams.set("requestId", String(params.requestId));
+    }
+
+    const nextQuery = nextSearchParams.toString();
+    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, { scroll: false });
+  };
+
   const close = () => {
     startTransition(() => {
-      setModalParams({ modal: null, requestId: null });
+      updateModalParams({ modal: null, requestId: null });
     });
   };
   
@@ -48,7 +70,6 @@ export const ListingsPage = ({ initialRequestId }: Props) => {
   } = useListingsFilters();
 
   const { data, isPending } = useListings(filters);
-  console.log(data);
 
   const listings = data?.data?.items ?? [];
 const totalPages = (data?.data as any)?.meta?.totalPages ?? 0;
@@ -157,4 +178,5 @@ const EmptyState = () => (
       Try adjusting your filters or search term
     </p>
   </div>
+
 );

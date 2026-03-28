@@ -22,6 +22,7 @@ export type LoginPreset = {
   phoneNumber: string;
   password: string;
   hint?: string;
+  isFirstTime?: boolean;
 };
 
 export type AdminLoginData = {

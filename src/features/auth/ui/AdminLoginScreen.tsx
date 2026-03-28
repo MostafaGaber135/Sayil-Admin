@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { signIn } from "next-auth/react";
 
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
@@ -16,7 +17,15 @@ import LocaleSwitch from "@/shared/ui/LocaleSwitch";
 import { useAdminLogin } from "@/features/auth/hooks/auth.hooks";
 import type { AdminLoginFormValues, LoginPreset } from "@/features/auth/types/auth.types";
 import LoginForm from "@/features/auth/ui/LoginForm";
+import FirstTimePasswordReset from "@/features/auth/ui/FirstTimePasswordReset";
 import { createAdminLoginSchema } from "@/features/auth/validation/login.validation";
+
+type FirstTimeState = {
+  fullName: string;
+  phoneNumber: string;
+  currentPassword: string;
+  token?: string;
+};
 
 export default function AdminLoginScreen() {
   const t = useTranslations();
@@ -43,6 +52,8 @@ export default function AdminLoginScreen() {
 
   const login = useAdminLogin();
   const [apiError, setApiError] = useState<string | null>(null);
+  const [step, setStep] = useState<"LOGIN" | "RESET">("LOGIN");
+  const [firstTimeData, setFirstTimeData] = useState<FirstTimeState | null>(null);
 
   const labels = useMemo(
     () => ({
@@ -70,19 +81,29 @@ export default function AdminLoginScreen() {
       },
       {
         roleLabel: t("auth.samples.manager"),
-        phoneNumber: "+966509876543",
-        password: "manager123",
+        phoneNumber: "+966551208175",
+        password: "Test1234@",
         hint: t("auth.samples.firstTime"),
+        isFirstTime: true,
       },
     ],
     [t]
   );
 
+  const goToResetStep = useCallback((payload: FirstTimeState) => {
+    setApiError(null);
+    setFirstTimeData(payload);
+    setStep("RESET");
+  }, []);
+
   const applyPreset = useCallback(
-    (p: LoginPreset) => {
+    (preset: LoginPreset) => {
       setApiError(null);
       form.reset(
-        { phoneNumber: p.phoneNumber, password: p.password },
+        {
+          phoneNumber: preset.phoneNumber,
+          password: preset.password,
+        },
         { keepDirty: true, keepTouched: true }
       );
       form.trigger(["phoneNumber", "password"]);
@@ -90,32 +111,65 @@ export default function AdminLoginScreen() {
     },
     [form]
   );
-
   const onSubmit = useCallback(
     async (values: AdminLoginFormValues) => {
       setApiError(null);
 
       try {
-        const res = await login.mutateAsync(values);
+        const loginResponse = await login.mutateAsync(values);
 
-        if (!res?.ok) {
-          if (res?.error === "CredentialsSignin" || res?.status === 401) {
-            toast.error(t("auth.login.errors.unauthorized"));
-            return;
-          }
-          toast.error(t("auth.login.errors.invalid"));
+        if (!loginResponse?.succeeded || !loginResponse?.data) {
+          const message = loginResponse?.message || t("auth.login.errors.invalid");
+          setApiError(message);
+          toast.error(message);
+          return;
+        }
+
+        if (loginResponse.data.isFirstTimeLogin) {
+          goToResetStep({
+            fullName:
+              loginResponse.data.user?.fullName ||
+              loginResponse.data.user?.email ||
+              presets.find((preset) => preset.phoneNumber === values.phoneNumber)?.roleLabel ||
+              t("auth.samples.manager"),
+            phoneNumber: values.phoneNumber,
+            currentPassword: values.password,
+            token: loginResponse.data.token,
+          });
+          return;
+        }
+        const sessionSignIn = await signIn("credentials", {
+          phoneNumber: values.phoneNumber,
+          password: values.password,
+          redirect: false,
+        });
+
+        if (!sessionSignIn?.ok) {
+          const message =
+            sessionSignIn?.error === "CredentialsSignin" || sessionSignIn?.status === 401
+              ? t("auth.login.errors.unauthorized")
+              : t("auth.login.errors.invalid");
+
+          setApiError(message);
+          toast.error(message);
           return;
         }
 
         toast.success(t("auth.login.success"));
         router.push("/dashboard");
-      } catch {
-        setApiError(t("auth.login.errors.network"));
-        toast.error(t("auth.login.errors.network"));
+      } catch (error) {
+        const message =
+          typeof error === "object" && error && "message" in error && typeof error.message === "string"
+            ? error.message
+            : t("auth.login.errors.network");
+
+        setApiError(message);
+        toast.error(message);
       }
     },
-    [login, router, t]
+    [goToResetStep, login, presets, router, t]
   );
+
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-primary">
@@ -126,12 +180,7 @@ export default function AdminLoginScreen() {
       <div className="relative z-10">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:py-14">
           <div className="grid items-center gap-10 lg:grid-cols-2">
-            <div
-              className={cn(
-                "space-y-8",
-                isRTL ? "text-right" : "text-left"
-              )}
-            >
+            <div className={cn("space-y-8", isRTL ? "text-right" : "text-left")}>
               <div className="space-y-2">
                 <h1
                   className={cn(
@@ -142,9 +191,7 @@ export default function AdminLoginScreen() {
                   {t("auth.brand.title")}
                 </h1>
 
-                <p className="text-lg text-white/80 sm:text-xl">
-                  {t("auth.brand.subtitle")}
-                </p>
+                <p className="text-lg text-white/80 sm:text-xl">{t("auth.brand.subtitle")}</p>
               </div>
 
               <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
@@ -154,41 +201,32 @@ export default function AdminLoginScreen() {
                 </div>
 
                 <div className="space-y-4">
-                  {presets.map((p) => (
+                  {presets.map((preset) => (
                     <div
-                      key={p.phoneNumber}
+                      key={preset.phoneNumber}
                       className={cn(
                         "flex flex-col gap-4 rounded-xl bg-white/10 p-5 sm:flex-row sm:items-center sm:justify-between",
                         isRTL ? "sm:flex-row-reverse" : ""
                       )}
                     >
                       <div className="min-w-0 space-y-1">
-                        <div className="text-base font-semibold text-white">
-                          {p.roleLabel}
-                        </div>
+                        <div className="text-base font-semibold text-white">{preset.roleLabel}</div>
                         <div className="text-sm text-white/80 break-all">
                           <span dir="ltr" className="break-all">
-                            {p.phoneNumber}
+                            {preset.phoneNumber}
                           </span>
                         </div>
                         <div className="text-sm text-white/80 break-all">
-                          {t("auth.samples.password")}:{" "}
-                          <span dir="ltr" className="break-all">
-                            {p.password}
-                          </span>
+                          {t("auth.samples.password")}: <span dir="ltr">{preset.password}</span>
                         </div>
-                        {p.hint ? (
-                          <div className="text-sm font-semibold text-yellow-300">
-                            {p.hint}
-                          </div>
-                        ) : null}
+                        {preset.hint ? <div className="text-sm font-semibold text-yellow-300">{preset.hint}</div> : null}
                       </div>
 
                       <Button
                         type="button"
                         variant="secondary"
                         className="h-10 w-full shrink-0 rounded-lg bg-white/20 px-5 text-sm font-semibold text-white hover:bg-white/30 cursor-pointer sm:w-auto border-0 shadow-none"
-                        onClick={() => applyPreset(p)}
+                        onClick={() => applyPreset(preset)}
                       >
                         {t("auth.samples.use")}
                       </Button>
@@ -216,14 +254,31 @@ export default function AdminLoginScreen() {
                   />
                 </div>
 
-                <LoginForm
-                  form={form}
-                  isRTL={isRTL}
-                  submitting={login.isPending}
-                  onSubmit={onSubmit}
-                  errorText={apiError}
-                  labels={labels}
-                />
+                {step === "LOGIN" ? (
+                  <LoginForm
+                    form={form}
+                    isRTL={isRTL}
+                    submitting={login.isPending}
+                    onSubmit={onSubmit}
+                    errorText={apiError}
+                    labels={labels}
+                  />
+                ) : (
+                  firstTimeData && (
+                    <FirstTimePasswordReset
+                      isRTL={isRTL}
+                      fullName={firstTimeData.fullName}
+                      phoneNumber={firstTimeData.phoneNumber}
+                      currentPassword={firstTimeData.currentPassword}
+                      token={firstTimeData.token}
+                      onBack={() => {
+                        setStep("LOGIN");
+                        setApiError(null);
+                      }}
+                      onSuccess={() => router.push("/dashboard")}
+                    />
+                  )
+                )}
 
                 <div className="h-2" />
               </CardContent>
@@ -234,3 +289,4 @@ export default function AdminLoginScreen() {
     </div>
   );
 }
+
